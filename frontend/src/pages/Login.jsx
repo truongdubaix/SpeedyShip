@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion"; // 👈 hiệu ứng
 import API from "../services/api";
 
 export default function Login() {
@@ -14,39 +15,27 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
     if (!form.email || !form.password) {
-      setError("Vui lòng nhập đầy đủ Email và Mật khẩu");
-      setLoading(false);
+      setError("Vui lòng nhập đầy đủ email và mật khẩu");
       return;
     }
 
     try {
+      setLoading(true);
       const res = await API.post("/auth/login", form);
+
       const { token, user } = res.data;
-      const role = user?.role || "customer";
-      const username = user?.name || "Người dùng";
-
       localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
-      localStorage.setItem("username", username);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("username", user.name);
 
-      // Điều hướng đúng vai trò
-      switch (role) {
-        case "admin":
-          navigate("/admin");
-          break;
-        case "dispatcher":
-          navigate("/dispatcher");
-          break;
-        case "driver":
-          navigate("/driver");
-          break;
-        default:
-          navigate("/customer");
-      }
-    } catch {
+      // Chuyển hướng theo vai trò
+      if (user.role === "admin") navigate("/admin");
+      else if (user.role === "dispatcher") navigate("/dispatcher");
+      else if (user.role === "driver") navigate("/driver");
+      else navigate("/customer");
+    } catch (err) {
       setError("Sai tài khoản hoặc mật khẩu");
     } finally {
       setLoading(false);
@@ -55,31 +44,46 @@ export default function Login() {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-400">
-      <div className="bg-white/95 backdrop-blur-md p-10 rounded-2xl shadow-2xl w-full max-w-md border border-blue-100">
-        {/* Logo và tiêu đề */}
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="bg-white/95 backdrop-blur-md p-10 rounded-2xl shadow-2xl w-full max-w-md border border-blue-100"
+      >
+        {/* Logo animation */}
         <div className="flex flex-col items-center mb-6">
-          <div className="bg-blue-600 text-white w-16 h-16 flex items-center justify-center rounded-full shadow-md text-3xl">
+          <motion.div
+            initial={{ scale: 0.8, rotate: -15 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-blue-600 text-white w-16 h-16 flex items-center justify-center rounded-full shadow-md text-3xl"
+          >
             🚀
-          </div>
+          </motion.div>
           <h1 className="text-3xl font-extrabold text-blue-700 mt-3">
             SpeedyShip
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Hệ thống quản lý vận chuyển thông minh
+            Đăng nhập vào hệ thống quản lý
           </p>
         </div>
 
-        {/* Form đăng nhập */}
+        {/* Form */}
         <form onSubmit={handleSubmit}>
           {error && (
             <p className="text-red-500 text-sm text-center mb-3">{error}</p>
           )}
 
-          <div className="space-y-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="space-y-4"
+          >
             <input
               type="email"
               name="email"
-              placeholder="Nhập email của bạn"
+              placeholder="Email"
               value={form.email}
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
@@ -88,7 +92,7 @@ export default function Login() {
             <input
               type="password"
               name="password"
-              placeholder="Nhập mật khẩu"
+              placeholder="Mật khẩu"
               value={form.password}
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
@@ -105,10 +109,10 @@ export default function Login() {
             >
               {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
-          </div>
+          </motion.div>
         </form>
 
-        {/* Đường link đăng ký */}
+        {/* Link đăng ký */}
         <p className="text-center text-sm text-gray-600 mt-6">
           Chưa có tài khoản?{" "}
           <span
@@ -118,7 +122,7 @@ export default function Login() {
             Đăng ký ngay
           </span>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }
