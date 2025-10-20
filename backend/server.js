@@ -9,6 +9,7 @@ import authRoutes from "./routes/authRoutes.js";
 import driverRoutes from "./routes/driverRoutes.js";
 import shipmentRoutes from "./routes/shipmentRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 dotenv.config();
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/auth", authRoutes); // Đăng nhập / Đăng ký
 app.use("/api/drivers", driverRoutes); // Quản lý tài xế
 app.use("/api/shipments", shipmentRoutes); // Quản lý đơn hàng
 app.use("/api/users", userRoutes); // Quản lý tài khoản
+app.use("/api/payments", paymentRoutes); // Quản lý thanh toán
 
 // 📴 Các module chưa làm tới (tắt tạm)
 // app.use("/api/users", userRoutes);
