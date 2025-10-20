@@ -1,18 +1,19 @@
-import { Router } from "express";
-import { auth } from "../middleware/authMiddleware.js";
-import { hasRole } from "../middleware/roleMiddleware.js";
+import express from "express";
 import {
-  listUsers,
-  getUser,
-  updateUserStatus,
-  assignRole,
+  getAllUsers,
+  updateUser,
+  deleteUser,
 } from "../controllers/userController.js";
 
-const router = Router();
+const router = express.Router();
 
-router.get("/", auth, hasRole("admin"), listUsers);
-router.get("/:id", auth, hasRole("admin"), getUser);
-router.patch("/:id/status", auth, hasRole("admin"), updateUserStatus);
-router.post("/:id/role", auth, hasRole("admin"), assignRole);
+// Lấy danh sách tất cả user
+router.get("/", getAllUsers);
+
+// Cập nhật role hoặc trạng thái
+router.put("/:id", updateUser);
+
+// Xóa người dùng
+router.delete("/:id", deleteUser);
 
 export default router;
