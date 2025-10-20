@@ -1,120 +1,95 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 export default function Register() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
-    phone: "",
     password: "",
+    phone: "",
   });
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
+  // cập nhật state khi người dùng nhập form
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
+  // xử lý khi bấm nút "Đăng ký"
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
-      // Gọi API thật sau này
-      console.log("Register:", form);
-      alert("✅ Đăng ký thành công!");
-      navigate("/login");
+      await API.post("/auth/register", form);
+      setSuccess("Đăng ký thành công! Vui lòng đăng nhập.");
+      setError("");
+      setTimeout(() => navigate("/login"), 1500); // chuyển về trang đăng nhập
     } catch (err) {
-      alert("❌ Có lỗi xảy ra!");
-    } finally {
-      setLoading(false);
+      setError("Email đã tồn tại hoặc dữ liệu không hợp lệ");
+      setSuccess("");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-400 px-6">
-      <div
-        className="bg-white rounded-2xl shadow-lg w-full max-w-md p-8 space-y-6"
-        data-aos="zoom-in"
+    <div className="flex items-center justify-center h-screen bg-blue-50">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 shadow rounded-lg w-full max-w-md"
       >
-        <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
+        <h1 className="text-2xl font-bold text-center mb-4 text-blue-600">
           Đăng ký SpeedyShip
-        </h2>
+        </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Họ tên
-            </label>
-            <input
-              type="text"
-              name="name"
-              required
-              value={form.name}
-              onChange={handleChange}
-              className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="Nguyễn Văn A"
-            />
-          </div>
+        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+        {success && <p className="text-green-600 text-sm mb-3">{success}</p>}
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              required
-              value={form.email}
-              onChange={handleChange}
-              className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="example@email.com"
-            />
-          </div>
+        <input
+          type="text"
+          name="name"
+          placeholder="Họ tên"
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Mật khẩu"
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
+        />
+        <input
+          type="text"
+          name="phone"
+          placeholder="Số điện thoại"
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-4"
+        />
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Số điện thoại
-            </label>
-            <input
-              type="text"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="090xxxxxxx"
-            />
-          </div>
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white w-full py-2 rounded"
+        >
+          Đăng ký
+        </button>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Mật khẩu
-            </label>
-            <input
-              type="password"
-              name="password"
-              required
-              value={form.password}
-              onChange={handleChange}
-              className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="••••••••"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
-          >
-            {loading ? "Đang đăng ký..." : "Tạo tài khoản"}
-          </button>
-        </form>
-
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-sm mt-4">
           Đã có tài khoản?{" "}
-          <Link to="/login" className="text-blue-600 hover:underline">
+          <span
+            className="text-blue-600 hover:underline cursor-pointer"
+            onClick={() => navigate("/login")}
+          >
             Đăng nhập ngay
-          </Link>
+          </span>
         </p>
-      </div>
+      </form>
     </div>
   );
 }
