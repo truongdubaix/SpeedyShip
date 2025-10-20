@@ -1,33 +1,63 @@
-import pool from "../config/db.js";
+import db from "../config/db.js";
 
-export const listDrivers = async (_req, res) => {
-  const [rows] = await pool.query(
-    `SELECT d.id,d.user_id,u.name,u.email,u.phone,d.license_no,d.vehicle_type,d.active
-     FROM drivers d JOIN users u ON u.id=d.user_id
-     ORDER BY d.id DESC`
-  );
-  res.json(rows);
+// 🔹 Lấy toàn bộ tài xế
+export const getAllDrivers = async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM drivers ORDER BY id DESC");
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: "Lỗi khi lấy danh sách tài xế" });
+  }
 };
 
+// 🔹 Thêm tài xế mới
 export const createDriver = async (req, res) => {
-  const { user_id, license_no, vehicle_type } = req.body;
-  await pool.query(
-    "INSERT INTO drivers(user_id,license_no,vehicle_type,active) VALUES(?,?,?,1)",
-    [user_id, license_no || null, vehicle_type || null]
-  );
-  res.json({ message: "Driver created" });
+  const { name, email, phone, status } = req.body;
+  try {
+    await db.query(
+      "INSERT INTO drivers (name, email, phone, status) VALUES (?, ?, ?, ?)",
+      [name, email, phone, status || "available"]
+    );
+    res.json({ message: "Thêm tài xế thành công" });
+  } catch (err) {
+    res.status(500).json({ error: "Lỗi khi thêm tài xế" });
+  }
 };
 
+// 🔹 Cập nhật thông tin tài xế
 export const updateDriver = async (req, res) => {
-  const { license_no, vehicle_type, active } = req.body;
-  await pool.query(
-    "UPDATE drivers SET license_no=?, vehicle_type=?, active=? WHERE id=?",
-    [license_no || null, vehicle_type || null, active ? 1 : 0, req.params.id]
-  );
-  res.json({ message: "Driver updated" });
+  const { id } = req.params;
+  const { name, email, phone, status } = req.body;
+  try {
+    await db.query(
+      "UPDATE drivers SET name=?, email=?, phone=?, status=? WHERE id=?",
+      [name, email, phone, status, id]
+    );
+    res.json({ message: "Cập nhật tài xế thành công" });
+  } catch (err) {
+    res.status(500).json({ error: "Lỗi khi cập nhật tài xế" });
+  }
 };
 
-export const removeDriver = async (req, res) => {
-  await pool.query("DELETE FROM drivers WHERE id=?", [req.params.id]);
-  res.json({ message: "Driver removed" });
+// 🔹 Xóa tài xế
+export const deleteDriver = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.query("DELETE FROM drivers WHERE id = ?", [id]);
+    res.json({ message: "Đã xóa tài xế" });
+  } catch (err) {
+    res.status(500).json({ error: "Lỗi khi xóa tài xế" });
+  }
+};
+
+// 🔹 Cập nhật trạng thái nhanh
+export const updateDriverStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  try {
+    await db.query("UPDATE drivers SET status = ? WHERE id = ?", [status, id]);
+    res.json({ message: "Cập nhật trạng thái thành công" });
+  } catch (err) {
+    res.status(500).json({ error: "Lỗi khi cập nhật trạng thái" });
+  }
 };
