@@ -1,20 +1,13 @@
-import express from "express";
+import { Router } from "express";
+import { auth } from "../middleware/authMiddleware.js";
 import {
+  listFeedbacks,
   createFeedback,
-  listFeedback,
-  myFeedback,
-  deleteFeedback,
 } from "../controllers/feedbackController.js";
-import { verifyToken, requireRole } from "../middleware/authMiddleware.js";
 
-const router = express.Router();
+const router = Router();
 
-// Customer gửi hoặc xem phản hồi
-router.post("/", verifyToken, requireRole("customer"), createFeedback);
-router.get("/my", verifyToken, requireRole("customer"), myFeedback);
-
-// Admin xem hoặc xóa
-router.get("/", verifyToken, requireRole("admin"), listFeedback);
-router.delete("/:id", verifyToken, requireRole("admin"), deleteFeedback);
+router.get("/", auth, listFeedbacks);
+router.post("/", auth, createFeedback);
 
 export default router;

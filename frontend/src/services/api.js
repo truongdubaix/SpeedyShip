@@ -1,15 +1,15 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "http://localhost:5000",
-  headers: { "Content-Type": "application/json" },
+const API = axios.create({
+  baseURL: "http://localhost:5000/api", // 👈 backend port
+  withCredentials: true,
 });
 
-// Đính kèm JWT từ localStorage
-api.interceptors.request.use((config) => {
+// interceptor để gắn token nếu có
+API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-export default api;
+export default API;

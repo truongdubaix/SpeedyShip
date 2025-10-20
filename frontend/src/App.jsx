@@ -1,6 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
+// Public pages
 import Home from "./pages/Home.jsx";
 import Tracking from "./pages/Tracking.jsx";
 import About from "./pages/About.jsx";
@@ -8,6 +11,8 @@ import Services from "./pages/Services.jsx";
 import Contact from "./pages/Contact.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
+import Logout from "./pages/Logout.jsx";
+import Unauthorized from "./pages/Unauthorized.jsx";
 
 // Layouts
 import AdminLayout from "./layouts/AdminLayout.jsx";
@@ -44,94 +49,42 @@ export default function App() {
   return (
     <div className="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
       <Routes>
-        {/* Các trang công khai có Navbar + Footer */}
-        <Route
-          path="/"
-          element={
-            <>
-              <Navbar />
-              <main className="flex-1">
-                <Home />
-              </main>
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/tracking"
-          element={
-            <>
-              <Navbar />
-              <main className="flex-1">
-                <Tracking />
-              </main>
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <>
-              <Navbar />
-              <main className="flex-1">
-                <About />
-              </main>
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/services"
-          element={
-            <>
-              <Navbar />
-              <main className="flex-1">
-                <Services />
-              </main>
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <>
-              <Navbar />
-              <main className="flex-1">
-                <Contact />
-              </main>
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <>
-              <Navbar />
-              <main className="flex-1">
-                <Login />
-              </main>
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <>
-              <Navbar />
-              <main className="flex-1">
-                <Register />
-              </main>
-              <Footer />
-            </>
-          }
-        />
+        {/* 🌍 Public pages có Navbar + Footer */}
+        {[
+          { path: "/", element: <Home /> },
+          { path: "/tracking", element: <Tracking /> },
+          { path: "/about", element: <About /> },
+          { path: "/services", element: <Services /> },
+          { path: "/contact", element: <Contact /> },
+          { path: "/login", element: <Login /> },
+          { path: "/register", element: <Register /> },
+        ].map(({ path, element }) => (
+          <Route
+            key={path}
+            path={path}
+            element={
+              <>
+                <Navbar />
+                <main className="flex-1">{element}</main>
+                <Footer />
+              </>
+            }
+          />
+        ))}
 
-        {/* Khu vực quản trị */}
-        <Route path="/admin" element={<AdminLayout />}>
+        {/* 🚪 Đăng xuất & không có quyền */}
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+        {/* 🧭 Khu vực quản trị */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<AdminDashboard />} />
           <Route path="shipments" element={<AdminShipments />} />
           <Route path="drivers" element={<AdminDrivers />} />
@@ -139,23 +92,44 @@ export default function App() {
           <Route path="payments" element={<AdminPayments />} />
         </Route>
 
-        {/* Khu vực điều phối viên */}
-        <Route path="/dispatcher" element={<DispatcherLayout />}>
+        {/* 🧩 Điều phối viên */}
+        <Route
+          path="/dispatcher"
+          element={
+            <ProtectedRoute allowedRoles={["dispatcher", "admin"]}>
+              <DispatcherLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<DispatcherDashboard />} />
           <Route path="assignments" element={<DispatcherAssignments />} />
           <Route path="tracking" element={<DispatcherTracking />} />
         </Route>
 
-        {/* Khu vực tài xế */}
-        <Route path="/driver" element={<DriverLayout />}>
+        {/* 🚚 Tài xế */}
+        <Route
+          path="/driver"
+          element={
+            <ProtectedRoute allowedRoles={["driver", "admin"]}>
+              <DriverLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<DriverDashboard />} />
           <Route path="assignments" element={<DriverAssignments />} />
           <Route path="history" element={<DriverHistory />} />
           <Route path="profile" element={<DriverProfile />} />
         </Route>
 
-        {/* Khu vực khách hàng */}
-        <Route path="/customer" element={<CustomerLayout />}>
+        {/* 👤 Khách hàng */}
+        <Route
+          path="/customer"
+          element={
+            <ProtectedRoute allowedRoles={["customer", "admin"]}>
+              <CustomerLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<CustomerDashboard />} />
           <Route path="create" element={<CustomerCreateShipment />} />
           <Route path="track" element={<CustomerTrack />} />

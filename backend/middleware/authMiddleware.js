@@ -1,27 +1,14 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-dotenv.config();
 
-export const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer "))
-    return res.status(401).json({ error: "Thiếu token xác thực" });
-
-  const token = authHeader.split(" ")[1];
+export const auth = (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // { id, email, role }
+    const header = req.headers.authorization || "";
+    const token = header.startsWith("Bearer ") ? header.slice(7) : null;
+    if (!token) return res.status(401).json({ message: "Missing token" });
+    const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    req.user = payload; // { id, email, roles }
     next();
-  } catch (err) {
-    res.status(401).json({ error: "Token không hợp lệ hoặc đã hết hạn" });
+  } catch (e) {
+    return res.status(401).json({ message: "Invalid/expired token" });
   }
 };
-
-export const requireRole =
-  (...roles) =>
-  (req, res, next) => {
-    if (!req.user || !roles.includes(req.user.role)) {
-      return res.status(403).json({ error: "Không đủ quyền truy cập" });
-    }
-    next();
-  };

@@ -1,52 +1,104 @@
-import { Link, NavLink } from "react-router-dom";
-
-const NavItem = ({ to, children }) => (
-  <NavLink
-    to={to}
-    className={({ isActive }) =>
-      `px-2 py-1 transition ${
-        isActive ? "text-blue-600" : "text-gray-700 hover:text-blue-600"
-      }`
-    }
-  >
-    {children}
-  </NavLink>
-);
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const [role, setRole] = useState(null);
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    setRole(localStorage.getItem("role"));
+    setName(localStorage.getItem("username") || "Người dùng");
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
+
+  const getRoleLabel = (r) => {
+    switch (r) {
+      case "admin":
+        return "Quản trị viên";
+      case "dispatcher":
+        return "Điều phối viên";
+      case "driver":
+        return "Tài xế";
+      case "customer":
+        return "Khách hàng";
+      default:
+        return "";
+    }
+  };
+
   return (
-    <nav className="bg-white shadow fixed top-0 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-        <Link to="/" className="text-2xl font-extrabold text-blue-600">
-          🚚 SpeedyShip
-        </Link>
-        <ul className="hidden md:flex space-x-6 font-medium">
-          <li>
-            <NavItem to="/services">Dịch vụ</NavItem>
-          </li>
-          <li>
-            <NavItem to="/tracking">Tra cứu</NavItem>
-          </li>
-          <li>
-            <NavItem to="/about">Giới thiệu</NavItem>
-          </li>
-          <li>
-            <NavItem to="/contact">Liên hệ</NavItem>
-          </li>
-        </ul>
-        <div className="hidden md:flex space-x-3">
-          <a
-            href="/login"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Đăng nhập
-          </a>
-          <a
-            href="/register"
-            className="border border-blue-500 text-blue-600 px-4 py-2 rounded hover:bg-blue-100"
-          >
-            Đăng ký
-          </a>
+    <nav className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 shadow-md">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+        {/* Logo */}
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          <div className="bg-white text-blue-600 w-10 h-10 flex items-center justify-center rounded-full font-bold text-xl shadow-inner">
+            🚀
+          </div>
+          <span className="text-white font-extrabold text-xl tracking-wide">
+            SpeedyShip
+          </span>
+        </div>
+
+        {/* Menu chính */}
+        <div className="hidden md:flex space-x-6 text-white text-sm font-medium">
+          <Link to="/" className="hover:text-yellow-300 transition">
+            Trang chủ
+          </Link>
+          <Link to="/services" className="hover:text-yellow-300 transition">
+            Dịch vụ
+          </Link>
+          <Link to="/contact" className="hover:text-yellow-300 transition">
+            Liên hệ
+          </Link>
+          <Link to="/tracking" className="hover:text-yellow-300 transition">
+            Tra cứu đơn
+          </Link>
+        </div>
+
+        {/* Góc phải: đăng nhập / chào người dùng */}
+        <div className="flex items-center space-x-4">
+          {role ? (
+            <>
+              <div className="hidden sm:flex flex-col items-end text-sm text-white">
+                <span className="font-semibold text-yellow-300">
+                  Xin chào, {name}
+                </span>
+                <span className="text-gray-200 text-xs">
+                  ({getRoleLabel(role)})
+                </span>
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md text-white text-sm font-semibold shadow-sm transition"
+              >
+                Đăng xuất
+              </button>
+            </>
+          ) : (
+            <div className="flex items-center space-x-3">
+              <Link
+                to="/login"
+                className="bg-white text-blue-700 font-semibold px-3 py-1.5 rounded-md shadow-sm hover:bg-blue-100 transition"
+              >
+                Đăng nhập
+              </Link>
+              <Link
+                to="/register"
+                className="border border-white text-white px-3 py-1.5 rounded-md hover:bg-white hover:text-blue-700 transition"
+              >
+                Đăng ký
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>

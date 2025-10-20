@@ -1,73 +1,73 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { db } from "../config/db.js";
-import dotenv from "dotenv";
-dotenv.config();
+import pool from "../config/db.js";
 
-/**
- * 🧾 Đăng ký tài khoản
- */
+// 🔹 Đăng ký
 export const register = async (req, res) => {
-  try {
-    const { name, email, password, role = "customer" } = req.body;
-    if (!name || !email || !password)
-      return res.status(400).json({ error: "Thiếu thông tin cần thiết" });
+  const { name, email, password, phone } = req.body;
+  if (!name || !email || !password)
+    return res.status(400).json({ message: "Thiếu thông tin" });
 
-    // Kiểm tra email đã tồn tại chưa
-    const [check] = await db.query("SELECT * FROM users WHERE email=?", [
+  try {
+    const [exist] = await pool.query("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
-    if (check.length > 0)
-      return res.status(400).json({ error: "Email đã tồn tại" });
+    if (exist.length)
+      return res.status(400).json({ message: "Email đã tồn tại" });
 
     const hash = await bcrypt.hash(password, 10);
-
-    // Lấy id role từ bảng roles
-    const [r] = await db.query("SELECT id FROM roles WHERE code=?", [role]);
-    const role_id = r.length ? r[0].id : 4; // mặc định là customer
-
-    const [result] = await db.query(
-      "INSERT INTO users (name, email, password, role_id) VALUES (?,?,?,?)",
-      [name, email, hash, role_id]
+    const [result] = await pool.query(
+      "INSERT INTO users (name,email,password,phone) VALUES (?,?,?,?)",
+      [name, email, hash, phone]
     );
 
-    res.json({ message: "✅ Đăng ký thành công", userId: result.insertId });
+    // mặc định role customer
+    const [role] = await pool.query(
+      "SELECT id FROM roles WHERE code='customer'"
+    );
+    if (role.length)
+      await pool.query("INSERT INTO user_roles(user_id,role_id) VALUES(?,?)", [
+        result.insertId,
+        role[0].id,
+      ]);
+
+    res.json({ message: "Đăng ký thành công" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
 
-/**
- * 🔐 Đăng nhập
- */
+// 🔹 Đăng nhập
 export const login = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password)
+    return res.status(400).json({ message: "Thiếu thông tin" });
+
   try {
-    const { email, password } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ error: "Thiếu email hoặc mật khẩu" });
-
-    const [rows] = await db.query("SELECT * FROM users WHERE email=?", [email]);
-    if (!rows.length) return res.status(400).json({ error: "Sai email" });
-
-    const user = rows[0];
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(400).json({ error: "Sai mật khẩu" });
-
-    // Lấy vai trò
-    const [r] = await db.query("SELECT code FROM roles WHERE id=?", [
-      user.role_id,
+    const [users] = await pool.query("SELECT * FROM users WHERE email = ?", [
+      email,
     ]);
-    const role = r.length ? r[0].code : "customer";
+    if (!users.length)
+      return res.status(401).json({ message: "Sai tài khoản hoặc mật khẩu" });
 
-    // Tạo token
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+    const user = users[0];
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).json({ message: "Sai mật khẩu" });
+
+    // lấy role
+    const [roles] = await pool.query(
+      `SELECT r.code FROM roles r JOIN user_roles ur ON ur.role_id=r.id WHERE ur.user_id=?`,
+      [user.id]
     );
 
+    const role = roles[0]?.code || "customer";
+
+    const token = jwt.sign({ id: user.id, role }, "secret-key", {
+      expiresIn: "7d",
+    });
+
     res.json({
-      message: "✅ Đăng nhập thành công",
+      message: "Đăng nhập thành công",
       token,
       user: {
         id: user.id,
@@ -77,6 +77,6 @@ export const login = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
