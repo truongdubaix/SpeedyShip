@@ -1,23 +1,19 @@
-import { Router } from "express";
-import { auth } from "../middleware/authMiddleware.js";
-import { hasRole } from "../middleware/roleMiddleware.js";
+import express from "express";
 import {
-  listShipments,
+  getAllShipments,
   createShipment,
+  updateShipment,
   updateShipmentStatus,
-  timeline,
-  createStatusLog,
+  deleteShipment,
 } from "../controllers/shipmentController.js";
 
-const router = Router();
+const router = express.Router();
 
-// admin, dispatcher xem hết; customer xem của mình; driver xem của mình (ở FE bạn lọc theo vai)
-router.get("/", auth, listShipments);
-router.post("/", auth, createShipment);
-router.patch("/:id/status", auth, updateShipmentStatus);
-
-// timeline
-router.get("/:id/timeline", auth, timeline);
-router.post("/:id/timeline", auth, createStatusLog);
+// Định nghĩa các route CRUD
+router.get("/", getAllShipments);
+router.post("/", createShipment);
+router.put("/:id", updateShipment);
+router.patch("/:id/status", updateShipmentStatus);
+router.delete("/:id", deleteShipment);
 
 export default router;
