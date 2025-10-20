@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpeedyShip - Bảng điều khiển tài xế</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex bg-gray-100 font-sans">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-green-600 text-white min-h-screen p-5">
+      <h1 class="text-2xl font-bold mb-6">🚛 SpeedyShip</h1>
+      <nav class="space-y-3">
+        <a
+          href="driver-dashboard.html"
+          class="block px-3 py-2 bg-green-700 rounded"
+          >🏠 Tổng quan</a
+        >
+        <a
+          href="driver-assignments.html"
+          class="block px-3 py-2 rounded hover:bg-green-700"
+          >📦 Đơn được giao</a
+        >
+        <a
+          href="driver-history.html"
+          class="block px-3 py-2 rounded hover:bg-green-700"
+          >🕓 Lịch sử</a
+        >
+        <a
+          href="driver-profile.html"
+          class="block px-3 py-2 rounded hover:bg-green-700"
+          >👤 Hồ sơ cá nhân</a
+        >
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-8">
+      <header class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-700">
+          🏠 Bảng điều khiển tài xế
+        </h2>
+        <div class="flex items-center space-x-4">
+          <span class="font-semibold text-gray-700">Trần Tài</span>
+          <button
+            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+          >
+            Đăng xuất
+          </button>
+        </div>
+      </header>
+
+      <!-- Stats -->
+      <section class="grid grid-cols-3 gap-6 mb-10">
+        <div class="bg-white p-6 rounded shadow text-center">
+          <h3 class="text-gray-500 text-sm">Đơn đang giao</h3>
+          <p class="text-3xl font-bold text-green-600 mt-2">5</p>
+        </div>
+        <div class="bg-white p-6 rounded shadow text-center">
+          <h3 class="text-gray-500 text-sm">Đơn đã hoàn thành</h3>
+          <p class="text-3xl font-bold text-blue-600 mt-2">128</p>
+        </div>
+        <div class="bg-white p-6 rounded shadow text-center">
+          <h3 class="text-gray-500 text-sm">Tổng doanh thu</h3>
+          <p class="text-3xl font-bold text-orange-600 mt-2">₫52,400,000</p>
+        </div>
+      </section>
+
+      <!-- Recent Assignments -->
+      <section class="bg-white rounded shadow p-6">
+        <h3 class="text-lg font-semibold mb-4 text-gray-700">
+          Đơn hàng hôm nay
+        </h3>
+        <table class="w-full text-sm text-left border">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 border">Mã đơn</th>
+              <th class="p-2 border">Khách hàng</th>
+              <th class="p-2 border">Địa chỉ giao</th>
+              <th class="p-2 border">COD</th>
+              <th class="p-2 border">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">SP101</td>
+              <td class="p-2 border">Phạm An</td>
+              <td class="p-2 border">45 Nguyễn Huệ, Q.1</td>
+              <td class="p-2 border">₫150,000</td>
+              <td class="p-2 border text-green-600">Đang giao</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">SP102</td>
+              <td class="p-2 border">Lê Bình</td>
+              <td class="p-2 border">12 CMT8, Q.10</td>
+              <td class="p-2 border">₫0</td>
+              <td class="p-2 border text-yellow-600">Chờ lấy hàng</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

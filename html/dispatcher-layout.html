@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpeedyShip - Điều phối viên</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex bg-gray-100 font-sans">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-orange-500 text-white min-h-screen p-5">
+      <h1 class="text-2xl font-bold mb-6">🚛 SpeedyShip</h1>
+      <nav class="space-y-3">
+        <a
+          href="dispatcher-dashboard.html"
+          class="block px-3 py-2 rounded hover:bg-orange-600"
+          >🏠 Tổng quan</a
+        >
+        <a
+          href="dispatcher-assignments.html"
+          class="block px-3 py-2 rounded hover:bg-orange-600"
+          >🗂️ Gán đơn</a
+        >
+        <a
+          href="dispatcher-tracking.html"
+          class="block px-3 py-2 rounded hover:bg-orange-600"
+          >📍 Theo dõi</a
+        >
+        <a
+          href="dispatcher-shipments.html"
+          class="block px-3 py-2 rounded hover:bg-orange-600"
+          >📦 Đơn hàng</a
+        >
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="flex-1 p-8">
+      <header class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-700">
+          Điều phối viên - SpeedyShip
+        </h2>
+        <div class="flex items-center space-x-3">
+          <span class="font-medium text-gray-700">Ngọc Trường</span>
+          <button
+            class="bg-red-500 px-3 py-1 rounded text-white hover:bg-red-600"
+          >
+            Đăng xuất
+          </button>
+        </div>
+      </header>
+
+      <!-- Nội dung trang con -->
+      <section id="content">
+        <!-- Trang con sẽ chèn ở đây -->
+      </section>
+    </main>
+  </body>
+</html>

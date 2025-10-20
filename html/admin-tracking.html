@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpeedyShip - Theo dõi tài xế</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex bg-gray-100 font-sans">
+    <aside class="w-64 bg-blue-700 text-white min-h-screen p-5">
+      <h1 class="text-2xl font-bold mb-6">🚚 SpeedyShip</h1>
+      <nav class="space-y-3">
+        <a
+          href="admin-dashboard.html"
+          class="block px-3 py-2 rounded hover:bg-blue-600"
+          >🏠 Bảng điều khiển</a
+        >
+        <a
+          href="admin-assignments.html"
+          class="block px-3 py-2 rounded hover:bg-blue-600"
+          >🗂️ Gán đơn</a
+        >
+        <a
+          href="admin-tracking.html"
+          class="block px-3 py-2 bg-blue-600 rounded"
+          >📍 Theo dõi tài xế</a
+        >
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-8">
+      <h2 class="text-3xl font-bold text-gray-700 mb-6">📍 Theo dõi tài xế</h2>
+
+      <section class="bg-white rounded shadow p-6">
+        <table class="w-full text-sm text-left border">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 border">Tài xế</th>
+              <th class="p-2 border">Phương tiện</th>
+              <th class="p-2 border">Đơn hiện tại</th>
+              <th class="p-2 border">Vị trí</th>
+              <th class="p-2 border">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">Trần Tài</td>
+              <td class="p-2 border">Xe máy - 70B-66666</td>
+              <td class="p-2 border">SP005</td>
+              <td class="p-2 border">Q.1, TP.HCM</td>
+              <td class="p-2 border text-green-600 font-medium">Đang giao</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">Lê Văn Lộc</td>
+              <td class="p-2 border">Xe tải - 59A-99999</td>
+              <td class="p-2 border text-gray-400 italic">Không có</td>
+              <td class="p-2 border">Kho trung tâm</td>
+              <td class="p-2 border text-gray-500">Rảnh</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

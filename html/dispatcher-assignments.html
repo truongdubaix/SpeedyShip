@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gán đơn hàng - Điều phối</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex bg-gray-100 font-sans">
+    <aside class="w-64 bg-orange-500 text-white min-h-screen p-5">
+      <h1 class="text-2xl font-bold mb-6">🚛 SpeedyShip</h1>
+      <nav class="space-y-3">
+        <a
+          href="dispatcher-dashboard.html"
+          class="block px-3 py-2 rounded hover:bg-orange-600"
+          >🏠 Tổng quan</a
+        >
+        <a
+          href="dispatcher-assignments.html"
+          class="block px-3 py-2 bg-orange-600 rounded"
+          >🗂️ Gán đơn</a
+        >
+        <a
+          href="dispatcher-tracking.html"
+          class="block px-3 py-2 rounded hover:bg-orange-600"
+          >📍 Theo dõi</a
+        >
+        <a
+          href="dispatcher-shipments.html"
+          class="block px-3 py-2 rounded hover:bg-orange-600"
+          >📦 Đơn hàng</a
+        >
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-8">
+      <header class="flex justify-between items-center mb-6">
+        <h2 class="text-3xl font-bold text-gray-700">🗂️ Gán đơn hàng</h2>
+        <button
+          class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
+        >
+          Làm mới
+        </button>
+      </header>
+
+      <section class="bg-white rounded shadow p-6">
+        <table class="w-full text-sm text-left border">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 border">Mã đơn</th>
+              <th class="p-2 border">Khách hàng</th>
+              <th class="p-2 border">Địa chỉ giao</th>
+              <th class="p-2 border">Trạng thái</th>
+              <th class="p-2 border">Tài xế</th>
+              <th class="p-2 border">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">SP007</td>
+              <td class="p-2 border">Phạm Minh</td>
+              <td class="p-2 border">45 Nguyễn Huệ, Q.1</td>
+              <td class="p-2 border text-yellow-600">Chờ xử lý</td>
+              <td class="p-2 border italic text-gray-400">Chưa gán</td>
+              <td class="p-2 border">
+                <button
+                  class="bg-blue-500 text-white px-3 py-1 rounded text-xs"
+                >
+                  Gán tài xế
+                </button>
+              </td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">SP008</td>
+              <td class="p-2 border">Lê Bình</td>
+              <td class="p-2 border">12 CMT8, Q.10</td>
+              <td class="p-2 border text-blue-600">Đang giao</td>
+              <td class="p-2 border">Trần Tài</td>
+              <td class="p-2 border">
+                <button
+                  class="bg-yellow-500 text-white px-3 py-1 rounded text-xs"
+                >
+                  Đổi tài xế
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>
