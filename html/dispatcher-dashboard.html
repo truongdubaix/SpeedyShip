@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tổng quan - Điều phối</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex bg-gray-100 font-sans">
+    <aside class="w-64 bg-orange-500 text-white min-h-screen p-5">
+      <h1 class="text-2xl font-bold mb-6">🚛 SpeedyShip</h1>
+      <nav class="space-y-3">
+        <a
+          href="dispatcher-dashboard.html"
+          class="block px-3 py-2 bg-orange-600 rounded"
+          >🏠 Tổng quan</a
+        >
+        <a
+          href="dispatcher-assignments.html"
+          class="block px-3 py-2 rounded hover:bg-orange-600"
+          >🗂️ Gán đơn</a
+        >
+        <a
+          href="dispatcher-tracking.html"
+          class="block px-3 py-2 rounded hover:bg-orange-600"
+          >📍 Theo dõi</a
+        >
+        <a
+          href="dispatcher-shipments.html"
+          class="block px-3 py-2 rounded hover:bg-orange-600"
+          >📦 Đơn hàng</a
+        >
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-8">
+      <h2 class="text-3xl font-bold text-gray-700 mb-8">
+        🏠 Tổng quan điều phối
+      </h2>
+
+      <div class="grid grid-cols-3 gap-6 mb-10">
+        <div class="bg-white p-6 rounded shadow text-center">
+          <h3 class="text-gray-500">Đơn chờ xử lý</h3>
+          <p class="text-3xl font-bold text-orange-600 mt-2">12</p>
+        </div>
+        <div class="bg-white p-6 rounded shadow text-center">
+          <h3 class="text-gray-500">Đơn đang giao</h3>
+          <p class="text-3xl font-bold text-blue-600 mt-2">8</p>
+        </div>
+        <div class="bg-white p-6 rounded shadow text-center">
+          <h3 class="text-gray-500">Tài xế hoạt động</h3>
+          <p class="text-3xl font-bold text-green-600 mt-2">6</p>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

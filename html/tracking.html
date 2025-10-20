@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tra cứu vận đơn - SpeedyShip</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <style>
+      body {
+        scroll-behavior: smooth;
+      }
+      .status-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+      }
+      .active {
+        background-color: #2563eb;
+      }
+      .done {
+        background-color: #22c55e;
+      }
+      .pending {
+        background-color: #eab308;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 font-sans text-gray-800">
+    <!-- Header -->
+    <nav class="bg-white shadow fixed w-full z-50">
+      <div
+        class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4"
+      >
+        <h1 class="text-2xl font-bold text-blue-600">🚚 SpeedyShip</h1>
+        <a href="index.html" class="text-sm text-gray-600 hover:text-blue-600"
+          >← Trang chủ</a
+        >
+      </div>
+    </nav>
+
+    <!-- Search section -->
+    <section
+      class="pt-28 pb-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white text-center"
+    >
+      <h2 class="text-3xl font-bold mb-4" data-aos="fade-down">
+        Tra cứu trạng thái vận đơn
+      </h2>
+      <p class="mb-6 text-blue-100" data-aos="fade-up">
+        Nhập mã đơn hàng để xem thông tin chi tiết và hành trình giao hàng
+      </p>
+
+      <div
+        class="flex flex-col md:flex-row items-center justify-center gap-3 max-w-2xl mx-auto px-4"
+        data-aos="zoom-in"
+      >
+        <input
+          id="trackingInput"
+          type="text"
+          placeholder="Nhập mã vận đơn (VD: SP123456)"
+          class="w-full md:w-3/4 p-3 rounded text-gray-700 focus:outline-none"
+        />
+        <button
+          onclick="searchTracking()"
+          class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded font-semibold transition"
+        >
+          Tra cứu
+        </button>
+      </div>
+    </section>
+
+    <!-- Tracking result -->
+    <section
+      id="result"
+      class="max-w-5xl mx-auto py-16 px-6 hidden"
+      data-aos="fade-up"
+    >
+      <!-- Summary card -->
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-10">
+        <h3 class="text-2xl font-bold text-gray-700 mb-4">
+          📦 Thông tin đơn hàng
+        </h3>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <p><strong>Mã đơn:</strong> <span id="code">SP123456</span></p>
+            <p><strong>Người gửi:</strong> Phạm Minh</p>
+            <p><strong>Người nhận:</strong> Nguyễn Lan</p>
+            <p><strong>Số điện thoại:</strong> 0912 345 678</p>
+          </div>
+          <div>
+            <p>
+              <strong>Trạng thái:</strong>
+              <span class="text-blue-600 font-semibold" id="status"
+                >Đang giao hàng</span
+              >
+            </p>
+            <p><strong>COD:</strong> ₫120,000</p>
+            <p><strong>Ngày tạo:</strong> 2025-10-20</p>
+            <p><strong>Phương thức thanh toán:</strong> COD</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h3 class="text-2xl font-bold text-gray-700 mb-6">
+          📍 Hành trình đơn hàng
+        </h3>
+        <ol class="relative border-l-2 border-blue-200 ml-6">
+          <li class="mb-8 ml-6">
+            <span class="absolute -left-[11px] status-dot done"></span>
+            <p class="font-semibold text-green-600">Đã tạo đơn hàng</p>
+            <p class="text-sm text-gray-500">
+              2025-10-19 08:30 - Hệ thống ghi nhận đơn mới
+            </p>
+          </li>
+          <li class="mb-8 ml-6">
+            <span class="absolute -left-[11px] status-dot done"></span>
+            <p class="font-semibold text-green-600">Đã lấy hàng</p>
+            <p class="text-sm text-gray-500">
+              2025-10-19 10:20 - Tài xế Trần Tài đã lấy hàng
+            </p>
+          </li>
+          <li class="mb-8 ml-6">
+            <span class="absolute -left-[11px] status-dot active"></span>
+            <p class="font-semibold text-blue-600">Đang giao hàng</p>
+            <p class="text-sm text-gray-500">
+              2025-10-20 09:00 - Đơn hàng đang được giao tại Quận 1, TP.HCM
+            </p>
+          </li>
+          <li class="ml-6">
+            <span class="absolute -left-[11px] status-dot pending"></span>
+            <p class="font-semibold text-gray-500">Chờ xác nhận hoàn tất</p>
+            <p class="text-sm text-gray-400">Dự kiến giao: 2025-10-20 11:30</p>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Actions -->
+      <div class="text-center mt-10">
+        <a
+          href="customer-create-shipment.html"
+          class="bg-blue-600 text-white px-5 py-3 rounded hover:bg-blue-700 transition"
+          >Tạo đơn mới</a
+        >
+        <a
+          href="contact.html"
+          class="ml-4 border border-blue-600 text-blue-600 px-5 py-3 rounded hover:bg-blue-50 transition"
+          >Liên hệ hỗ trợ</a
+        >
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-20">
+      <div class="max-w-5xl mx-auto text-center">
+        <p class="text-gray-400 text-sm">
+          © 2025 SpeedyShip. Mọi quyền được bảo lưu.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      AOS.init({ duration: 800, once: true });
+
+      // Demo JS logic (mock search)
+      function searchTracking() {
+        const input = document.getElementById("trackingInput").value.trim();
+        if (input.length < 3) {
+          alert("Vui lòng nhập mã vận đơn hợp lệ!");
+          return;
+        }
+        document.getElementById("result").classList.remove("hidden");
+        document.getElementById("code").innerText = input;
+        window.scrollTo({
+          top: document.getElementById("result").offsetTop - 100,
+          behavior: "smooth",
+        });
+      }
+    </script>
+  </body>
+</html>

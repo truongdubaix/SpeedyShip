@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liên hệ - SpeedyShip</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+
+  <body class="bg-gray-50 font-sans text-gray-800">
+    <nav class="bg-white shadow fixed w-full z-50">
+      <div
+        class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4"
+      >
+        <h1 class="text-2xl font-bold text-blue-600">🚚 SpeedyShip</h1>
+        <a href="index.html" class="text-sm text-gray-600 hover:text-blue-600"
+          >← Trang chủ</a
+        >
+      </div>
+    </nav>
+
+    <section
+      class="pt-28 pb-12 bg-gradient-to-r from-blue-600 to-blue-400 text-white text-center"
+    >
+      <h2 class="text-4xl font-bold mb-4" data-aos="fade-down">
+        Liên hệ & Hỗ trợ khách hàng
+      </h2>
+      <p class="text-blue-100 max-w-2xl mx-auto" data-aos="fade-up">
+        SpeedyShip luôn sẵn sàng lắng nghe và hỗ trợ bạn 24/7.
+      </p>
+    </section>
+
+    <section class="max-w-6xl mx-auto py-16 px-6 grid md:grid-cols-2 gap-10">
+      <div data-aos="fade-right">
+        <h3 class="text-2xl font-bold mb-4">📍 Văn phòng chính</h3>
+        <p class="text-gray-600 mb-3">
+          123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh
+        </p>
+        <p class="text-gray-600 mb-3">Hotline: <strong>1900 888 999</strong></p>
+        <p class="text-gray-600 mb-3">Email: support@speedyship.com</p>
+        <iframe
+          src="https://www.google.com/maps?q=Nguyen+Van+Linh,+District+7,+Ho+Chi+Minh&output=embed"
+          width="100%"
+          height="300"
+          class="rounded-lg shadow mt-6"
+        ></iframe>
+      </div>
+
+      <div data-aos="fade-left">
+        <h3 class="text-2xl font-bold mb-4">✉️ Gửi yêu cầu hỗ trợ</h3>
+        <form class="space-y-4">
+          <input
+            type="text"
+            placeholder="Họ và tên"
+            class="w-full border p-3 rounded"
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email liên hệ"
+            class="w-full border p-3 rounded"
+            required
+          />
+          <textarea
+            rows="5"
+            placeholder="Nội dung yêu cầu..."
+            class="w-full border p-3 rounded"
+          ></textarea>
+          <button
+            class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition"
+          >
+            Gửi yêu cầu
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white text-center py-8">
+      <p class="text-gray-400 text-sm">
+        © 2025 SpeedyShip. All rights reserved.
+      </p>
+    </footer>
+
+    <script>
+      AOS.init({ duration: 800, once: true });
+    </script>
+  </body>
+</html>

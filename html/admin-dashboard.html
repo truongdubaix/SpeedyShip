@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpeedyShip - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="flex bg-gray-100 font-sans">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-blue-700 text-white min-h-screen p-5">
+      <h1 class="text-2xl font-bold mb-6">🚚 SpeedyShip</h1>
+      <nav class="space-y-3">
+        <a href="#" class="block px-3 py-2 rounded hover:bg-blue-600"
+          >📦 Quản lý đơn hàng</a
+        >
+        <a href="#" class="block px-3 py-2 rounded hover:bg-blue-600"
+          >🧑‍✈️ Quản lý tài xế</a
+        >
+        <a href="#" class="block px-3 py-2 rounded hover:bg-blue-600"
+          >👥 Khách hàng</a
+        >
+        <a href="#" class="block px-3 py-2 rounded hover:bg-blue-600"
+          >💰 Thanh toán</a
+        >
+        <a href="#" class="block px-3 py-2 rounded hover:bg-blue-600"
+          >⚙️ Cấu hình</a
+        >
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+      <!-- Header -->
+      <header class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-700">Bảng điều khiển</h2>
+        <div class="flex items-center space-x-4">
+          <span class="font-semibold text-gray-700">Admin</span>
+          <button
+            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+          >
+            Đăng xuất
+          </button>
+        </div>
+      </header>
+
+      <!-- Summary Cards -->
+      <section class="grid grid-cols-4 gap-6 mb-10">
+        <div class="bg-white shadow rounded p-5 text-center">
+          <h3 class="text-gray-500 text-sm">Tổng đơn hàng</h3>
+          <p class="text-2xl font-bold text-blue-600 mt-2">245</p>
+        </div>
+        <div class="bg-white shadow rounded p-5 text-center">
+          <h3 class="text-gray-500 text-sm">Tài xế hoạt động</h3>
+          <p class="text-2xl font-bold text-green-600 mt-2">58</p>
+        </div>
+        <div class="bg-white shadow rounded p-5 text-center">
+          <h3 class="text-gray-500 text-sm">Khách hàng mới</h3>
+          <p class="text-2xl font-bold text-purple-600 mt-2">34</p>
+        </div>
+        <div class="bg-white shadow rounded p-5 text-center">
+          <h3 class="text-gray-500 text-sm">Doanh thu (VND)</h3>
+          <p class="text-2xl font-bold text-orange-600 mt-2">₫120,500,000</p>
+        </div>
+      </section>
+
+      <!-- Chart -->
+      <section class="bg-white p-6 rounded shadow mb-10">
+        <h3 class="text-lg font-semibold mb-4 text-gray-700">
+          Thống kê doanh thu (7 ngày gần nhất)
+        </h3>
+        <canvas id="revenueChart" height="90"></canvas>
+      </section>
+
+      <!-- Recent Shipments Table -->
+      <section class="bg-white p-6 rounded shadow">
+        <h3 class="text-lg font-semibold mb-4 text-gray-700">
+          Đơn hàng gần đây
+        </h3>
+        <table class="w-full text-sm text-left border">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="p-2 border">Mã đơn</th>
+              <th class="p-2 border">Khách hàng</th>
+              <th class="p-2 border">Trạng thái</th>
+              <th class="p-2 border">COD (VND)</th>
+              <th class="p-2 border">Ngày tạo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">SP001</td>
+              <td class="p-2 border">Phạm An</td>
+              <td class="p-2 border text-blue-600 font-medium">Đang giao</td>
+              <td class="p-2 border">150,000</td>
+              <td class="p-2 border">2025-10-19</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">SP002</td>
+              <td class="p-2 border">Trần Tài</td>
+              <td class="p-2 border text-green-600 font-medium">Đã giao</td>
+              <td class="p-2 border">200,000</td>
+              <td class="p-2 border">2025-10-18</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">SP003</td>
+              <td class="p-2 border">Lê Bình</td>
+              <td class="p-2 border text-yellow-600 font-medium">Chờ xử lý</td>
+              <td class="p-2 border">0</td>
+              <td class="p-2 border">2025-10-18</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <script>
+      const ctx = document.getElementById("revenueChart");
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["T2", "T3", "T4", "T5", "T6", "T7", "CN"],
+          datasets: [
+            {
+              label: "Doanh thu (VND)",
+              data: [
+                12000000, 18000000, 10000000, 22000000, 15000000, 30000000,
+                25000000,
+              ],
+              borderColor: "rgb(37,99,235)",
+              backgroundColor: "rgba(37,99,235,0.2)",
+              tension: 0.3,
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          scales: { y: { beginAtZero: true } },
+        },
+      });
+    </script>
+  </body>
+</html>

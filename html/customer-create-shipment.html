@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tạo đơn hàng mới - SpeedyShip</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex bg-gray-100 font-sans">
+    <aside class="w-64 bg-blue-500 text-white min-h-screen p-5">
+      <h1 class="text-2xl font-bold mb-6">🚚 SpeedyShip</h1>
+      <nav class="space-y-3">
+        <a
+          href="customer-dashboard.html"
+          class="block px-3 py-2 rounded hover:bg-blue-600"
+          >🏠 Trang chủ</a
+        >
+        <a
+          href="customer-create-shipment.html"
+          class="block px-3 py-2 bg-blue-600 rounded"
+          >➕ Tạo đơn</a
+        >
+        <a
+          href="customer-track.html"
+          class="block px-3 py-2 rounded hover:bg-blue-600"
+          >🚚 Theo dõi</a
+        >
+        <a
+          href="customer-history.html"
+          class="block px-3 py-2 rounded hover:bg-blue-600"
+          >🕓 Lịch sử</a
+        >
+        <a
+          href="customer-profile.html"
+          class="block px-3 py-2 rounded hover:bg-blue-600"
+          >👤 Hồ sơ</a
+        >
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-8">
+      <h2 class="text-3xl font-bold text-gray-700 mb-6">➕ Tạo đơn hàng mới</h2>
+      <section class="bg-white p-6 rounded shadow w-3/4">
+        <form class="space-y-4">
+          <div>
+            <label class="block text-gray-600 mb-1">Tên người nhận</label>
+            <input
+              type="text"
+              class="w-full border p-2 rounded"
+              placeholder="Nguyễn Văn A"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-600 mb-1"
+              >Số điện thoại người nhận</label
+            >
+            <input
+              type="text"
+              class="w-full border p-2 rounded"
+              placeholder="090xxxxxxx"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-600 mb-1">Địa chỉ giao hàng</label>
+            <input
+              type="text"
+              class="w-full border p-2 rounded"
+              placeholder="Số nhà, đường, quận..."
+            />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-gray-600 mb-1">Trọng lượng (kg)</label>
+              <input
+                type="number"
+                class="w-full border p-2 rounded"
+                placeholder="1.5"
+              />
+            </div>
+            <div>
+              <label class="block text-gray-600 mb-1">COD (VND)</label>
+              <input
+                type="number"
+                class="w-full border p-2 rounded"
+                placeholder="100000"
+              />
+            </div>
+          </div>
+          <button
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Tạo đơn
+          </button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
