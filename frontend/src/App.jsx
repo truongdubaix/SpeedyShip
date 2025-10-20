@@ -26,6 +26,7 @@ import AdminShipments from "./pages/admin/AdminShipments.jsx";
 import AdminDrivers from "./pages/admin/AdminDrivers.jsx";
 import AdminCustomers from "./pages/admin/AdminCustomers.jsx";
 import AdminPayments from "./pages/admin/AdminPayments.jsx";
+import AdminUsers from "./pages/admin/AdminUsers.jsx";
 
 // Dispatcher pages
 import DispatcherDashboard from "./pages/dispatcher/DispatcherDashboard.jsx";
@@ -88,6 +89,7 @@ export default function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="shipments" element={<AdminShipments />} />
           <Route path="drivers" element={<AdminDrivers />} />
+          <Route path="users" element={<AdminUsers />} />
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="payments" element={<AdminPayments />} />
         </Route>
