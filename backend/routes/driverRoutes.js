@@ -1,18 +1,18 @@
-import { Router } from "express";
-import { auth } from "../middleware/authMiddleware.js";
-import { hasRole } from "../middleware/roleMiddleware.js";
+import express from "express";
 import {
-  listDrivers,
+  getAllDrivers,
   createDriver,
   updateDriver,
-  removeDriver,
+  deleteDriver,
+  updateDriverStatus,
 } from "../controllers/driverController.js";
 
-const router = Router();
+const router = express.Router();
 
-router.get("/", auth, hasRole("admin", "dispatcher"), listDrivers);
-router.post("/", auth, hasRole("admin"), createDriver);
-router.patch("/:id", auth, hasRole("admin"), updateDriver);
-router.delete("/:id", auth, hasRole("admin"), removeDriver);
+router.get("/", getAllDrivers);
+router.post("/", createDriver);
+router.put("/:id", updateDriver);
+router.delete("/:id", deleteDriver);
+router.patch("/:id/status", updateDriverStatus);
 
 export default router;
