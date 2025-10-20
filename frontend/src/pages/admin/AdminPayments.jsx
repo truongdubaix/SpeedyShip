@@ -1,92 +1,116 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import API from "../../services/api";
+import toast from "react-hot-toast";
 
 export default function AdminPayments() {
-  const [payments, setPayments] = useState([
-    {
-      id: 1,
-      shipment: "SP1001",
-      method: "MOMO",
-      amount: 120000,
-      status: "Đã thanh toán",
-      date: "2025-10-19 09:30",
-    },
-    {
-      id: 2,
-      shipment: "SP1002",
-      method: "COD",
-      amount: 90000,
-      status: "Chờ thanh toán",
-      date: "2025-10-19 12:10",
-    },
-    {
-      id: 3,
-      shipment: "SP1003",
-      method: "VNPAY",
-      amount: 150000,
-      status: "Hoàn tiền",
-      date: "2025-10-19 14:00",
-    },
-  ]);
+  const [payments, setPayments] = useState([]);
 
-  const handleStatusChange = (id, newStatus) => {
-    setPayments((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
-    );
+  const fetchPayments = async () => {
+    try {
+      const res = await API.get("/payments");
+      setPayments(res.data);
+    } catch {
+      toast.error("❌ Lỗi khi tải danh sách thanh toán");
+    }
   };
 
-  const statusColors = {
-    "Đã thanh toán": "bg-green-500",
-    "Chờ thanh toán": "bg-yellow-500",
-    "Hoàn tiền": "bg-red-500",
+  useEffect(() => {
+    fetchPayments();
+  }, []);
+
+  const handleUpdate = async (id, status) => {
+    try {
+      await API.put(`/payments/${id}`, { status });
+      toast.success("✅ Đã cập nhật trạng thái");
+      fetchPayments();
+    } catch {
+      toast.error("❌ Cập nhật thất bại");
+    }
   };
 
-  const statusOptions = ["Đã thanh toán", "Chờ thanh toán", "Hoàn tiền"];
+  const handleDelete = async (id) => {
+    if (confirm("Bạn có chắc muốn xóa thanh toán này không?")) {
+      await API.delete(`/payments/${id}`);
+      toast.success("🗑️ Đã xóa thanh toán");
+      fetchPayments();
+    }
+  };
 
   return (
-    <div className="bg-white p-8 rounded-xl shadow">
-      <h1 className="text-2xl font-bold text-gray-700 mb-6">
-        💰 Quản lý thanh toán
+    <div className="p-6 space-y-4">
+      <h1 className="text-2xl font-bold text-gray-700">
+        💳 Quản lý thanh toán
       </h1>
 
-      <table className="w-full text-sm text-left border-collapse">
-        <thead className="bg-blue-600 text-white">
-          <tr>
-            <th className="p-3 rounded-l-md">Mã đơn</th>
-            <th className="p-3">Phương thức</th>
-            <th className="p-3">Số tiền</th>
-            <th className="p-3">Trạng thái</th>
-            <th className="p-3 rounded-r-md">Ngày giao dịch</th>
-          </tr>
-        </thead>
-        <tbody>
-          {payments.map((p) => (
-            <tr
-              key={p.id}
-              className="border-b hover:bg-blue-50 transition text-gray-700"
-            >
-              <td className="p-3 font-semibold">{p.shipment}</td>
-              <td className="p-3">{p.method}</td>
-              <td className="p-3">₫{p.amount.toLocaleString()}</td>
-              <td className="p-3">
-                <select
-                  value={p.status}
-                  onChange={(e) => handleStatusChange(p.id, e.target.value)}
-                  className={`px-3 py-1 text-xs rounded-full text-white ${
-                    statusColors[p.status] || "bg-gray-500"
-                  }`}
-                >
-                  {statusOptions.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td className="p-3 text-gray-500">{p.date}</td>
+      <div className="overflow-x-auto bg-white rounded-lg shadow">
+        <table className="w-full border-collapse border border-gray-200 text-sm">
+          <thead className="bg-blue-600 text-white">
+            <tr>
+              <th className="p-3">Mã vận đơn</th>
+              <th className="p-3">Khách hàng</th>
+              <th className="p-3">Số tiền</th>
+              <th className="p-3">Phương thức</th>
+              <th className="p-3">Trạng thái</th>
+              <th className="p-3">Ngày tạo</th>
+              <th className="p-3">Thao tác</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {payments.map((p) => (
+              <tr key={p.id} className="border-b hover:bg-gray-50">
+                <td className="p-3">{p.tracking_code}</td>
+                <td className="p-3">{p.customer_name}</td>
+                <td className="p-3">{p.amount.toLocaleString()} ₫</td>
+                <td className="p-3">
+                  {p.method === "COD"
+                    ? "Thanh toán khi nhận hàng"
+                    : p.method === "Momo"
+                    ? "Ví Momo"
+                    : "Chuyển khoản"}
+                </td>
+                <td className="p-3">
+                  <select
+                    value={p.status}
+                    onChange={(e) => handleUpdate(p.id, e.target.value)}
+                    className={`border rounded px-2 py-1 ${
+                      p.status === "completed"
+                        ? "text-green-600"
+                        : p.status === "pending"
+                        ? "text-yellow-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    <option value="pending">Đang xử lý</option>
+                    <option value="completed">Hoàn tất</option>
+                    <option value="failed">Thất bại</option>
+                  </select>
+                </td>
+                <td className="p-3 text-gray-500">
+                  {new Date(p.created_at).toLocaleString("vi-VN")}
+                </td>
+                <td className="p-3 text-center">
+                  <button
+                    onClick={() => handleDelete(p.id)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                  >
+                    Xóa
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {payments.length === 0 && (
+              <tr>
+                <td
+                  colSpan="7"
+                  className="p-6 text-center text-gray-500 italic"
+                >
+                  Không có dữ liệu thanh toán
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
