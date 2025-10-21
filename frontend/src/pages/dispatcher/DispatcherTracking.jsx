@@ -1,88 +1,173 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import API from "../../services/api";
 
 export default function DispatcherTracking() {
-  const [selected, setSelected] = useState(null);
+  const [unassigned, setUnassigned] = useState([]);
+  const [drivers, setDrivers] = useState([]);
+  const [assignments, setAssignments] = useState([]);
+  const [selected, setSelected] = useState({ shipment_id: "", driver_id: "" });
 
-  const shipments = [
-    {
-      id: "SP2101",
-      driver: "Nguyễn Tài",
-      status: "Đang giao",
-      location: "Q5, TP.HCM",
-    },
-    {
-      id: "SP2102",
-      driver: "Phạm Long",
-      status: "Đang lấy hàng",
-      location: "Q1, TP.HCM",
-    },
-    {
-      id: "SP2103",
-      driver: "Trần Huy",
-      status: "Hoàn tất",
-      location: "Q9, TP.HCM",
-    },
-  ];
+  // ================== LẤY DỮ LIỆU ==================
+  const fetchData = async () => {
+    try {
+      const [shipRes, driverRes, assignRes] = await Promise.all([
+        API.get("/dispatcher/shipments/unassigned"),
+        API.get("/dispatcher/drivers"),
+        API.get("/dispatcher/assignments"),
+      ]);
+      setUnassigned(shipRes.data);
+      setDrivers(driverRes.data);
+      setAssignments(assignRes.data);
+    } catch (err) {
+      console.error("❌ Lỗi load dữ liệu:", err);
+      toast.error("Không thể tải dữ liệu điều phối!");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // ================== PHÂN CÔNG ==================
+  const handleAssign = async () => {
+    if (!selected.shipment_id || !selected.driver_id) {
+      toast.error("Vui lòng chọn đơn hàng và tài xế!");
+      return;
+    }
+    try {
+      await API.post("/dispatcher/assign", selected);
+      toast.success("✅ Phân công thành công!");
+      setSelected({ shipment_id: "", driver_id: "" });
+      fetchData();
+    } catch (err) {
+      console.error("❌ assign error:", err);
+      toast.error("Phân công thất bại!");
+    }
+  };
+
+  // ================== CẬP NHẬT TRẠNG THÁI ==================
+  const handleStatusUpdate = async (id, status) => {
+    try {
+      await API.patch(`/dispatcher/assignments/${id}/status`, { status });
+      toast.success("🔄 Cập nhật trạng thái!");
+      fetchData();
+    } catch (err) {
+      console.error("❌ updateStatus error:", err);
+      toast.error("Lỗi khi cập nhật!");
+    }
+  };
 
   return (
-    <div className="bg-white p-8 rounded-xl shadow space-y-6">
-      <h1 className="text-2xl font-bold text-gray-700">📍 Theo dõi đơn hàng</h1>
+    <div className="p-6 space-y-8">
+      <h1 className="text-3xl font-bold text-blue-700 mb-6">
+        🚛 Trang Điều Phối Viên
+      </h1>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div>
-          <h2 className="font-semibold text-gray-700 mb-3">
-            Danh sách đơn hàng
-          </h2>
-          <ul className="divide-y border rounded-lg">
-            {shipments.map((s) => (
-              <li
-                key={s.id}
-                className={`p-4 cursor-pointer hover:bg-blue-50 ${
-                  selected?.id === s.id ? "bg-blue-100" : ""
-                }`}
-                onClick={() => setSelected(s)}
-              >
-                <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700">{s.id}</span>
-                  <span
-                    className={`px-2 py-1 rounded text-white text-xs ${
-                      s.status === "Hoàn tất"
-                        ? "bg-green-500"
-                        : s.status === "Đang giao"
-                        ? "bg-blue-500"
-                        : "bg-yellow-500"
-                    }`}
-                  >
-                    {s.status}
-                  </span>
-                </div>
-                <p className="text-gray-500 text-sm mt-1">Tài xế: {s.driver}</p>
-              </li>
+      {/* PHÂN CÔNG ĐƠN HÀNG */}
+      <div className="bg-white p-5 rounded-lg shadow space-y-3">
+        <h2 className="text-xl font-semibold text-gray-700">
+          ➕ Phân công đơn hàng
+        </h2>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <select
+            value={selected.shipment_id}
+            onChange={(e) =>
+              setSelected({ ...selected, shipment_id: e.target.value })
+            }
+            className="border p-2 rounded w-full sm:w-1/2"
+          >
+            <option value="">Chọn đơn hàng...</option>
+            {unassigned.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.tracking_code} - {s.sender_name} ➜ {s.receiver_name}
+              </option>
             ))}
-          </ul>
-        </div>
+          </select>
 
-        <div>
-          <h2 className="font-semibold text-gray-700 mb-3">Vị trí hiện tại</h2>
-          {selected ? (
-            <div className="border rounded-lg p-6 text-gray-700 bg-blue-50 shadow-inner">
-              <p>
-                <b>Mã đơn:</b> {selected.id}
-              </p>
-              <p>
-                <b>Tài xế:</b> {selected.driver}
-              </p>
-              <p>
-                <b>Trạng thái:</b> {selected.status}
-              </p>
-              <p>
-                <b>Vị trí hiện tại:</b> {selected.location}
-              </p>
-              <div className="mt-4 border h-64 bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Map_example_blank.svg/1200px-Map_example_blank.svg.png')] bg-cover bg-center rounded-lg shadow"></div>
-            </div>
-          ) : (
-            <p className="text-gray-500">Chọn 1 đơn để xem chi tiết vị trí.</p>
-          )}
+          <select
+            value={selected.driver_id}
+            onChange={(e) =>
+              setSelected({ ...selected, driver_id: e.target.value })
+            }
+            className="border p-2 rounded w-full sm:w-1/2"
+          >
+            <option value="">Chọn tài xế...</option>
+            {drivers.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name} ({d.vehicle_type})
+              </option>
+            ))}
+          </select>
+
+          <button
+            onClick={handleAssign}
+            className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition"
+          >
+            🚀 Phân công
+          </button>
+        </div>
+      </div>
+
+      {/* DANH SÁCH ĐƠN ĐANG GIAO */}
+      <div className="bg-white p-5 rounded-lg shadow space-y-3">
+        <h2 className="text-xl font-semibold text-gray-700">
+          📦 Danh sách đơn hàng đang theo dõi
+        </h2>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border border-gray-200">
+            <thead className="bg-blue-600 text-white">
+              <tr>
+                <th className="p-2">Mã đơn</th>
+                <th className="p-2">Người gửi</th>
+                <th className="p-2">Người nhận</th>
+                <th className="p-2">Tài xế</th>
+                <th className="p-2">Phương tiện</th>
+                <th className="p-2">Trạng thái</th>
+                <th className="p-2">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              {assignments.length ? (
+                assignments.map((a) => (
+                  <tr key={a.id} className="border-b hover:bg-blue-50">
+                    <td className="p-2 font-semibold text-blue-600">
+                      {a.tracking_code}
+                    </td>
+                    <td className="p-2">{a.sender_name || "-"}</td>
+                    <td className="p-2">{a.receiver_name || "-"}</td>
+                    <td className="p-2">{a.driver_name}</td>
+                    <td className="p-2">{a.vehicle_type}</td>
+                    <td className="p-2 capitalize">
+                      {a.assignment_status || "chưa có"}
+                    </td>
+                    <td className="p-2">
+                      <select
+                        onChange={(e) =>
+                          handleStatusUpdate(a.id, e.target.value)
+                        }
+                        defaultValue=""
+                        className="border rounded px-2 py-1"
+                      >
+                        <option value="">Cập nhật...</option>
+                        <option value="picking">Đang lấy hàng</option>
+                        <option value="delivering">Đang giao hàng</option>
+                        <option value="completed">Hoàn tất</option>
+                        <option value="failed">Thất bại</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center p-4 text-gray-500">
+                    Không có đơn nào được phân công.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
