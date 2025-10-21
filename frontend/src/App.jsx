@@ -32,6 +32,7 @@ import AdminUsers from "./pages/admin/AdminUsers.jsx";
 import DispatcherDashboard from "./pages/dispatcher/DispatcherDashboard.jsx";
 import DispatcherAssignments from "./pages/dispatcher/DispatcherAssignments.jsx";
 import DispatcherTracking from "./pages/dispatcher/DispatcherTracking.jsx";
+import DispatcherTrackingDetail from "./pages/dispatcher/DispatcherTrackingDetail";
 
 // Driver pages
 import DriverDashboard from "./pages/driver/DriverDashboard.jsx";
@@ -106,6 +107,10 @@ export default function App() {
           <Route index element={<DispatcherDashboard />} />
           <Route path="assignments" element={<DispatcherAssignments />} />
           <Route path="tracking" element={<DispatcherTracking />} />
+          <Route
+            path="/dispatcher/tracking/:id"
+            element={<DispatcherTrackingDetail />}
+          />
         </Route>
 
         {/* 🚚 Tài xế */}

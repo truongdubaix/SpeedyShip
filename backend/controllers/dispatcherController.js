@@ -197,3 +197,72 @@ export const reassignDriver = async (req, res) => {
     res.status(500).json({ message: "Lỗi server khi đổi tài xế" });
   }
 };
+export const getDispatcherDashboard = async (_req, res) => {
+  try {
+    // 1️⃣ Đơn hàng theo trạng thái
+    const [shipmentStats] = await db.query(`
+      SELECT LOWER(TRIM(status)) AS status, COUNT(*) AS count
+      FROM shipments
+      GROUP BY LOWER(TRIM(status))
+    `);
+
+    // 2️⃣ Tài xế theo trạng thái
+    const [driverStats] = await db.query(`
+      SELECT LOWER(TRIM(status)) AS status, COUNT(*) AS count
+      FROM drivers
+      GROUP BY LOWER(TRIM(status))
+    `);
+
+    // 3️⃣ Doanh thu theo tháng (đã fix lỗi only_full_group_by)
+    const [revenueStats] = await db.query(`
+      SELECT 
+        DATE_FORMAT(MIN(created_at), '%b %Y') AS month,
+        SUM(amount) AS total
+      FROM payments
+      WHERE status = 'completed'
+      GROUP BY YEAR(created_at), MONTH(created_at)
+      ORDER BY YEAR(created_at), MONTH(created_at)
+    `);
+
+    // 4️⃣ Top tài xế giao nhiều đơn
+    const [topDrivers] = await db.query(`
+      SELECT d.name, COUNT(a.id) AS deliveries
+      FROM drivers d
+      LEFT JOIN assignments a ON d.id = a.driver_id
+      GROUP BY d.id, d.name
+      ORDER BY deliveries DESC
+      LIMIT 5
+    `);
+
+    res.json({
+      shipments: shipmentStats,
+      drivers: driverStats,
+      revenue: revenueStats,
+      topDrivers,
+    });
+  } catch (err) {
+    console.error("❌ Lỗi dispatcher dashboard:", err);
+    res.status(500).json({ message: "Lỗi server khi lấy dữ liệu dashboard" });
+  }
+};
+export const getShipmentDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [[shipment]] = await db.query(
+      `SELECT s.*, d.name AS driver_name, d.latitude, d.longitude
+       FROM shipments s
+       LEFT JOIN assignments a ON a.shipment_id = s.id
+       LEFT JOIN drivers d ON d.id = a.driver_id
+       WHERE s.id = ?`,
+      [id]
+    );
+
+    if (!shipment)
+      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+
+    res.json(shipment);
+  } catch (err) {
+    console.error("❌ Lỗi getShipmentDetail:", err);
+    res.status(500).json({ message: "Lỗi server khi lấy chi tiết đơn hàng" });
+  }
+};
