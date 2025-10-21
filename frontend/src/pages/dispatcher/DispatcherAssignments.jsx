@@ -1,29 +1,26 @@
-import { useEffect, useMemo, useState } from "react";
-import API from "../../services/api";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import API from "../../services/api";
 
 export default function DispatcherAssignments() {
+  const [assignments, setAssignments] = useState([]);
   const [unassigned, setUnassigned] = useState([]);
   const [drivers, setDrivers] = useState([]);
-  const [assignments, setAssignments] = useState([]);
-  const [selectedDriver, setSelectedDriver] = useState({});
-  const [search, setSearch] = useState("");
-  const [statusUpdate, setStatusUpdate] = useState({}); // {assignmentId: 'delivering'}
-  const [locationUpdate, setLocationUpdate] = useState({}); // {assignmentId: 'Quận 5 - HCM'}
+  const navigate = useNavigate();
 
   const fetchAll = async () => {
     try {
-      const [u, d, a] = await Promise.all([
+      const [a1, a2, a3] = await Promise.all([
+        API.get("/dispatcher/assignments"),
         API.get("/dispatcher/shipments/unassigned"),
         API.get("/dispatcher/drivers"),
-        API.get("/dispatcher/assignments?activeOnly=true"),
       ]);
-      setUnassigned(u.data);
-      setDrivers(d.data);
-      setAssignments(a.data);
+      setAssignments(a1.data);
+      setUnassigned(a2.data);
+      setDrivers(a3.data);
     } catch (err) {
-      console.error(err);
-      toast.error("Không tải được dữ liệu điều phối");
+      console.error("❌ Lỗi khi tải dữ liệu:", err);
     }
   };
 
@@ -31,267 +28,148 @@ export default function DispatcherAssignments() {
     fetchAll();
   }, []);
 
-  const filteredUnassigned = useMemo(() => {
-    const kw = search.toLowerCase();
-    return unassigned.filter(
-      (s) =>
-        (s.tracking_code || "").toLowerCase().includes(kw) ||
-        (s.sender_name || "").toLowerCase().includes(kw) ||
-        (s.receiver_name || "").toLowerCase().includes(kw) ||
-        (s.delivery_address || "").toLowerCase().includes(kw)
-    );
-  }, [search, unassigned]);
-
-  const handleAssign = async (shipmentId) => {
-    const driverId = selectedDriver[shipmentId];
-    if (!driverId) return toast.error("Chọn tài xế trước khi phân công");
+  const handleAssign = async (shipment_id, driver_id) => {
     try {
-      await API.post("/dispatcher/assign", {
-        shipment_id: shipmentId,
-        driver_id: driverId,
-      });
-      toast.success("✅ Đã phân công tài xế");
-      // reload
-      setSelectedDriver((prev) => ({ ...prev, [shipmentId]: "" }));
+      await API.post("/dispatcher/assign", { shipment_id, driver_id });
+      toast.success("✅ Đã phân công tài xế!");
       fetchAll();
     } catch {
-      toast.error("❌ Lỗi khi phân công");
+      toast.error("❌ Phân công thất bại!");
     }
   };
 
-  const handleStatusChange = (assignmentId, newStatus) => {
-    setStatusUpdate((prev) => ({ ...prev, [assignmentId]: newStatus }));
-  };
-
-  const handleUpdateStatus = async (assignmentId) => {
-    const status = statusUpdate[assignmentId];
-    const current_location = locationUpdate[assignmentId] || "";
-    if (!status) return toast.error("Chọn trạng thái cần cập nhật");
+  const handleStatusChange = async (id, newStatus) => {
     try {
-      await API.patch(`/dispatcher/assignments/${assignmentId}/status`, {
-        status,
-        current_location,
-      });
-      toast.success("🔄 Đã cập nhật trạng thái");
+      await API.put(`/dispatcher/assignments/${id}`, { status: newStatus });
+      toast.success("🔄 Cập nhật trạng thái thành công!");
       fetchAll();
     } catch {
-      toast.error("❌ Cập nhật thất bại");
-    }
-  };
-
-  const handleReassign = async (assignmentId, driverId) => {
-    if (!driverId) return toast.error("Chọn tài xế");
-    try {
-      await API.patch(`/dispatcher/assignments/${assignmentId}/reassign`, {
-        driver_id: driverId,
-      });
-      toast.success("🔁 Đã đổi tài xế");
-      fetchAll();
-    } catch {
-      toast.error("❌ Đổi tài xế thất bại");
+      toast.error("❌ Lỗi cập nhật trạng thái!");
     }
   };
 
   return (
-    <div className="p-6 space-y-10">
-      <h1 className="text-2xl font-bold text-gray-700">
-        🧭 Điều phối phân công
+    <div className="p-6 space-y-8">
+      <h1 className="text-3xl font-bold text-blue-700">
+        🚚 Quản lý phân công tài xế
       </h1>
 
-      {/* Khối 1: Đơn chưa phân công */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
-          <h2 className="text-lg font-semibold text-gray-700">
-            📨 Đơn chưa phân công
-          </h2>
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="border rounded-lg px-3 py-2 w-full md:w-80"
-            placeholder="Tìm: mã vận đơn / người gửi / người nhận / địa chỉ"
-          />
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border border-gray-200">
-            <thead className="bg-blue-600 text-white">
-              <tr>
-                <th className="p-3">Mã vận đơn</th>
-                <th className="p-3">Người gửi</th>
-                <th className="p-3">Người nhận</th>
-                <th className="p-3">Nơi lấy</th>
-                <th className="p-3">Nơi giao</th>
-                <th className="p-3 text-center">Chọn tài xế</th>
-                <th className="p-3 text-center">Phân công</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUnassigned.length ? (
-                filteredUnassigned.map((s) => (
-                  <tr key={s.id} className="border-b hover:bg-blue-50">
-                    <td className="p-3 font-semibold text-blue-600">
-                      {s.tracking_code}
-                    </td>
-                    <td className="p-3">
-                      <div className="font-medium">{s.sender_name}</div>
-                      <div className="text-gray-500 text-xs">
-                        {s.sender_phone}
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <div className="font-medium">{s.receiver_name}</div>
-                      <div className="text-gray-500 text-xs">
-                        {s.receiver_phone}
-                      </div>
-                    </td>
-                    <td className="p-3">{s.pickup_address}</td>
-                    <td className="p-3">{s.delivery_address}</td>
-                    <td className="p-3 text-center">
-                      <select
-                        className="border rounded px-2 py-1"
-                        value={selectedDriver[s.id] || ""}
-                        onChange={(e) =>
-                          setSelectedDriver((prev) => ({
-                            ...prev,
-                            [s.id]: Number(e.target.value || 0),
-                          }))
-                        }
-                      >
-                        <option value="">-- Chọn tài xế --</option>
-                        {drivers.map((d) => (
-                          <option key={d.id} value={d.id}>
-                            {d.name} ({d.vehicle_type})
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="p-3 text-center">
-                      <button
-                        onClick={() => handleAssign(s.id)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
-                      >
-                        Phân công
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="7"
-                    className="p-6 text-center text-gray-500 italic"
-                  >
-                    Không có đơn chờ phân công
+      {/* ====== Đơn chưa phân công ====== */}
+      <div className="bg-white p-4 rounded-lg shadow">
+        <h2 className="text-xl font-semibold mb-3 text-gray-800">
+          🕒 Đơn hàng chưa phân công
+        </h2>
+        <table className="w-full text-sm border border-gray-200">
+          <thead className="bg-blue-600 text-white">
+            <tr>
+              <th className="p-2">Mã đơn</th>
+              <th className="p-2">Người gửi</th>
+              <th className="p-2">Người nhận</th>
+              <th className="p-2">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {unassigned.length > 0 ? (
+              unassigned.map((s) => (
+                <tr key={s.id} className="border-b hover:bg-blue-50">
+                  <td className="p-2 font-semibold text-blue-700">
+                    {s.tracking_code}
+                  </td>
+                  <td className="p-2">{s.sender_name}</td>
+                  <td className="p-2">{s.receiver_name}</td>
+                  <td className="p-2">
+                    <select
+                      onChange={(e) =>
+                        handleAssign(s.id, e.target.value || null)
+                      }
+                      defaultValue=""
+                      className="border rounded px-2 py-1"
+                    >
+                      <option value="">-- Chọn tài xế --</option>
+                      {drivers.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name} ({d.vehicle_type})
+                        </option>
+                      ))}
+                    </select>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="4"
+                  className="p-3 text-center text-gray-500 italic"
+                >
+                  Tất cả đơn đã được phân công.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* Khối 2: Assignment đang hoạt động */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">
-          🚚 Đơn đang xử lý
+      {/* ====== Danh sách phân công ====== */}
+      <div className="bg-white p-4 rounded-lg shadow">
+        <h2 className="text-xl font-semibold mb-3 text-gray-800">
+          📋 Danh sách phân công
         </h2>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border border-gray-200">
-            <thead className="bg-blue-600 text-white">
-              <tr>
-                <th className="p-3">Mã vận đơn</th>
-                <th className="p-3">Tài xế</th>
-                <th className="p-3">Trạng thái</th>
-                <th className="p-3">Vị trí hiện tại</th>
-                <th className="p-3">Đổi tài xế</th>
-                <th className="p-3 text-center">Cập nhật</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assignments.length ? (
-                assignments.map((a) => (
-                  <tr key={a.id} className="border-b hover:bg-blue-50">
-                    <td className="p-3">
-                      <div className="font-semibold text-blue-600">
-                        {a.tracking_code}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {a.pickup_address} → {a.delivery_address}
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <div className="font-medium">{a.driver_name}</div>
-                      <div className="text-xs text-gray-500">
-                        {a.driver_phone} • {a.vehicle_type}
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <select
-                        className="border rounded px-2 py-1"
-                        value={statusUpdate[a.id] || a.assignment_status}
-                        onChange={(e) =>
-                          handleStatusChange(a.id, e.target.value)
-                        }
-                      >
-                        <option value="assigned">Đã phân công</option>
-                        <option value="picking">Đang lấy hàng</option>
-                        <option value="delivering">Đang giao</option>
-                        <option value="completed">Hoàn tất</option>
-                        <option value="failed">Thất bại</option>
-                      </select>
-                    </td>
-                    <td className="p-3">
-                      <input
-                        className="border rounded px-2 py-1 w-56"
-                        placeholder="Nhập vị trí (VD: Quận 5 - HCM)"
-                        value={locationUpdate[a.id] || ""}
-                        onChange={(e) =>
-                          setLocationUpdate((prev) => ({
-                            ...prev,
-                            [a.id]: e.target.value,
-                          }))
-                        }
-                      />
-                    </td>
-                    <td className="p-3">
-                      <select
-                        className="border rounded px-2 py-1"
-                        onChange={(e) =>
-                          handleReassign(a.id, Number(e.target.value || 0))
-                        }
-                      >
-                        <option value="">-- Chọn tài xế --</option>
-                        {drivers.map((d) => (
-                          <option key={d.id} value={d.id}>
-                            {d.name} ({d.vehicle_type})
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="p-3 text-center">
-                      <button
-                        onClick={() => handleUpdateStatus(a.id)}
-                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
-                      >
-                        Lưu
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="6"
-                    className="p-6 text-center text-gray-500 italic"
-                  >
-                    Không có đơn đang xử lý
+        <table className="w-full text-sm border border-gray-200">
+          <thead className="bg-green-600 text-white">
+            <tr>
+              <th className="p-2">Mã đơn</th>
+              <th className="p-2">Tài xế</th>
+              <th className="p-2">Phương tiện</th>
+              <th className="p-2">Trạng thái</th>
+              <th className="p-2">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {assignments.length > 0 ? (
+              assignments.map((a) => (
+                <tr key={a.id} className="border-b hover:bg-green-50">
+                  <td className="p-2 font-semibold text-green-700">
+                    {a.tracking_code}
+                  </td>
+                  <td className="p-2">{a.driver_name}</td>
+                  <td className="p-2">{a.vehicle_type}</td>
+                  <td className="p-2">
+                    <select
+                      value={a.assignment_status}
+                      onChange={(e) => handleStatusChange(a.id, e.target.value)}
+                      className="border rounded px-2 py-1"
+                    >
+                      <option value="assigned">Đã phân công</option>
+                      <option value="picking">Đang lấy hàng</option>
+                      <option value="delivering">Đang giao hàng</option>
+                      <option value="completed">Hoàn tất</option>
+                      <option value="failed">Thất bại</option>
+                    </select>
+                  </td>
+                  <td className="p-2 text-center flex justify-center gap-2">
+                    <button
+                      onClick={() =>
+                        navigate(`/dispatcher/tracking/${a.shipment_id}`)
+                      }
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                    >
+                      🔍 Xem chi tiết
+                    </button>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="5"
+                  className="p-3 text-center text-gray-500 italic"
+                >
+                  Không có phân công nào.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
