@@ -1,67 +1,161 @@
 import db from "../config/db.js";
+import bcrypt from "bcryptjs";
 
-// 📦 Lấy toàn bộ danh sách tài xế
-export const getAllDrivers = async (req, res) => {
+// 📊 Dashboard
+export const getDriverDashboard = async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT * FROM drivers ORDER BY id DESC");
+    const { id } = req.params;
+    const [rows] = await db.query(
+      `
+      SELECT 
+        COUNT(CASE WHEN s.status = 'completed' THEN 1 END) AS completed,
+        COUNT(CASE WHEN s.status = 'delivering' THEN 1 END) AS delivering,
+        COUNT(CASE WHEN s.status = 'picking' THEN 1 END) AS picking,
+        COUNT(CASE WHEN s.status = 'assigned' THEN 1 END) AS assigned
+      FROM shipments s
+      JOIN assignments a ON s.id = a.shipment_id
+      WHERE a.driver_id = ?
+      `,
+      [id]
+    );
+
+    const stats = rows[0] || {
+      completed: 0,
+      delivering: 0,
+      picking: 0,
+      assigned: 0,
+    };
+
+    res.json(stats);
+  } catch (err) {
+    console.error("❌ Lỗi getDriverDashboard:", err);
+    res.status(500).json({ message: err.message || "Lỗi khi lấy dashboard" });
+  }
+};
+
+// 🚚 Danh sách đơn hàng được giao
+export const getDriverAssignments = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [rows] = await db.query(
+      `
+      SELECT 
+        s.id AS shipment_id,
+        s.tracking_code,
+        s.delivery_address,
+        s.status,
+        a.status AS assignment_status
+      FROM assignments a
+      JOIN shipments s ON s.id = a.shipment_id
+      WHERE a.driver_id = ? AND a.status IN ('assigned', 'picking', 'delivering')
+      ORDER BY a.assigned_at DESC
+      `,
+      [id]
+    );
     res.json(rows);
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Lỗi khi lấy danh sách tài xế", error: err });
+    console.error("❌ Lỗi getDriverAssignments:", err);
+    res.status(500).json({ message: "Lỗi khi lấy danh sách đơn tài xế" });
   }
 };
 
-// ➕ Thêm tài xế mới
-export const createDriver = async (req, res) => {
-  const { name, email, phone, license_no, vehicle_type, status } = req.body;
+// 🧾 Lịch sử giao hàng
+export const getDriverHistory = async (req, res) => {
   try {
-    await db.query(
-      "INSERT INTO drivers (name, email, phone, license_no, vehicle_type, status) VALUES (?, ?, ?, ?, ?, ?)",
-      [name, email, phone, license_no, vehicle_type, status]
+    const { id } = req.params;
+    const [rows] = await db.query(
+      `
+      SELECT 
+        s.tracking_code,
+        s.delivery_address,
+        s.status,
+        a.assigned_at AS completed_at
+      FROM assignments a
+      JOIN shipments s ON s.id = a.shipment_id
+      WHERE a.driver_id = ? AND a.status = 'completed'
+      ORDER BY a.assigned_at DESC
+      `,
+      [id]
     );
-    res.json({ message: "Thêm tài xế thành công" });
+    res.json(rows);
   } catch (err) {
-    res.status(500).json({ message: "Lỗi khi thêm tài xế", error: err });
+    console.error("❌ Lỗi getDriverHistory:", err);
+    res.status(500).json({ message: "Lỗi khi lấy lịch sử giao hàng" });
   }
 };
 
-// ✏️ Cập nhật thông tin tài xế
-export const updateDriver = async (req, res) => {
-  const { id } = req.params;
-  const { name, email, phone, license_no, vehicle_type, status } = req.body;
+// 🔄 Cập nhật trạng thái đơn
+export const updateDriverShipmentStatus = async (req, res) => {
   try {
-    await db.query(
-      "UPDATE drivers SET name=?, email=?, phone=?, license_no=?, vehicle_type=?, status=? WHERE id=?",
-      [name, email, phone, license_no, vehicle_type, status, id]
+    const { shipment_id } = req.params;
+    const { status } = req.body;
+    await db.query("UPDATE shipments SET status = ? WHERE id = ?", [
+      status,
+      shipment_id,
+    ]);
+    await db.query("UPDATE assignments SET status = ? WHERE shipment_id = ?", [
+      status,
+      shipment_id,
+    ]);
+    res.json({ message: "✅ Cập nhật trạng thái thành công" });
+  } catch (err) {
+    console.error("❌ Lỗi updateDriverShipmentStatus:", err);
+    res.status(500).json({ message: "Lỗi khi cập nhật trạng thái" });
+  }
+};
+
+// 👤 Hồ sơ tài xế
+// 👤 Hồ sơ tài xế
+export const getDriverProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [rows] = await db.query(
+      `
+      SELECT 
+        id, 
+        name, 
+        email, 
+        phone, 
+        vehicle_type, 
+        status 
+      FROM drivers 
+      WHERE id = ?
+      `,
+      [id]
     );
-    res.json({ message: "Cập nhật thành công" });
+
+    if (rows.length === 0)
+      return res.status(404).json({ message: "Không tìm thấy tài xế" });
+
+    res.json(rows[0]);
   } catch (err) {
-    res.status(500).json({ message: "Lỗi khi cập nhật tài xế", error: err });
+    console.error("❌ Lỗi getDriverProfile:", err);
+    res.status(500).json({ message: "Lỗi khi lấy thông tin tài xế" });
   }
 };
 
-// ❌ Xóa tài xế
-export const deleteDriver = async (req, res) => {
-  const { id } = req.params;
+// 🔐 Đổi mật khẩu
+export const changeDriverPassword = async (req, res) => {
   try {
-    await db.query("DELETE FROM drivers WHERE id = ?", [id]);
-    res.json({ message: "Đã xóa tài xế" });
-  } catch (err) {
-    res.status(500).json({ message: "Lỗi khi xóa tài xế", error: err });
-  }
-};
+    const { id } = req.params;
+    const { oldPassword, newPassword } = req.body;
 
-// 🔄 Cập nhật trạng thái
-export const updateDriverStatus = async (req, res) => {
-  const { id } = req.params;
-  const { status } = req.body;
-  try {
-    await db.query("UPDATE drivers SET status=? WHERE id=?", [status, id]);
-    res.json({ message: "Đã cập nhật trạng thái" });
+    const [[driver]] = await db.query(
+      "SELECT password FROM drivers WHERE id = ?",
+      [id]
+    );
+    if (!driver)
+      return res.status(404).json({ message: "Không tìm thấy tài xế" });
+
+    const isMatch = await bcrypt.compare(oldPassword, driver.password);
+    if (!isMatch)
+      return res.status(400).json({ message: "Mật khẩu cũ không đúng" });
+
+    const hash = await bcrypt.hash(newPassword, 10);
+    await db.query("UPDATE drivers SET password = ? WHERE id = ?", [hash, id]);
+    res.json({ message: "✅ Đổi mật khẩu thành công" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Lỗi khi cập nhật trạng thái", error: err });
+    console.error("❌ Lỗi changeDriverPassword:", err);
+    res.status(500).json({ message: "Lỗi khi đổi mật khẩu" });
   }
 };
