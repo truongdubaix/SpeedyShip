@@ -14,6 +14,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import dispatcherRoutes from "./routes/dispatcherRoutes.js";
 import driverAdminRoutes from "./routes/driverAdminRoutes.js";
 import driverLocationRoutes from "./routes/driverLocationRoutes.js";
+import roleRoutes from "./routes/roleRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -30,6 +31,7 @@ pool
   .catch(console.error);
 
 // 🔹 Routes chính đang hoạt động
+
 app.use("/api/auth", authRoutes); // Đăng nhập / Đăng ký
 app.use("/api/driver", driverRoutes); // Dashboard, assignments, profile cho tài xế
 app.use("/api/drivers", driverAdminRoutes); // Admin quản lý tài xế
@@ -40,6 +42,7 @@ app.use("/api/payments", paymentRoutes); // Quản lý thanh toán
 app.use("/api/admin", adminRoutes); // AdminDashBoard
 app.use("/api/dispatcher", dispatcherRoutes); // Điều phối viên
 app.use("/api/drivers", driverRoutes);
+app.use("/api/roles", roleRoutes);
 
 // 📴 Các module chưa làm tới (tắt tạm)
 // app.use("/api/users", userRoutes);

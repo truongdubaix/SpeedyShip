@@ -4,6 +4,7 @@ import API from "../../services/api";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [search, setSearch] = useState("");
 
   // 🔹 Lấy danh sách người dùng
@@ -17,18 +18,32 @@ export default function AdminUsers() {
     }
   };
 
+  // 🔹 Lấy danh sách vai trò (từ bảng roles)
+  const fetchRoles = async () => {
+    try {
+      const res = await API.get("/roles");
+      setRoles(res.data);
+    } catch (err) {
+      console.error("❌ Lỗi khi tải vai trò:", err);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
+    fetchRoles();
   }, []);
 
   // 🔹 Cập nhật quyền hoặc trạng thái người dùng
   const handleUpdate = async (id, field, value) => {
     try {
-      const user = users.find((u) => u.id === id);
-      await API.put(`/users/${id}`, {
-        role: field === "role" ? value : user.role,
-        status: field === "status" ? value : user.status,
-      });
+      const payload =
+        field === "role_id"
+          ? { role_id: value }
+          : field === "status"
+          ? { status: value }
+          : {};
+
+      await API.put(`/users/${id}`, payload);
       toast.success("✅ Cập nhật thành công!");
       fetchUsers();
     } catch (err) {
@@ -103,16 +118,17 @@ export default function AdminUsers() {
                   {/* Dropdown chọn role */}
                   <td className="p-3 text-center">
                     <select
-                      value={u.role}
+                      value={u.role_id}
                       onChange={(e) =>
-                        handleUpdate(u.id, "role", e.target.value)
+                        handleUpdate(u.id, "role_id", e.target.value)
                       }
                       className="border rounded px-2 py-1"
                     >
-                      <option value="admin">Admin</option>
-                      <option value="dispatcher">Điều phối viên</option>
-                      <option value="driver">Tài xế</option>
-                      <option value="customer">Khách hàng</option>
+                      {roles.map((r) => (
+                        <option key={r.id} value={r.id}>
+                          {r.name}
+                        </option>
+                      ))}
                     </select>
                   </td>
 
