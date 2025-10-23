@@ -1,8 +1,6 @@
 import pool from "../config/db.js";
 
-/**
- * 🧾 Lấy danh sách người dùng (JOIN user_roles + roles)
- */
+// 🧾 Lấy danh sách người dùng
 export const getAllUsers = async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -29,9 +27,7 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-/**
- * 🔄 Cập nhật vai trò hoặc trạng thái người dùng
- */
+// 🔄 Cập nhật người dùng
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -39,17 +35,16 @@ export const updateUser = async (req, res) => {
 
     console.log("🟡 updateUser body:", req.body);
 
-    // 🔍 Kiểm tra user tồn tại
     const [[user]] = await pool.query("SELECT * FROM users WHERE id = ?", [id]);
     if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
 
-    // 🧩 Cập nhật user
+    // 🧩 Cập nhật thông tin cơ bản (kể cả trạng thái)
     await pool.query(
       "UPDATE users SET name = ?, email = ?, status = ? WHERE id = ?",
       [name || user.name, email || user.email, status || user.status, id]
     );
 
-    // 🧩 Nếu có role_id thì cập nhật vào bảng user_roles
+    // 🧩 Cập nhật role nếu có
     if (role_id) {
       const [[exist]] = await pool.query(
         "SELECT * FROM user_roles WHERE user_id = ?",
@@ -78,9 +73,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
-/**
- * 🗑️ Xóa người dùng
- */
+// 🗑️ Xóa người dùng
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
