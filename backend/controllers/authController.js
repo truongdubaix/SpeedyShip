@@ -51,12 +51,27 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Sai tài khoản hoặc mật khẩu" });
 
     const user = users[0];
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ message: "Sai mật khẩu" });
+    console.log("🟡 Trạng thái user:", user.status);
 
-    // lấy role
+    // ⚠️ Kiểm tra trạng thái
+    if (user.status && user.status.toLowerCase() === "inactive") {
+      console.log("🚫 User bị vô hiệu hóa:", user.email);
+      return res.status(403).json({
+        message:
+          "Tài khoản của bạn đã bị vô hiệu hóa, vui lòng liên hệ quản trị viên.",
+      });
+    }
+
+    // ✅ Kiểm tra mật khẩu
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      console.log("❌ Sai mật khẩu:", user.email);
+      return res.status(401).json({ message: "Sai tài khoản hoặc mật khẩu" });
+    }
+
+    // 🔹 Lấy role
     const [roles] = await pool.query(
-      `SELECT r.code FROM roles r JOIN user_roles ur ON ur.role_id=r.id WHERE ur.user_id=?`,
+      `SELECT r.code FROM roles r JOIN user_roles ur ON ur.role_id = r.id WHERE ur.user_id = ?`,
       [user.id]
     );
 
@@ -77,6 +92,7 @@ export const login = async (req, res) => {
       },
     });
   } catch (err) {
+    console.error("❌ Lỗi đăng nhập:", err);
     res.status(500).json({ message: err.message });
   }
 };

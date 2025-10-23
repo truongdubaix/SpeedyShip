@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion"; // 👈 hiệu ứng
+import { motion } from "framer-motion";
 import API from "../services/api";
 
 export default function Login() {
@@ -30,13 +30,20 @@ export default function Login() {
       localStorage.setItem("role", user.role);
       localStorage.setItem("username", user.name);
 
-      // Chuyển hướng theo vai trò
+      // ✅ Chuyển hướng theo vai trò
       if (user.role === "admin") navigate("/admin");
       else if (user.role === "dispatcher") navigate("/dispatcher");
       else if (user.role === "driver") navigate("/driver");
       else navigate("/customer");
     } catch (err) {
-      setError("Sai tài khoản hoặc mật khẩu");
+      console.error("❌ Lỗi đăng nhập:", err);
+
+      // ✅ Lấy đúng message từ backend
+      const msg =
+        err.response?.data?.message ||
+        "Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản hoặc mật khẩu.";
+
+      setError(msg);
     } finally {
       setLoading(false);
     }
