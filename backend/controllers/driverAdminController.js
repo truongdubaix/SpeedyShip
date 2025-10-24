@@ -3,7 +3,20 @@ import db from "../config/db.js";
 // 📋 Lấy tất cả tài xế
 export const getAllDrivers = async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT * FROM drivers ORDER BY id DESC");
+    const [rows] = await db.query(`
+  SELECT 
+    d.id,
+    d.name,
+    d.email,
+    d.phone,
+    d.status,
+    v.plate_no,
+    v.type AS vehicle_type,
+    v.status AS vehicle_status
+  FROM drivers d
+  LEFT JOIN vehicles v ON d.vehicle_id = v.id
+  ORDER BY d.id DESC
+`);
     res.json(rows);
   } catch (err) {
     console.error("❌ Lỗi getAllDrivers:", err);

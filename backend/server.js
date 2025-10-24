@@ -15,6 +15,7 @@ import dispatcherRoutes from "./routes/dispatcherRoutes.js";
 import driverAdminRoutes from "./routes/driverAdminRoutes.js";
 import driverLocationRoutes from "./routes/driverLocationRoutes.js";
 import roleRoutes from "./routes/roleRoutes.js";
+import vehicleRoutes from "./routes/vehicleRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -43,6 +44,7 @@ app.use("/api/admin", adminRoutes); // AdminDashBoard
 app.use("/api/dispatcher", dispatcherRoutes); // Điều phối viên
 app.use("/api/drivers", driverRoutes);
 app.use("/api/roles", roleRoutes);
+app.use("/api/vehicles", vehicleRoutes);
 
 // 📴 Các module chưa làm tới (tắt tạm)
 // app.use("/api/users", userRoutes);
