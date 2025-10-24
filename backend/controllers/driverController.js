@@ -1,7 +1,7 @@
 import db from "../config/db.js";
 import bcrypt from "bcryptjs";
 
-// 📊 Dashboard
+// =================== 📊 Dashboard ===================
 export const getDriverDashboard = async (req, res) => {
   try {
     const { id } = req.params;
@@ -33,7 +33,7 @@ export const getDriverDashboard = async (req, res) => {
   }
 };
 
-// 🚚 Danh sách đơn hàng được giao
+// =================== 🚚 Danh sách đơn hàng đang giao ===================
 export const getDriverAssignments = async (req, res) => {
   try {
     const { id } = req.params;
@@ -47,7 +47,8 @@ export const getDriverAssignments = async (req, res) => {
         a.status AS assignment_status
       FROM assignments a
       JOIN shipments s ON s.id = a.shipment_id
-      WHERE a.driver_id = ? AND a.status IN ('assigned', 'picking', 'delivering')
+      WHERE a.driver_id = ? 
+        AND a.status IN ('assigned', 'picking', 'delivering')
       ORDER BY a.assigned_at DESC
       `,
       [id]
@@ -59,7 +60,7 @@ export const getDriverAssignments = async (req, res) => {
   }
 };
 
-// 🧾 Lịch sử giao hàng
+// =================== 🧾 Lịch sử giao hàng ===================
 export const getDriverHistory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -84,11 +85,12 @@ export const getDriverHistory = async (req, res) => {
   }
 };
 
-// 🔄 Cập nhật trạng thái đơn
+// =================== 🔄 Cập nhật trạng thái đơn ===================
 export const updateDriverShipmentStatus = async (req, res) => {
   try {
     const { shipment_id } = req.params;
     const { status } = req.body;
+
     await db.query("UPDATE shipments SET status = ? WHERE id = ?", [
       status,
       shipment_id,
@@ -97,6 +99,7 @@ export const updateDriverShipmentStatus = async (req, res) => {
       status,
       shipment_id,
     ]);
+
     res.json({ message: "✅ Cập nhật trạng thái thành công" });
   } catch (err) {
     console.error("❌ Lỗi updateDriverShipmentStatus:", err);
@@ -104,22 +107,25 @@ export const updateDriverShipmentStatus = async (req, res) => {
   }
 };
 
-// 👤 Hồ sơ tài xế
-// 👤 Hồ sơ tài xế
+// =================== 👤 Hồ sơ tài xế ===================
 export const getDriverProfile = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await db.query(
       `
       SELECT 
-        id, 
-        name, 
-        email, 
-        phone, 
-        vehicle_type, 
-        status 
-      FROM drivers 
-      WHERE id = ?
+        d.id, 
+        d.name, 
+        d.email, 
+        d.phone, 
+        d.status,
+        v.plate_no,
+        v.type,
+        v.capacity_kg,
+        v.status AS vehicle_status
+      FROM drivers d
+      LEFT JOIN vehicles v ON d.vehicle_id = v.id
+      WHERE d.id = ?
       `,
       [id]
     );
@@ -134,7 +140,7 @@ export const getDriverProfile = async (req, res) => {
   }
 };
 
-// 🔐 Đổi mật khẩu
+// =================== 🔐 Đổi mật khẩu ===================
 export const changeDriverPassword = async (req, res) => {
   try {
     const { id } = req.params;
@@ -153,9 +159,35 @@ export const changeDriverPassword = async (req, res) => {
 
     const hash = await bcrypt.hash(newPassword, 10);
     await db.query("UPDATE drivers SET password = ? WHERE id = ?", [hash, id]);
+
     res.json({ message: "✅ Đổi mật khẩu thành công" });
   } catch (err) {
     console.error("❌ Lỗi changeDriverPassword:", err);
     res.status(500).json({ message: "Lỗi khi đổi mật khẩu" });
+  }
+};
+
+// =================== 🚚 Cập nhật xe cho tài xế ===================
+export const updateDriverVehicle = async (req, res) => {
+  try {
+    const { id } = req.params; // id tài xế
+    const { vehicle_id } = req.body;
+
+    // Kiểm tra xe có tồn tại không
+    const [[vehicle]] = await db.query("SELECT * FROM vehicles WHERE id = ?", [
+      vehicle_id,
+    ]);
+    if (!vehicle) return res.status(404).json({ message: "Xe không tồn tại" });
+
+    // Gán xe cho tài xế
+    await db.query("UPDATE drivers SET vehicle_id = ? WHERE id = ?", [
+      vehicle_id,
+      id,
+    ]);
+
+    res.json({ message: "✅ Cập nhật xe cho tài xế thành công" });
+  } catch (error) {
+    console.error("❌ Lỗi cập nhật xe cho tài xế:", error);
+    res.status(500).json({ message: "Lỗi server khi cập nhật xe cho tài xế" });
   }
 };

@@ -5,8 +5,12 @@ import toast from "react-hot-toast";
 export default function AdminDrivers() {
   const [drivers, setDrivers] = useState([]);
   const [filtered, setFiltered] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [showVehicleModal, setShowVehicleModal] = useState(false);
+  const [selectedDriver, setSelectedDriver] = useState(null);
+  const [selectedVehicle, setSelectedVehicle] = useState("");
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({
     name: "",
@@ -17,7 +21,7 @@ export default function AdminDrivers() {
     status: "available",
   });
 
-  // 🔹 Lấy dữ liệu tài xế
+  // 🔹 Lấy danh sách tài xế
   const fetchDrivers = async () => {
     try {
       const res = await API.get("/drivers");
@@ -28,8 +32,19 @@ export default function AdminDrivers() {
     }
   };
 
+  // 🔹 Lấy danh sách xe
+  const fetchVehicles = async () => {
+    try {
+      const res = await API.get("/vehicles");
+      setVehicles(res.data);
+    } catch {
+      toast.error("❌ Lỗi khi tải danh sách xe!");
+    }
+  };
+
   useEffect(() => {
     fetchDrivers();
+    fetchVehicles();
   }, []);
 
   // 🔍 Tìm kiếm
@@ -86,6 +101,26 @@ export default function AdminDrivers() {
     }
   };
 
+  // 🚗 Gán xe cho tài xế
+  const handleAssignVehicle = async () => {
+    if (!selectedVehicle) {
+      toast.error("Vui lòng chọn xe!");
+      return;
+    }
+    try {
+      await API.put(`/drivers/${selectedDriver}/vehicle`, {
+        vehicle_id: selectedVehicle,
+      });
+      toast.success("🚗 Đã gán xe thành công!");
+      setShowVehicleModal(false);
+      setSelectedVehicle("");
+      fetchDrivers();
+    } catch (err) {
+      console.error(err);
+      toast.error("❌ Lỗi khi gán xe!");
+    }
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -118,6 +153,7 @@ export default function AdminDrivers() {
         </div>
       </div>
 
+      {/* Bảng tài xế */}
       <div className="overflow-x-auto bg-white rounded-xl shadow">
         <table className="w-full border-collapse border border-gray-200 text-sm">
           <thead className="bg-blue-600 text-white">
@@ -126,8 +162,7 @@ export default function AdminDrivers() {
               <th className="p-3">Họ tên</th>
               <th className="p-3">Email</th>
               <th className="p-3">SĐT</th>
-              <th className="p-3">Biển số</th>
-              <th className="p-3">Loại xe</th>
+              <th className="p-3">Xe</th>
               <th className="p-3">Trạng thái</th>
               <th className="p-3">Thao tác</th>
             </tr>
@@ -135,13 +170,23 @@ export default function AdminDrivers() {
           <tbody>
             {filtered.length ? (
               filtered.map((d) => (
-                <tr key={d.id} className="border-b hover:bg-blue-50">
-                  <td className="p-3 text-center">{d.id}</td>
+                <tr
+                  key={d.id}
+                  className="border-b hover:bg-blue-50 text-center"
+                >
+                  <td className="p-3">{d.id}</td>
                   <td className="p-3 font-semibold text-blue-600">{d.name}</td>
                   <td className="p-3">{d.email}</td>
                   <td className="p-3">{d.phone}</td>
-                  <td className="p-3">{d.license_no}</td>
-                  <td className="p-3">{d.vehicle_type}</td>
+                  <td className="p-3">
+                    {d.plate_no ? (
+                      <span className="text-green-700 font-semibold">
+                        {d.plate_no}
+                      </span>
+                    ) : (
+                      <span className="text-gray-500 italic">Chưa gán</span>
+                    )}
+                  </td>
                   <td className="p-3">
                     <select
                       value={d.status}
@@ -160,6 +205,15 @@ export default function AdminDrivers() {
                     </select>
                   </td>
                   <td className="p-3 flex gap-2 justify-center">
+                    <button
+                      onClick={() => {
+                        setSelectedDriver(d.id);
+                        setShowVehicleModal(true);
+                      }}
+                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
+                    >
+                      🚗 Gán xe
+                    </button>
                     <button
                       onClick={() => {
                         setForm(d);
@@ -193,7 +247,45 @@ export default function AdminDrivers() {
         </table>
       </div>
 
-      {/* Form thêm/sửa */}
+      {/* 🔹 Modal gán xe */}
+      {showVehicleModal && (
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg w-[400px] space-y-3 shadow-lg">
+            <h2 className="text-lg font-bold text-center text-blue-700">
+              🚗 Gán xe cho tài xế #{selectedDriver}
+            </h2>
+            <select
+              className="w-full border p-2 rounded"
+              value={selectedVehicle}
+              onChange={(e) => setSelectedVehicle(e.target.value)}
+            >
+              <option value="">-- Chọn xe --</option>
+              {vehicles.map((v, index) => (
+                <option key={`${v.id}-${index}`} value={v.id}>
+                  {v.plate_no} ({v.type}) - {v.status}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={handleAssignVehicle}
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+              >
+                Lưu
+              </button>
+              <button
+                onClick={() => setShowVehicleModal(false)}
+                className="flex-1 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400"
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Form thêm/sửa tài xế */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
           <form

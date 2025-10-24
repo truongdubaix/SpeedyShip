@@ -1,10 +1,27 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { LogOut, Home, Package, Clock, User } from "lucide-react";
+import { Outlet, Link, useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function DriverLayout() {
+  const { id: paramId } = useParams();
   const navigate = useNavigate();
-  const [active, setActive] = useState("dashboard");
+  const [driverId, setDriverId] = useState(
+    paramId || localStorage.getItem("userId")
+  );
+
+  useEffect(() => {
+    const storedId = localStorage.getItem("userId");
+    if (!paramId && storedId) {
+      setDriverId(storedId);
+      navigate(`/driver/${storedId}`);
+    }
+  }, [paramId, navigate]);
+
+  if (!driverId)
+    return (
+      <div className="p-6 text-center text-red-600">
+        ⚠️ Vui lòng đăng nhập lại.
+      </div>
+    );
 
   const handleLogout = () => {
     localStorage.clear();
@@ -12,82 +29,46 @@ export default function DriverLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gradient-to-b from-blue-600 to-blue-500 text-white p-5 flex flex-col justify-between shadow-xl">
-        <div>
-          {/* Logo */}
-          <div className="flex items-center mb-8 gap-2">
-            <div className="bg-white text-blue-700 w-10 h-10 flex items-center justify-center rounded-full text-xl font-bold shadow-inner">
-              🚚
-            </div>
-            <h1 className="text-lg font-extrabold tracking-wide">Tài xế</h1>
-          </div>
-
-          {/* Menu */}
-          <nav className="space-y-2">
-            <Link
-              to="/driver"
-              onClick={() => setActive("dashboard")}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                active === "dashboard"
-                  ? "bg-blue-400 shadow"
-                  : "hover:bg-blue-500/40"
-              }`}
-            >
-              <Home size={18} /> <span>Trang chính</span>
-            </Link>
-
-            <Link
-              to="/driver/assignments"
-              onClick={() => setActive("assignments")}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                active === "assignments"
-                  ? "bg-blue-400 shadow"
-                  : "hover:bg-blue-500/40"
-              }`}
-            >
-              <Package size={18} /> <span>Đơn được giao</span>
-            </Link>
-
-            <Link
-              to="/driver/history"
-              onClick={() => setActive("history")}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                active === "history"
-                  ? "bg-blue-400 shadow"
-                  : "hover:bg-blue-500/40"
-              }`}
-            >
-              <Clock size={18} /> <span>Lịch sử</span>
-            </Link>
-
-            <Link
-              to="/driver/profile"
-              onClick={() => setActive("profile")}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                active === "profile"
-                  ? "bg-blue-400 shadow"
-                  : "hover:bg-blue-500/40"
-              }`}
-            >
-              <User size={18} /> <span>Hồ sơ</span>
-            </Link>
-          </nav>
+    <div className="flex min-h-screen bg-gray-100">
+      <aside className="w-64 bg-blue-700 text-white flex flex-col">
+        <div className="p-4 text-center text-xl font-bold border-b border-blue-500">
+          🚛 Tài xế #{driverId}
         </div>
-
-        {/* Logout */}
+        <nav className="flex-1 p-4 space-y-3">
+          <Link
+            to={`/driver/${driverId}`}
+            className="block hover:bg-blue-600 p-2 rounded"
+          >
+            📊 Dashboard
+          </Link>
+          <Link
+            to={`/driver/${driverId}/assignments`}
+            className="block hover:bg-blue-600 p-2 rounded"
+          >
+            🚚 Đơn hàng
+          </Link>
+          <Link
+            to={`/driver/${driverId}/history`}
+            className="block hover:bg-blue-600 p-2 rounded"
+          >
+            📜 Lịch sử
+          </Link>
+          <Link
+            to={`/driver/${driverId}/profile`}
+            className="block hover:bg-blue-600 p-2 rounded"
+          >
+            👤 Hồ sơ
+          </Link>
+        </nav>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md text-white font-semibold transition mt-6 shadow-md"
+          className="m-4 bg-red-500 hover:bg-red-600 p-2 rounded text-center"
         >
-          <LogOut size={18} />
-          <span>Đăng xuất</span>
+          🚪 Đăng xuất
         </button>
       </aside>
 
-      {/* Content */}
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main className="flex-1 p-6">
         <Outlet />
       </main>
     </div>

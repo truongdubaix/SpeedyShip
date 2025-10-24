@@ -5,25 +5,52 @@ import {
   getDriverHistory,
   updateDriverShipmentStatus,
   getDriverProfile,
+  changeDriverPassword,
+  updateDriverVehicle, // 👈 thêm dòng này
 } from "../controllers/driverController.js";
-import { changeDriverPassword } from "../controllers/driverController.js";
 
 const router = express.Router();
 
-// 📊 Dashboard tài xế
+/**
+ * 📊 Dashboard tài xế
+ * GET /api/drivers/dashboard/:id
+ */
 router.get("/dashboard/:id", getDriverDashboard);
 
-// 🚚 Danh sách đơn hàng theo tài xế
+/**
+ * 🚚 Danh sách đơn hàng được giao cho tài xế
+ * GET /api/drivers/assignments/:id
+ */
 router.get("/assignments/:id", getDriverAssignments);
 
-// 🧾 Lịch sử giao hànga
+/**
+ * 🧾 Lịch sử giao hàng
+ * GET /api/drivers/history/:id
+ */
 router.get("/history/:id", getDriverHistory);
 
-// 👤 Hồ sơ tài xế
+/**
+ * 👤 Hồ sơ tài xế (thông tin + xe)
+ * GET /api/drivers/profile/:id
+ */
 router.get("/profile/:id", getDriverProfile);
 
-// 🔄 Cập nhật trạng thái đơn hàng
+/**
+ * 🔄 Cập nhật trạng thái đơn hàng
+ * PATCH /api/drivers/shipments/:shipment_id/status
+ */
 router.patch("/shipments/:shipment_id/status", updateDriverShipmentStatus);
-// Đổi mật khẩu tài xế
+
+/**
+ * 🔐 Đổi mật khẩu tài xế
+ * PATCH /api/drivers/password/:id
+ */
 router.patch("/password/:id", changeDriverPassword);
+
+/**
+ * 🚗 Cập nhật / gán xe cho tài xế
+ * PUT /api/drivers/:id/vehicle
+ */
+router.put("/:id/vehicle", updateDriverVehicle);
+
 export default router;

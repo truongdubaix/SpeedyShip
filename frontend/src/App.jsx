@@ -32,7 +32,7 @@ import AdminUsers from "./pages/admin/AdminUsers.jsx";
 import DispatcherDashboard from "./pages/dispatcher/DispatcherDashboard.jsx";
 import DispatcherAssignments from "./pages/dispatcher/DispatcherAssignments.jsx";
 import DispatcherTracking from "./pages/dispatcher/DispatcherTracking.jsx";
-import DispatcherTrackingDetail from "./pages/dispatcher/DispatcherTrackingDetail";
+import DispatcherTrackingDetail from "./pages/dispatcher/DispatcherTrackingDetail.jsx";
 
 // Driver pages
 import DriverDashboard from "./pages/driver/DriverDashboard.jsx";
@@ -51,7 +51,7 @@ export default function App() {
   return (
     <div className="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
       <Routes>
-        {/* 🌍 Public pages có Navbar + Footer */}
+        {/* 🌍 Public pages */}
         {[
           { path: "/", element: <Home /> },
           { path: "/tracking", element: <Tracking /> },
@@ -74,11 +74,11 @@ export default function App() {
           />
         ))}
 
-        {/* 🚪 Đăng xuất & không có quyền */}
+        {/* 🚪 Logout + Unauthorized */}
         <Route path="/logout" element={<Logout />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
-        {/* 🧭 Khu vực quản trị */}
+        {/* 🧭 Admin */}
         <Route
           path="/admin"
           element={
@@ -95,7 +95,7 @@ export default function App() {
           <Route path="payments" element={<AdminPayments />} />
         </Route>
 
-        {/* 🧩 Điều phối viên */}
+        {/* 🧩 Dispatcher */}
         <Route
           path="/dispatcher"
           element={
@@ -107,15 +107,12 @@ export default function App() {
           <Route index element={<DispatcherDashboard />} />
           <Route path="assignments" element={<DispatcherAssignments />} />
           <Route path="tracking" element={<DispatcherTracking />} />
-          <Route
-            path="/dispatcher/tracking/:id"
-            element={<DispatcherTrackingDetail />}
-          />
+          <Route path="tracking/:id" element={<DispatcherTrackingDetail />} />
         </Route>
 
-        {/* 🚚 Tài xế */}
+        {/* 🚚 Driver (ĐÃ SỬA CHUẨN) */}
         <Route
-          path="/driver"
+          path="/driver/:id"
           element={
             <ProtectedRoute allowedRoles={["driver", "admin"]}>
               <DriverLayout />
@@ -128,7 +125,7 @@ export default function App() {
           <Route path="profile" element={<DriverProfile />} />
         </Route>
 
-        {/* 👤 Khách hàng */}
+        {/* 👤 Customer */}
         <Route
           path="/customer"
           element={
@@ -143,6 +140,16 @@ export default function App() {
           <Route path="history" element={<CustomerHistory />} />
           <Route path="profile" element={<CustomerProfile />} />
         </Route>
+
+        {/* ❌ 404 fallback */}
+        <Route
+          path="*"
+          element={
+            <p className="p-10 text-center text-red-600">
+              404 - Không tìm thấy trang
+            </p>
+          }
+        />
       </Routes>
     </div>
   );
