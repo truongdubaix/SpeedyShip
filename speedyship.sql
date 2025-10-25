@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 23, 2025 at 06:04 AM
+-- Generation Time: Oct 25, 2025 at 08:24 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.26
 
@@ -55,10 +55,15 @@ INSERT INTO `assignments` (`id`, `shipment_id`, `driver_id`, `assigned_at`, `sta
 (13, 3, 9, '2025-10-21 23:20:05', 'completed'),
 (14, 24, 1, '2025-10-22 12:30:00', 'completed'),
 (15, 24, 5, '2025-10-22 12:36:23', 'completed'),
-(16, 26, 1, '2025-10-22 12:55:07', 'delivering'),
+(16, 26, 1, '2025-10-22 12:55:07', 'picking'),
 (17, 25, 5, '2025-10-22 12:55:21', 'completed'),
 (18, 24, 1, '2025-10-22 16:23:45', 'completed'),
-(19, 27, 1, '2025-10-22 16:31:35', 'completed');
+(19, 27, 1, '2025-10-22 16:31:35', 'completed'),
+(20, 27, 6, '2025-10-25 12:55:41', 'picking'),
+(21, 31, 5, '2025-10-25 13:46:42', 'assigned'),
+(22, 30, 8, '2025-10-25 13:47:50', 'assigned'),
+(23, 28, 8, '2025-10-25 13:47:54', 'delivering'),
+(24, 29, 8, '2025-10-25 13:47:55', 'completed');
 
 -- --------------------------------------------------------
 
@@ -77,27 +82,30 @@ CREATE TABLE `drivers` (
   `user_id` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `latitude` decimal(10,6) DEFAULT '10.762622',
-  `longitude` decimal(10,6) DEFAULT '106.660172'
+  `longitude` decimal(10,6) DEFAULT '106.660172',
+  `vehicle_id` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `drivers`
 --
 
-INSERT INTO `drivers` (`id`, `name`, `email`, `phone`, `license_no`, `vehicle_type`, `status`, `user_id`, `created_at`, `latitude`, `longitude`) VALUES
-(1, 'Tài xế A', 'driver1@speedyship.vn', '0909222222', '79A-123.45', 'Xe tải 1.5T', 'delivering', NULL, '2025-10-20 14:02:02', 10.762622, 106.660172),
-(3, 'Điều phối viên', 'dispatcher@speedyship.vn', '0909111111', '51B-67890', 'Xe tải lớn', 'available', NULL, '2025-10-20 14:02:02', 21.028511, 105.804817),
-(4, 'Truong tai xe', 'truongtaixe@speedyship.vn', '0123456789', '92B-67891', 'Xe SH', 'available', NULL, '2025-10-20 14:08:19', NULL, NULL),
-(5, 'Nguyễn Văn A', 'driverA@speedyship.vn', '0909123456', '79A-12345', 'Xe tải nhỏ', 'available', 4, '2025-10-21 04:39:26', NULL, NULL),
-(6, 'Trần Văn B', 'driverB@speedyship.vn', '0909234567', '51B-56789', 'Xe máy', 'available', 5, '2025-10-21 04:39:26', NULL, NULL),
-(7, 'Lê Văn C', 'driverC@speedyship.vn', '0909345678', '30B-34567', 'Xe tải lớn', 'available', 6, '2025-10-21 04:39:26', NULL, NULL),
-(8, 'Phạm Văn D', 'driverD@speedyship.vn', '0909456789', '60B-98765', 'Xe bán tải', 'available', 7, '2025-10-21 04:39:26', NULL, NULL),
-(9, 'Hoàng Văn E', 'driverE@speedyship.vn', '0909567890', '43C-11111', 'Xe tải 1.5T', 'available', 8, '2025-10-21 04:39:26', NULL, NULL),
-(10, 'Ngô Văn F', 'driverF@speedyship.vn', '0909678901', '81D-55555', 'Xe máy', 'available', 9, '2025-10-21 04:39:26', NULL, NULL),
-(11, 'Đỗ Văn G', 'driverG@speedyship.vn', '0909789012', '77B-77777', 'Xe tải 2T', 'available', 10, '2025-10-21 04:39:26', NULL, NULL),
-(12, 'Bùi Văn H', 'driverH@speedyship.vn', '0909890123', '88C-88888', 'Xe container', 'available', 11, '2025-10-21 04:39:26', NULL, NULL),
-(13, 'Phan Văn I', 'driverI@speedyship.vn', '0909901234', '92A-99999', 'Xe máy', 'available', 12, '2025-10-21 04:39:26', NULL, NULL),
-(14, 'truong ne', 'driver@speedyship.vn', '0363337081', NULL, 'SH', 'available', NULL, '2025-10-22 09:32:06', 10.762622, 106.660172);
+INSERT INTO `drivers` (`id`, `name`, `email`, `phone`, `license_no`, `vehicle_type`, `status`, `user_id`, `created_at`, `latitude`, `longitude`, `vehicle_id`, `updated_at`) VALUES
+(1, 'Tài xế A', 'driver1@speedyship.vn', '0909222222', '79A-123.45', 'Xe tải 1.5T', 'delivering', NULL, '2025-10-20 14:02:02', 10.762622, 106.660172, NULL, NULL),
+(3, 'Điều phối viên', 'dispatcher@speedyship.vn', '0909111111', '51B-67890', 'Xe tải lớn', 'delivering', NULL, '2025-10-20 14:02:02', 21.028511, 105.804817, NULL, NULL),
+(4, 'Truong tai xe', 'truongtaixe@speedyship.vn', '0123456789', '92B-67891', 'Xe SH', 'delivering', NULL, '2025-10-20 14:08:19', NULL, NULL, NULL, NULL),
+(5, 'Nguyễn Văn A', 'driverA@speedyship.vn', '0909123456', '79A-12345', 'Xe tải nhỏ', 'delivering', 4, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(6, 'Trần Văn B', 'driverB@speedyship.vn', '0909234567', '51B-56789', 'Xe máy', 'delivering', 5, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(7, 'Lê Văn C', 'driverC@speedyship.vn', '0909345678', '30B-34567', 'Xe tải lớn', 'available', 6, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(8, 'Phạm Văn D', 'driverD@speedyship.vn', '0909456789', '60B-98765', 'SEEP', 'delivering', 7, '2025-10-21 04:39:26', NULL, NULL, 2, '2025-10-25 06:47:50'),
+(9, 'Hoàng Văn E', 'driverE@speedyship.vn', '0909567890', '43C-11111', 'Xe tải 1.5T', 'available', 8, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(10, 'Ngô Văn F', 'driverF@speedyship.vn', '0909678901', '81D-55555', 'Xe máy', 'available', 9, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(11, 'Đỗ Văn G', 'driverG@speedyship.vn', '0909789012', '77B-77777', 'Xe tải 2T', 'available', 10, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(12, 'Bùi Văn H', 'driverH@speedyship.vn', '0909890123', '88C-88888', 'Xe container', 'available', 11, '2025-10-21 04:39:26', NULL, NULL, 2, '2025-10-24 07:32:14'),
+(13, 'Phan Văn I', 'driverI@speedyship.vn', '0909901234', '92A-99999', 'Xe máy', 'available', 12, '2025-10-21 04:39:26', NULL, NULL, 1, NULL),
+(14, 'truong ne', 'driver@speedyship.vn', '0363337081', NULL, 'SH', 'inactive', NULL, '2025-10-22 09:32:06', 10.762622, 106.660172, 2, '2025-10-25 05:36:31'),
+(15, 'Nguyen Van A', 'a@example.com', '0363337081', NULL, 'Bike', 'inactive', 15, '2025-10-23 15:25:50', 10.762622, 106.660172, 2, '2025-10-25 05:36:29');
 
 -- --------------------------------------------------------
 
@@ -107,20 +115,12 @@ INSERT INTO `drivers` (`id`, `name`, `email`, `phone`, `license_no`, `vehicle_ty
 
 CREATE TABLE `feedbacks` (
   `id` int NOT NULL,
+  `customer_id` int DEFAULT NULL,
   `shipment_id` int DEFAULT NULL,
-  `user_id` int DEFAULT NULL,
-  `rating` tinyint DEFAULT NULL,
-  `comment` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci,
+  `rating` int DEFAULT '5',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ;
-
---
--- Dumping data for table `feedbacks`
---
-
-INSERT INTO `feedbacks` (`id`, `shipment_id`, `user_id`, `rating`, `comment`, `created_at`) VALUES
-(1, NULL, 4, 5, 'Dịch vụ tốt, tài xế thân thiện!', '2025-10-20 08:43:49'),
-(2, 2, 5, 4, 'Hàng giao đúng giờ, đóng gói cẩn thận.', '2025-10-20 08:43:49');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -145,9 +145,9 @@ CREATE TABLE `payments` (
 
 INSERT INTO `payments` (`id`, `shipment_id`, `customer_id`, `amount`, `method`, `status`, `created_at`, `updated_at`) VALUES
 (9, 2, 4, 120000.00, 'COD', 'completed', '2025-10-20 17:23:09', '2025-10-20 17:23:09'),
-(10, 3, 5, 90000.00, 'BankTransfer', 'pending', '2025-10-20 17:23:09', '2025-10-20 17:23:34'),
+(10, 3, 5, 90000.00, 'BankTransfer', 'completed', '2025-10-20 17:23:09', '2025-10-25 05:36:08'),
 (11, 4, 6, 150000.00, 'Momo', 'completed', '2025-10-20 17:23:09', '2025-10-21 04:39:01'),
-(12, 5, 11, 65000.00, 'COD', 'pending', '2025-10-20 17:23:09', '2025-10-22 06:51:44'),
+(12, 5, 11, 65000.00, 'COD', 'completed', '2025-10-20 17:23:09', '2025-10-25 05:36:07'),
 (13, 6, 12, 210000.00, 'BankTransfer', 'completed', '2025-10-20 17:23:09', '2025-10-20 17:23:09');
 
 -- --------------------------------------------------------
@@ -214,34 +214,16 @@ INSERT INTO `shipments` (`id`, `tracking_code`, `customer_id`, `sender_name`, `s
 (17, 'SP2001', 4, 'Nguyễn Thị Mai', '0909123456', 'Trần Văn Cường', '0909555666', '123 Lê Lợi, TP.HCM', '25 Trần Hưng Đạo, Hà Nội', 5.20, 120000.00, 'delivered', 'Hà Nội', '2025-09-05 01:30:00', '2025-10-21 05:10:06', NULL, NULL, NULL, NULL),
 (18, 'SP2002', 5, 'Lê Văn Long', '0909234567', 'Phạm Thị Hoa', '0909666777', '55 Nguyễn Văn Linh, Đà Nẵng', '12 Lý Thường Kiệt, Huế', 2.30, 95000.00, 'delivered', '54 Nguyễn Văn Linh', '2025-09-10 02:45:00', '2025-10-22 05:32:11', NULL, NULL, NULL, NULL),
 (19, 'SP2003', 6, 'Trần Thị Ngọc', '0909345678', 'Lê Văn Thành', '0909777888', '89 Trần Quang Diệu, Cần Thơ', '88 Đại lộ Bình Dương', 8.10, 175000.00, 'delivered', 'Bình Dương', '2025-10-01 03:10:00', '2025-10-22 05:32:14', NULL, NULL, NULL, NULL),
-(22, 'SP1009', NULL, 'Kim Loan', '012347594', 'Ngọc Trường', '033218412', 'Đà Nẵng', 'Quảng Nam', 4.60, 200000.00, 'pending', 'Đà Nẵng', '2025-10-21 14:28:49', '2025-10-22 05:32:48', NULL, NULL, NULL, NULL),
-(23, 'SP1010', NULL, 'Ngọc Trường', '0321393213', 'Kim Loan', '0234566783', 'Quảng Nam', 'Đà Nẵng', 5.20, 900000.00, 'pending', 'Hà Nội', '2025-10-21 14:29:46', '2025-10-22 05:32:45', NULL, NULL, NULL, NULL),
-(24, 'SPA001', NULL, 'Kim Loan', '0123456779', 'Ngọc Trường', '098764221', 'Đà Nẵng', 'Bình Sơn', 5.20, 90000.00, 'completed', 'Đà Nẵng', '2025-10-22 05:29:37', '2025-10-22 09:42:35', NULL, NULL, NULL, NULL),
-(25, 'SPA100', NULL, 'Nguyễn Thị Mai', '0909333111', 'Diễm Trang', '0909555666', '321 Hai Bà Trưng, Q2', '25 Trần Hưng Đạo, Hà Nội', 4.60, 120000.00, 'delivered', 'Hà Nội', '2025-10-22 05:53:21', '2025-10-22 06:52:40', NULL, NULL, NULL, NULL),
-(26, 'SPA200', NULL, 'Nguyễn Tấn Sang', '0132131323', 'Ngọc Trường', '0909555999', '166 Nguyễn Xí', 'K62/23 Nguyễn Huy Tưởng', 5.20, 90000.00, 'delivering', 'Kho Đà Nẵng', '2025-10-22 05:54:33', '2025-10-23 05:40:37', NULL, NULL, NULL, NULL),
-(27, 'SPA101', NULL, 'Bảo Minh', '0232039992', 'Quốc Khanh', '0231131312', 'Đà Nẵng ', 'Quảng Trị', 5.20, 120000.00, 'completed', 'Đà Nẵng', '2025-10-22 08:54:47', '2025-10-22 09:51:26', NULL, NULL, NULL, NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shipment_status_logs`
---
-
-CREATE TABLE `shipment_status_logs` (
-  `id` int NOT NULL,
-  `shipment_id` int NOT NULL,
-  `status` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `location` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `shipment_status_logs`
---
-
-INSERT INTO `shipment_status_logs` (`id`, `shipment_id`, `status`, `location`, `note`, `created_at`) VALUES
-(3, 2, 'delivered', 'Q7', 'Đã giao thành công', '2025-10-20 08:43:49');
+(22, 'SP1009', NULL, 'Kim Loan', '012347594', 'Ngọc Trường', '033218412', 'Đà Nẵng', 'Quảng Nam', 4.60, 200000.00, 'delivering', 'Đà Nẵng', '2025-10-21 14:28:49', '2025-10-25 07:31:37', 16.054400, 108.202200, 15.573600, 108.474000),
+(23, 'SP1010', NULL, 'Ngọc Trường', '0321393213', 'Kim Loan', '0234566783', 'Quảng Nam', 'Đà Nẵng', 5.20, 900000.00, 'pending', 'Hà Nội', '2025-10-21 14:29:46', '2025-10-25 06:36:28', 15.573600, 108.474000, 16.054400, 108.202200),
+(24, 'SPA001', NULL, 'Kim Loan', '0123456779', 'Ngọc Trường', '098764221', 'Đà Nẵng', 'Bình Sơn', 5.20, 90000.00, 'completed', 'Đà Nẵng', '2025-10-22 05:29:37', '2025-10-25 06:36:28', 16.054400, 108.202200, 15.286000, 108.813000),
+(25, 'SPA100', NULL, 'Nguyễn Thị Mai', '0909333111', 'Diễm Trang', '0909555666', '321 Hai Bà Trưng, Q2', '25 Trần Hưng Đạo, Hà Nội', 4.60, 120000.00, 'delivered', 'Hà Nội', '2025-10-22 05:53:21', '2025-10-25 06:36:28', 10.791500, 106.730700, 21.028500, 105.854200),
+(26, 'SPA200', NULL, 'Nguyễn Tấn Sang', '0132131323', 'Ngọc Trường', '0909555999', '166 Nguyễn Xí', 'K62/23 Nguyễn Huy Tưởng', 5.20, 90000.00, 'delivered', 'Kho Đà Nẵng', '2025-10-22 05:54:33', '2025-10-25 06:36:28', 16.054400, 108.202200, 16.056500, 108.230900),
+(27, 'SPA101', NULL, 'Bảo Minh', '0232039992', 'Quốc Khanh', '0231131312', 'Đà Nẵng ', 'Quảng Trị', 5.20, 120000.00, 'picking', 'Đà Nẵng', '2025-10-22 08:54:47', '2025-10-25 06:36:28', 16.054400, 108.202200, 16.818100, 107.100000),
+(28, 'SP396533', NULL, 'Phạm Huy 3', '0909123456', 'Diễm Trang 22', '0909555999', '321 Hai Bà Trưng, Q2', '789 Lê Văn Sỹ, Q11', 4.60, 90000.00, 'delivering', 'Kho Nguyễn Lương Bằng', '2025-10-25 06:06:36', '2025-10-25 06:48:10', NULL, NULL, NULL, NULL),
+(29, 'TEST001', 9, 'Truong KH', '0909123456', 'Ngọc Trường', '0909988776', 'Đà Nẵng', 'Hà Nội', 3.50, 80000.00, 'completed', 'Kho Tôn Đức Thắng', '2025-10-25 06:15:57', '2025-10-25 06:48:14', 16.054400, 108.202200, 21.028500, 105.854200),
+(30, 'SP114618', 9, 'Viet Ngoc', '0909234567', 'Ngọc Trường', '0905050505', 'Nguyễn Như Hạnh', 'Nguyễn Huy Tưởng', 4.60, 90000.00, 'assigned', 'Kho Đà Nẵng', '2025-10-25 06:18:34', '2025-10-25 06:47:50', 16.054400, 108.202200, 16.054400, 108.202200),
+(31, 'SP386563', 9, 'Hoài Bảo', '0123456998', 'Viết Ngọc', '09050600060', 'Sơn Trà', 'Nguyễn Như Hạnh', 9.00, 4500000.00, 'assigned', 'Kho Tô Hiệu', '2025-10-25 06:23:06', '2025-10-25 06:46:42', 16.093500, 108.242000, 16.067800, 108.220800);
 
 -- --------------------------------------------------------
 
@@ -294,12 +276,13 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `role`, `status
 (6, 'Nguyễn Văn Test', 'test@speedyship.vn', '$2a$10$noFvOlG15xGqKXLMD2gewuvK.daNz97JmvafC0Baag7tQoYDC8h3y', '0909888777', 'dispatcher', 'active', '2025-10-20 09:07:16', 4),
 (7, 'Admin', 'admin2@speedyship.vn', '$2a$10$JrzpIDRcrjB2XrQYMvBUsejZH0PSvVIb.XG2SAmUVrT4d7PEgWj32', '232312321', 'admin', 'active', '2025-10-20 09:09:39', 1),
 (8, 'truong ne', 'driver@speedyship.vn', '$2a$10$QnZNG0DoiejyhP.MNSwksutooWaeMtvjO5cR18Ro97rKHW25MNwUW', '932193219', 'driver', 'active', '2025-10-20 09:25:58', 4),
-(9, 'truong khach hang', 'truongkh@speedyship.vn', '$2a$10$lb3jbM4T9MRwsLeStfFj.OCt7CY0.8oGAFS3okwacT77wHu.jOxLW', '0363337081', 'customer', 'active', '2025-10-20 12:58:19', 4),
+(9, 'truong dep trai', 'truongkh@speedyship.vn', '$2a$10$lb3jbM4T9MRwsLeStfFj.OCt7CY0.8oGAFS3okwacT77wHu.jOxLW', '0363337081', 'customer', 'active', '2025-10-20 12:58:19', 4),
 (10, 'truong dieu phoi', 'dieuphoi@speedyship.vn', '$2a$10$4itCINWHQ1M1Uu6a1gOTDOjz6a9X2L0kpfzkr8TZOrAxs0eHHjEYC', '0363337081', 'dispatcher', 'active', '2025-10-20 13:25:40', 4),
 (11, 'Nguyễn Văn A', 'driver1@gmail.com', '123456', '0909123456', 'driver', 'active', '2025-10-20 13:49:37', 4),
 (12, 'Trần Văn B', 'driver2@gmail.com', '123456', '0909988776', 'driver', 'active', '2025-10-20 13:49:37', 4),
 (13, 'truong khach hang 2', 'kh2@speedyship.vn', '$2a$10$IqNKaY2seeSoKVJhIQSCMODnGNMRSEAZJ7EDoMYrSq5p3kU8UJMwa', '0363337081', 'customer', 'active', '2025-10-21 06:53:25', 4),
-(14, 'baominh', 'baominh@speedyship.vn', '$2a$10$254H.EsGI7./ZvXznWagbeI8D9AktW4doQDw3ycArQGloRZFFwq16', '0987123456', 'driver', 'inactive', '2025-10-23 04:45:30', 3);
+(14, 'baominh', 'baominh@speedyship.vn', '$2a$10$254H.EsGI7./ZvXznWagbeI8D9AktW4doQDw3ycArQGloRZFFwq16', '0987123456', 'driver', 'active', '2025-10-23 04:45:30', 3),
+(15, 'Nguyen Van A', 'a@example.com', '$2a$10$SSv0RwBdV.WPrCN2E27slejtxmyytOgdL732sFmjXej.WL9uM6CNS', '0363337081', 'customer', 'active', '2025-10-23 15:02:12', 4);
 
 -- --------------------------------------------------------
 
@@ -323,6 +306,7 @@ INSERT INTO `user_roles` (`user_id`, `role_id`) VALUES
 (11, 3),
 (12, 3),
 (14, 3),
+(15, 3),
 (4, 4),
 (5, 4),
 (6, 4),
@@ -369,15 +353,16 @@ ALTER TABLE `assignments`
 ALTER TABLE `drivers`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `fk_driver_vehicle` (`vehicle_id`);
 
 --
 -- Indexes for table `feedbacks`
 --
 ALTER TABLE `feedbacks`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `shipment_id` (`shipment_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `customer_id` (`customer_id`),
+  ADD KEY `shipment_id` (`shipment_id`);
 
 --
 -- Indexes for table `payments`
@@ -401,13 +386,6 @@ ALTER TABLE `shipments`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `tracking_code` (`tracking_code`),
   ADD KEY `customer_id` (`customer_id`);
-
---
--- Indexes for table `shipment_status_logs`
---
-ALTER TABLE `shipment_status_logs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `shipment_id` (`shipment_id`);
 
 --
 -- Indexes for table `system_configs`
@@ -446,13 +424,13 @@ ALTER TABLE `vehicles`
 -- AUTO_INCREMENT for table `assignments`
 --
 ALTER TABLE `assignments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `drivers`
 --
 ALTER TABLE `drivers`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `feedbacks`
@@ -476,13 +454,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `shipments`
 --
 ALTER TABLE `shipments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
-
---
--- AUTO_INCREMENT for table `shipment_status_logs`
---
-ALTER TABLE `shipment_status_logs`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `system_configs`
@@ -494,7 +466,7 @@ ALTER TABLE `system_configs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `vehicles`
@@ -517,14 +489,15 @@ ALTER TABLE `assignments`
 -- Constraints for table `drivers`
 --
 ALTER TABLE `drivers`
-  ADD CONSTRAINT `drivers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `drivers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_driver_vehicle` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `feedbacks`
 --
 ALTER TABLE `feedbacks`
-  ADD CONSTRAINT `feedbacks_ibfk_1` FOREIGN KEY (`shipment_id`) REFERENCES `shipments` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `feedbacks_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `feedbacks_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `feedbacks_ibfk_2` FOREIGN KEY (`shipment_id`) REFERENCES `shipments` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `payments`
@@ -538,12 +511,6 @@ ALTER TABLE `payments`
 --
 ALTER TABLE `shipments`
   ADD CONSTRAINT `shipments_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`);
-
---
--- Constraints for table `shipment_status_logs`
---
-ALTER TABLE `shipment_status_logs`
-  ADD CONSTRAINT `shipment_status_logs_ibfk_1` FOREIGN KEY (`shipment_id`) REFERENCES `shipments` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `users`
