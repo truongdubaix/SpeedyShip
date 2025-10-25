@@ -21,6 +21,10 @@ export default function AdminDrivers() {
     status: "available",
   });
 
+  // 🧭 Phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   // 🔹 Lấy danh sách tài xế
   const fetchDrivers = async () => {
     try {
@@ -56,6 +60,7 @@ export default function AdminDrivers() {
       return name.includes(keyword) || email.includes(keyword);
     });
     setFiltered(result);
+    setCurrentPage(1); // Reset về trang đầu khi tìm
   }, [search, drivers]);
 
   const handleChange = (e) =>
@@ -121,6 +126,11 @@ export default function AdminDrivers() {
     }
   };
 
+  // 🔹 Logic phân trang
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentDrivers = filtered.slice(startIndex, startIndex + itemsPerPage);
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -168,8 +178,8 @@ export default function AdminDrivers() {
             </tr>
           </thead>
           <tbody>
-            {filtered.length ? (
-              filtered.map((d) => (
+            {currentDrivers.length ? (
+              currentDrivers.map((d) => (
                 <tr
                   key={d.id}
                   className="border-b hover:bg-blue-50 text-center"
@@ -247,6 +257,39 @@ export default function AdminDrivers() {
         </table>
       </div>
 
+      {/* 🔸 Nút phân trang kiểu Trang 1/3 */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4 mt-4 text-sm">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((p) => p - 1)}
+            className={`px-4 py-2 rounded border ${
+              currentPage === 1
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white hover:bg-gray-100 text-gray-700"
+            }`}
+          >
+            ← Trước
+          </button>
+
+          <span className="text-gray-700 font-medium">
+            Trang {currentPage}/{totalPages}
+          </span>
+
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((p) => p + 1)}
+            className={`px-4 py-2 rounded border ${
+              currentPage === totalPages
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white hover:bg-gray-100 text-gray-700"
+            }`}
+          >
+            Sau →
+          </button>
+        </div>
+      )}
+
       {/* 🔹 Modal gán xe */}
       {showVehicleModal && (
         <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
@@ -285,7 +328,7 @@ export default function AdminDrivers() {
         </div>
       )}
 
-      {/* Form thêm/sửa tài xế */}
+      {/* 🔹 Form thêm/sửa tài xế */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
           <form

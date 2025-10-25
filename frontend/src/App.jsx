@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
-// Public pages
+// 🌍 Public pages
 import Home from "./pages/Home.jsx";
 import Tracking from "./pages/Tracking.jsx";
 import About from "./pages/About.jsx";
@@ -14,45 +14,51 @@ import Register from "./pages/Register.jsx";
 import Logout from "./pages/Logout.jsx";
 import Unauthorized from "./pages/Unauthorized.jsx";
 
-// Layouts
+// 🧩 Layouts
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import DispatcherLayout from "./layouts/DispatcherLayout.jsx";
 import DriverLayout from "./layouts/DriverLayout.jsx";
 import CustomerLayout from "./layouts/CustomerLayout.jsx";
 
-// Admin pages
+// 🧭 Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminShipments from "./pages/admin/AdminShipments.jsx";
 import AdminDrivers from "./pages/admin/AdminDrivers.jsx";
 import AdminCustomers from "./pages/admin/AdminCustomers.jsx";
 import AdminPayments from "./pages/admin/AdminPayments.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
+import AdminFeedbacks from "./pages/admin/AdminFeedbacks.jsx";
 
-// Dispatcher pages
+// 🚛 Dispatcher pages
 import DispatcherDashboard from "./pages/dispatcher/DispatcherDashboard.jsx";
 import DispatcherAssignments from "./pages/dispatcher/DispatcherAssignments.jsx";
 import DispatcherTracking from "./pages/dispatcher/DispatcherTracking.jsx";
 import DispatcherTrackingDetail from "./pages/dispatcher/DispatcherTrackingDetail.jsx";
 
-// Driver pages
+// 🚚 Driver pages
 import DriverDashboard from "./pages/driver/DriverDashboard.jsx";
 import DriverAssignments from "./pages/driver/DriverAssignments.jsx";
 import DriverHistory from "./pages/driver/DriverHistory.jsx";
 import DriverProfile from "./pages/driver/DriverProfile.jsx";
+import DriverShipmentDetail from "./pages/driver/DriverShipmentDetail.jsx"; // ✅ đã import chuẩn
 
-// Customer pages
+// 👤 Customer pages
 import CustomerDashboard from "./pages/customer/CustomerDashboard.jsx";
 import CustomerCreateShipment from "./pages/customer/CustomerCreateShipment.jsx";
 import CustomerTrack from "./pages/customer/CustomerTrack.jsx";
 import CustomerHistory from "./pages/customer/CustomerHistory.jsx";
 import CustomerProfile from "./pages/customer/CustomerProfile.jsx";
 import CustomerShipmentDetail from "./pages/customer/CustomerShipmentDetail.jsx";
+import CustomerPayment from "./pages/customer/CustomerPayment.jsx";
+import PaymentSuccess from "./pages/customer/PaymentSuccess.jsx";
+import PaymentFail from "./pages/customer/PaymentFail.jsx";
+import CustomerFeedback from "./pages/customer/CustomerFeedback.jsx";
 
 export default function App() {
   return (
     <div className="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
       <Routes>
-        {/* 🌍 Public pages */}
+        {/* 🌍 Public routes */}
         {[
           { path: "/", element: <Home /> },
           { path: "/tracking", element: <Tracking /> },
@@ -94,6 +100,7 @@ export default function App() {
           <Route path="users" element={<AdminUsers />} />
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="payments" element={<AdminPayments />} />
+          <Route path="feedbacks" element={<AdminFeedbacks />} />
         </Route>
 
         {/* 🧩 Dispatcher */}
@@ -111,7 +118,7 @@ export default function App() {
           <Route path="tracking/:id" element={<DispatcherTrackingDetail />} />
         </Route>
 
-        {/* 🚚 Driver (ĐÃ SỬA CHUẨN) */}
+        {/* 🚚 Driver */}
         <Route
           path="/driver/:id"
           element={
@@ -124,6 +131,11 @@ export default function App() {
           <Route path="assignments" element={<DriverAssignments />} />
           <Route path="history" element={<DriverHistory />} />
           <Route path="profile" element={<DriverProfile />} />
+          {/* ✅ Sửa lỗi — route con phải tương đối */}
+          <Route
+            path="shipments/:shipmentId"
+            element={<DriverShipmentDetail />}
+          />
         </Route>
 
         {/* 👤 Customer */}
@@ -141,6 +153,10 @@ export default function App() {
           <Route path="history" element={<CustomerHistory />} />
           <Route path="profile" element={<CustomerProfile />} />
           <Route path="history/:id" element={<CustomerShipmentDetail />} />
+          <Route path="payment" element={<CustomerPayment />} />
+          <Route path="payment-success" element={<PaymentSuccess />} />
+          <Route path="payment-fail" element={<PaymentFail />} />
+          <Route path="feedback" element={<CustomerFeedback />} />
         </Route>
 
         {/* ❌ 404 fallback */}

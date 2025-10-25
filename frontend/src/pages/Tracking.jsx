@@ -1,60 +1,125 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import API from "../services/api";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+  useMap,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+// 🧭 Icon tài xế
+const iconDriver = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/1995/1995574.png",
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
+
+// 📦 Icon điểm lấy hàng
+const iconPickup = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/2991/2991112.png",
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
+
+// 🏠 Icon điểm giao hàng
+const iconDelivery = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/235/235861.png",
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
+
+// 🗺️ Tự động zoom map
+function FitBounds({ points }) {
+  const map = useMap();
+  useEffect(() => {
+    if (points.length > 1) map.fitBounds(points, { padding: [60, 60] });
+  }, [points]);
+  return null;
+}
 
 export default function Tracking() {
-  const [code, setCode] = useState("");
-  const [shown, setShown] = useState(false);
-  const mock = {
-    code: "SP123456",
-    sender: "Phạm Minh",
-    receiver: "Nguyễn Lan",
-    phone: "0912 345 678",
-    status: "Đang giao hàng",
-    cod: 120000,
-    created: "2025-10-20",
-    pay: "COD",
-    timeline: [
-      {
-        title: "Đã tạo đơn hàng",
-        time: "2025-10-19 08:30",
-        note: "Hệ thống ghi nhận đơn mới",
-        type: "done",
-      },
-      {
-        title: "Đã lấy hàng",
-        time: "2025-10-19 10:20",
-        note: "Tài xế Trần Tài đã lấy hàng",
-        type: "done",
-      },
-      {
-        title: "Đang giao hàng",
-        time: "2025-10-20 09:00",
-        note: "Tại Quận 1, TP.HCM",
-        type: "active",
-      },
-      {
-        title: "Chờ xác nhận hoàn tất",
-        time: "Dự kiến 11:30",
-        note: "",
-        type: "pending",
-      },
-    ],
+  const [searchParams] = useSearchParams();
+  const initialCode = searchParams.get("code") || "";
+
+  const [code, setCode] = useState(initialCode);
+  const [shipment, setShipment] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [driverPos, setDriverPos] = useState(null);
+
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
+  useEffect(() => {
+    if (initialCode) handleSearch();
+  }, [initialCode]);
+
+  // 🔍 Tra cứu đơn hàng
+  const handleSearch = async () => {
+    if (!code.trim()) {
+      setError("⚠️ Vui lòng nhập mã vận đơn hợp lệ!");
+      setShipment(null);
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await API.get(`/customers/track/${code.trim()}`);
+      setShipment(res.data);
+    } catch {
+      setError("❌ Không tìm thấy đơn hàng hoặc xảy ra lỗi máy chủ!");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const search = () => {
-    if (!code || code.length < 3)
-      return alert("Vui lòng nhập mã vận đơn hợp lệ!");
-    setShown(true);
-  };
+  const pickup =
+    shipment?.pickup_lat && shipment?.pickup_lng
+      ? [Number(shipment.pickup_lat), Number(shipment.pickup_lng)]
+      : [16.0471, 108.2068]; // Đà Nẵng
+
+  const delivery =
+    shipment?.delivery_lat && shipment?.delivery_lng
+      ? [Number(shipment.delivery_lat), Number(shipment.delivery_lng)]
+      : [10.7769, 106.7009]; // TP.HCM
+
+  const routePoints = [pickup, delivery];
+
+  // 🚛 Giả lập tài xế di chuyển chậm mượt
+  useEffect(() => {
+    if (!shipment) return;
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 0.002;
+      if (progress > 1) progress = 0;
+      const lat = pickup[0] + (delivery[0] - pickup[0]) * progress;
+      const lng = pickup[1] + (delivery[1] - pickup[1]) * progress;
+      setDriverPos([lat, lng]);
+    }, 600);
+    return () => clearInterval(interval);
+  }, [shipment]);
 
   return (
     <>
-      <section className="pt-28 pb-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white text-center">
+      {/* Header */}
+      <section className="pt-28 pb-10 bg-gradient-to-r from-blue-600 to-sky-500 text-white text-center">
         <h2 className="text-3xl font-bold mb-4" data-aos="fade-down">
           Tra cứu trạng thái vận đơn
         </h2>
         <p className="mb-6 text-blue-100" data-aos="fade-up">
-          Nhập mã đơn hàng để xem thông tin chi tiết
+          Nhập mã đơn hàng để xem thông tin chi tiết và bản đồ hành trình
         </p>
+
         <div
           className="flex flex-col md:flex-row items-center justify-center gap-3 max-w-2xl mx-auto px-4"
           data-aos="zoom-in"
@@ -64,20 +129,31 @@ export default function Tracking() {
             onChange={(e) => setCode(e.target.value)}
             type="text"
             placeholder="Nhập mã vận đơn (VD: SP123456)"
-            className="w-full md:w-3/4 p-3 rounded text-gray-700 focus:outline-none"
+            className="w-full md:w-3/4 p-3 rounded text-gray-700 focus:outline-none shadow"
           />
           <button
-            onClick={search}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded font-semibold transition"
+            onClick={handleSearch}
+            disabled={loading}
+            className={`${
+              loading ? "bg-gray-400" : "bg-orange-500 hover:bg-orange-600"
+            } text-white px-6 py-3 rounded font-semibold transition`}
           >
-            Tra cứu
+            {loading ? "Đang tra cứu..." : "Tra cứu"}
           </button>
         </div>
+
+        {error && (
+          <p className="mt-4 text-red-200 font-medium animate-pulse">{error}</p>
+        )}
       </section>
 
-      {shown && (
-        <section className="max-w-5xl mx-auto py-16 px-6" data-aos="fade-up">
-          {/* Summary */}
+      {/* Kết quả tra cứu */}
+      {shipment && (
+        <section
+          className="max-w-5xl mx-auto py-16 px-6"
+          data-aos="fade-up"
+          data-aos-delay="100"
+        >
           <div className="bg-white rounded-lg shadow-lg p-6 mb-10">
             <h3 className="text-2xl font-bold text-gray-700 mb-4">
               📦 Thông tin đơn hàng
@@ -85,88 +161,76 @@ export default function Tracking() {
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <div>
                 <p>
-                  <strong>Mã đơn:</strong> {code || mock.code}
+                  <b>Mã đơn:</b> {shipment.tracking_code}
                 </p>
                 <p>
-                  <strong>Người gửi:</strong> {mock.sender}
+                  <b>Người gửi:</b> {shipment.sender_name}
                 </p>
                 <p>
-                  <strong>Người nhận:</strong> {mock.receiver}
+                  <b>Người nhận:</b> {shipment.receiver_name}
                 </p>
                 <p>
-                  <strong>Số điện thoại:</strong> {mock.phone}
+                  <b>Địa chỉ giao:</b> {shipment.delivery_address}
                 </p>
               </div>
               <div>
                 <p>
-                  <strong>Trạng thái:</strong>{" "}
+                  <b>Trạng thái:</b>{" "}
                   <span className="text-blue-600 font-semibold">
-                    {mock.status}
+                    {shipment.status}
                   </span>
                 </p>
                 <p>
-                  <strong>COD:</strong> ₫{mock.cod.toLocaleString("vi-VN")}
+                  <b>COD:</b> ₫{shipment.cod_amount?.toLocaleString("vi-VN")}
                 </p>
                 <p>
-                  <strong>Ngày tạo:</strong> {mock.created}
-                </p>
-                <p>
-                  <strong>Thanh toán:</strong> {mock.pay}
+                  <b>Ngày tạo:</b>{" "}
+                  {new Date(shipment.created_at).toLocaleString("vi-VN")}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Timeline */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-2xl font-bold text-gray-700 mb-6">
-              📍 Hành trình đơn hàng
+          {/* Bản đồ */}
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 mb-10"
+            data-aos="fade-up"
+          >
+            <h3 className="text-2xl font-bold text-gray-700 mb-4">
+              🗺️ Bản đồ hành trình
             </h3>
-            <ol className="relative border-l-2 border-blue-200 ml-6">
-              {mock.timeline.map((t, i) => (
-                <li key={i} className="mb-8 ml-6">
-                  <span
-                    className={`absolute -left-[11px] w-[14px] h-[14px] rounded-full ${
-                      t.type === "done"
-                        ? "bg-green-500"
-                        : t.type === "active"
-                        ? "bg-blue-600"
-                        : "bg-yellow-500"
-                    }`}
-                  />
-                  <p
-                    className={`font-semibold ${
-                      t.type === "done"
-                        ? "text-green-600"
-                        : t.type === "active"
-                        ? "text-blue-600"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {t.title}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {t.time} {t.note && `- ${t.note}`}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </div>
+            <div className="h-[500px] rounded-lg overflow-hidden shadow-md">
+              <MapContainer
+                center={pickup}
+                zoom={6}
+                style={{ height: "100%", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution="&copy; OpenStreetMap contributors"
+                />
 
-          {/* Actions */}
-          <div className="text-center mt-10">
-            <a
-              href="/customer-create-shipment"
-              className="bg-blue-600 text-white px-5 py-3 rounded hover:bg-blue-700 transition"
-            >
-              Tạo đơn mới
-            </a>
-            <a
-              href="/contact"
-              className="ml-4 border border-blue-600 text-blue-600 px-5 py-3 rounded hover:bg-blue-50 transition"
-            >
-              Liên hệ hỗ trợ
-            </a>
+                <Marker position={pickup} icon={iconPickup}>
+                  <Popup>📦 Nơi lấy hàng</Popup>
+                </Marker>
+
+                <Marker position={delivery} icon={iconDelivery}>
+                  <Popup>🏠 Nơi giao hàng</Popup>
+                </Marker>
+
+                {driverPos && (
+                  <Marker position={driverPos} icon={iconDriver}>
+                    <Popup>🚛 Tài xế đang di chuyển</Popup>
+                  </Marker>
+                )}
+
+                <Polyline
+                  positions={routePoints}
+                  pathOptions={{ color: "blue", weight: 4 }}
+                />
+                <FitBounds points={routePoints} />
+              </MapContainer>
+            </div>
           </div>
         </section>
       )}

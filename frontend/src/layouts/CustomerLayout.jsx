@@ -1,97 +1,118 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+// src/layouts/CustomerLayout.jsx
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { LogOut, Home, PlusCircle, Search, Clock, User } from "lucide-react";
 
 export default function CustomerLayout() {
   const navigate = useNavigate();
-  const [active, setActive] = useState("dashboard");
+  const username = localStorage.getItem("username") || "Khách hàng";
 
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("username");
     navigate("/login");
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <aside className="w-64 bg-gradient-to-b from-blue-500 to-sky-400 text-white p-5 flex flex-col justify-between shadow-xl">
-        <div>
-          <div className="flex items-center mb-8 gap-2">
-            <div className="bg-white text-blue-600 w-10 h-10 flex items-center justify-center rounded-full text-xl font-bold shadow-inner">
+    <div className="flex min-h-screen bg-gray-100">
+      {/* SIDEBAR */}
+      <aside className="w-64 bg-gradient-to-b from-blue-600 to-sky-500 text-white flex flex-col shadow-lg">
+        {/* Header */}
+        <div className="p-5 space-y-5 border-b border-sky-400 text-center">
+          <div className="flex justify-center">
+            <div className="bg-white text-blue-600 w-12 h-12 flex items-center justify-center rounded-full text-2xl font-bold shadow-inner">
               👤
             </div>
-            <h1 className="text-lg font-extrabold tracking-wide">Khách hàng</h1>
           </div>
+          <h2 className="text-lg font-bold text-white">Xin chào,</h2>
+          <p className="text-2xl font-extrabold text-yellow-300">{username}</p>
 
-          <nav className="space-y-2">
-            <Link
-              to="/customer"
-              onClick={() => setActive("dashboard")}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                active === "dashboard"
-                  ? "bg-sky-500 shadow"
-                  : "hover:bg-sky-400/40"
-              }`}
-            >
-              <Home size={18} /> <span>Trang chính</span>
-            </Link>
-
-            <Link
-              to="/customer/create"
-              onClick={() => setActive("create")}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                active === "create"
-                  ? "bg-sky-500 shadow"
-                  : "hover:bg-sky-400/40"
-              }`}
-            >
-              <PlusCircle size={18} /> <span>Tạo đơn hàng</span>
-            </Link>
-
-            <Link
-              to="/customer/track"
-              onClick={() => setActive("track")}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                active === "track" ? "bg-sky-500 shadow" : "hover:bg-sky-400/40"
-              }`}
-            >
-              <Search size={18} /> <span>Tra cứu đơn</span>
-            </Link>
-
-            <Link
-              to="/customer/history"
-              onClick={() => setActive("history")}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                active === "history"
-                  ? "bg-sky-500 shadow"
-                  : "hover:bg-sky-400/40"
-              }`}
-            >
-              <Clock size={18} /> <span>Lịch sử đơn</span>
-            </Link>
-
-            <Link
-              to="/customer/profile"
-              onClick={() => setActive("profile")}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                active === "profile"
-                  ? "bg-sky-500 shadow"
-                  : "hover:bg-sky-400/40"
-              }`}
-            >
-              <User size={18} /> <span>Hồ sơ cá nhân</span>
-            </Link>
-          </nav>
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold transition shadow"
+          >
+            🚪 Đăng xuất
+          </button>
         </div>
 
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md text-white font-semibold transition mt-6 shadow-md"
-        >
-          <LogOut size={18} />
-          <span>Đăng xuất</span>
-        </button>
+        {/* MENU */}
+        <div className="p-5 flex-1 overflow-y-auto">
+          <h1 className="text-lg font-semibold uppercase text-gray-100 mb-3 border-b border-sky-400 pb-2">
+            ⚙️ Bảng điều khiển
+          </h1>
+
+          <nav className="flex flex-col space-y-2">
+            <NavLink
+              to="/customer"
+              end
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  isActive
+                    ? "bg-sky-500 shadow font-semibold"
+                    : "hover:bg-sky-400/40"
+                }`
+              }
+            >
+              <Home size={18} /> <span>Trang chính</span>
+            </NavLink>
+
+            <NavLink
+              to="/customer/create"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  isActive
+                    ? "bg-sky-500 shadow font-semibold"
+                    : "hover:bg-sky-400/40"
+                }`
+              }
+            >
+              <PlusCircle size={18} /> <span>Tạo đơn hàng</span>
+            </NavLink>
+
+            <NavLink
+              to="/customer/track"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  isActive
+                    ? "bg-sky-500 shadow font-semibold"
+                    : "hover:bg-sky-400/40"
+                }`
+              }
+            >
+              <Search size={18} /> <span>Tra cứu đơn</span>
+            </NavLink>
+
+            <NavLink
+              to="/customer/history"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  isActive
+                    ? "bg-sky-500 shadow font-semibold"
+                    : "hover:bg-sky-400/40"
+                }`
+              }
+            >
+              <Clock size={18} /> <span>Lịch sử đơn</span>
+            </NavLink>
+
+            <NavLink
+              to="/customer/profile"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  isActive
+                    ? "bg-sky-500 shadow font-semibold"
+                    : "hover:bg-sky-400/40"
+                }`
+              }
+            >
+              <User size={18} /> <span>Hồ sơ cá nhân</span>
+            </NavLink>
+          </nav>
+        </div>
       </aside>
 
+      {/* MAIN CONTENT */}
       <main className="flex-1 p-8 overflow-y-auto">
         <Outlet />
       </main>
