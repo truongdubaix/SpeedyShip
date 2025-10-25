@@ -46,6 +46,7 @@ import CustomerCreateShipment from "./pages/customer/CustomerCreateShipment.jsx"
 import CustomerTrack from "./pages/customer/CustomerTrack.jsx";
 import CustomerHistory from "./pages/customer/CustomerHistory.jsx";
 import CustomerProfile from "./pages/customer/CustomerProfile.jsx";
+import CustomerShipmentDetail from "./pages/customer/CustomerShipmentDetail.jsx";
 
 export default function App() {
   return (
@@ -139,6 +140,7 @@ export default function App() {
           <Route path="track" element={<CustomerTrack />} />
           <Route path="history" element={<CustomerHistory />} />
           <Route path="profile" element={<CustomerProfile />} />
+          <Route path="history/:id" element={<CustomerShipmentDetail />} />
         </Route>
 
         {/* ❌ 404 fallback */}
