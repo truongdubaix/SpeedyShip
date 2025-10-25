@@ -1,67 +1,65 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import API from "../../services/api";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function CustomerHistory() {
-  const [status, setStatus] = useState("Tất cả");
+  const [shipments, setShipments] = useState([]);
+  const customerId =
+    localStorage.getItem("customer_id") || localStorage.getItem("userId");
+  const navigate = useNavigate();
 
-  const orders = [
-    { id: "SP1201", receiver: "Nguyễn Lan", status: "Đang giao", cod: 120000 },
-    { id: "SP1202", receiver: "Phạm Minh", status: "Đã giao", cod: 95000 },
-    { id: "SP1203", receiver: "Trần Huy", status: "Đang xử lý", cod: 80000 },
-  ];
-
-  const filtered =
-    status === "Tất cả" ? orders : orders.filter((o) => o.status === status);
+  useEffect(() => {
+    if (!customerId) return;
+    API.get(`/customers/shipments/${customerId}`)
+      .then((res) => setShipments(res.data))
+      .catch(() => toast.error("Không thể tải lịch sử đơn hàng!"));
+  }, [customerId]);
 
   return (
-    <div className="bg-white p-8 rounded-xl shadow">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold text-gray-700">
-          🕓 Lịch sử đơn hàng
-        </h1>
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
-        >
-          <option>Tất cả</option>
-          <option>Đã giao</option>
-          <option>Đang giao</option>
-          <option>Đang xử lý</option>
-        </select>
-      </div>
-
-      <table className="w-full text-sm text-left">
-        <thead className="bg-blue-600 text-white">
-          <tr>
-            <th className="p-3 rounded-l-md">Mã đơn</th>
-            <th className="p-3">Người nhận</th>
-            <th className="p-3">Trạng thái</th>
-            <th className="p-3 rounded-r-md">COD</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map((o) => (
-            <tr key={o.id} className="border-b hover:bg-blue-50">
-              <td className="p-3 font-semibold text-gray-700">{o.id}</td>
-              <td className="p-3">{o.receiver}</td>
-              <td className="p-3">
-                <span
-                  className={`px-3 py-1 rounded-full text-white text-xs ${
-                    o.status === "Đã giao"
-                      ? "bg-green-500"
-                      : o.status === "Đang giao"
-                      ? "bg-blue-500"
-                      : "bg-yellow-500"
-                  }`}
-                >
-                  {o.status}
-                </span>
-              </td>
-              <td className="p-3 text-gray-700">₫{o.cod.toLocaleString()}</td>
+    <div className="p-6 max-w-5xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4 text-blue-700">
+        🕓 Lịch sử đơn hàng của tôi
+      </h2>
+      {shipments.length === 0 ? (
+        <p className="text-gray-500 text-center mt-10">
+          Bạn chưa có đơn hàng nào.
+        </p>
+      ) : (
+        <table className="w-full border-collapse border text-center shadow-md rounded-lg overflow-hidden">
+          <thead className="bg-blue-100">
+            <tr>
+              <th className="border p-2">Mã đơn hàng</th>
+              <th className="border p-2">Người nhận</th>
+              <th className="border p-2">Trạng thái</th>
+              <th className="border p-2">Ngày tạo</th>
+              <th className="border p-2">Chi tiết</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {shipments.map((s) => (
+              <tr key={s.id} className="border hover:bg-gray-50 transition">
+                <td className="border p-2">{s.tracking_code}</td>
+                <td className="border p-2">{s.receiver_name}</td>
+                <td className="border p-2 text-blue-700 font-semibold">
+                  {s.status}
+                </td>
+                <td className="border p-2">
+                  {new Date(s.created_at).toLocaleString("vi-VN")}
+                </td>
+                <td className="border p-2">
+                  <button
+                    onClick={() => navigate(`/customer/history/${s.id}`)}
+                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  >
+                    Xem
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
