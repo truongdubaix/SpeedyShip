@@ -1,6 +1,6 @@
 import pool from "../config/db.js";
 
-// 1️⃣ Lấy thông tin hồ sơ khách hàng
+// 📄 Lấy thông tin hồ sơ khách hàng
 export const getCustomerProfile = async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -15,7 +15,7 @@ export const getCustomerProfile = async (req, res) => {
   }
 };
 
-// 2️⃣ Cập nhật hồ sơ khách hàng
+// ✏️ Cập nhật hồ sơ khách hàng
 export const updateCustomerProfile = async (req, res) => {
   const { name, email, phone } = req.body;
   try {
@@ -23,7 +23,7 @@ export const updateCustomerProfile = async (req, res) => {
       "UPDATE users SET name = ?, email = ?, phone = ? WHERE id = ? AND role = 'customer'",
       [name, email, phone, req.params.id]
     );
-    res.json({ message: "Profile updated successfully" });
+    res.json({ message: "Cập nhật hồ sơ thành công!" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
