@@ -1,6 +1,13 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+AOS.init({ duration: 800, once: true });
 
 export default function Home() {
+  const [trackingCode, setTrackingCode] = useState("");
+
   return (
     <>
       {/* Hero */}
@@ -20,15 +27,18 @@ export default function Home() {
             dàng và theo dõi mọi lúc mọi nơi.
           </p>
 
+          {/* Form tra cứu */}
           <div className="bg-white rounded-lg shadow-lg p-3 flex flex-col md:flex-row gap-2 items-center justify-between max-w-2xl mx-auto">
             <input
               type="text"
+              value={trackingCode}
+              onChange={(e) => setTrackingCode(e.target.value)}
               placeholder="Nhập mã vận đơn..."
               className="flex-1 border-none outline-none p-3 rounded text-gray-700"
             />
             <Link
-              to="/tracking"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded w-full md:w-auto"
+              to={`/tracking?code=${trackingCode}`}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded w-full md:w-auto transition"
             >
               Tra cứu
             </Link>

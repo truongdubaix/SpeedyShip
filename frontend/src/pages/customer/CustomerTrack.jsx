@@ -1,89 +1,131 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default function CustomerTrack() {
   const [trackingCode, setTrackingCode] = useState("");
   const [shipment, setShipment] = useState(null);
 
+  useEffect(() => {
+    AOS.init({ duration: 700, once: true });
+  }, []);
+
   const handleTrack = async (e) => {
     e.preventDefault();
-    if (!trackingCode.trim()) return toast.error("Vui lòng nhập mã đơn hàng");
+    if (!trackingCode.trim())
+      return toast.error("⚠️ Vui lòng nhập mã đơn hàng!");
 
     try {
       const res = await API.get(`/customers/track/${trackingCode}`);
       setShipment(res.data);
-      toast.success("Đã tìm thấy đơn hàng!");
-    } catch (err) {
+      toast.success("✅ Đã tìm thấy đơn hàng!");
+    } catch {
       setShipment(null);
-      toast.error("Không tìm thấy đơn hàng!");
+      toast.error("❌ Không tìm thấy đơn hàng!");
     }
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-blue-700">
-        🔍 Theo dõi đơn hàng
-      </h2>
+    <div className="pt-28 pb-16 bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen">
+      <div
+        className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8"
+        data-aos="fade-up"
+      >
+        <h2 className="text-3xl font-bold text-center mb-6 text-blue-700">
+          🔍 Theo dõi đơn hàng
+        </h2>
+        <p className="text-center text-gray-500 mb-8">
+          Nhập mã đơn hàng để xem thông tin chi tiết giao – nhận & trạng thái
+          hiện tại.
+        </p>
 
-      <form onSubmit={handleTrack} className="flex gap-2 mb-4">
-        <input
-          type="text"
-          placeholder="Nhập mã đơn hàng (VD: SP1001)"
-          value={trackingCode}
-          onChange={(e) => setTrackingCode(e.target.value)}
-          className="border p-2 flex-1 rounded"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 rounded hover:bg-blue-700 transition"
+        {/* Form tra cứu */}
+        <form
+          onSubmit={handleTrack}
+          className="flex flex-col md:flex-row items-center gap-3 mb-6"
+          data-aos="zoom-in"
         >
-          Tra cứu
-        </button>
-      </form>
+          <input
+            type="text"
+            placeholder="Nhập mã vận đơn (VD: SP1001)"
+            value={trackingCode}
+            onChange={(e) => setTrackingCode(e.target.value)}
+            className="w-full md:flex-1 border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition"
+          >
+            Tra cứu
+          </button>
+        </form>
 
-      {shipment && (
-        <div className="border rounded-lg p-4 bg-gray-50">
-          <h3 className="text-xl font-semibold mb-2 text-green-700">
-            Mã đơn: {shipment.tracking_code}
-          </h3>
-          <p>
-            <strong>Người gửi:</strong> {shipment.sender_name} -{" "}
-            {shipment.sender_phone}
+        {/* Hiển thị kết quả */}
+        {shipment && (
+          <div
+            className="border border-gray-200 rounded-xl bg-gradient-to-r from-white to-blue-50 shadow p-6 space-y-3"
+            data-aos="fade-up"
+          >
+            <h3 className="text-xl font-semibold text-green-700 mb-3">
+              📦 Mã đơn:{" "}
+              <span className="text-gray-800">{shipment.tracking_code}</span>
+            </h3>
+            <div className="grid md:grid-cols-2 gap-x-6 text-gray-700">
+              <div>
+                <p>
+                  <b>👤 Người gửi:</b> {shipment.sender_name} -{" "}
+                  {shipment.sender_phone}
+                </p>
+                <p>
+                  <b>🏠 Địa chỉ lấy hàng:</b> {shipment.pickup_address}
+                </p>
+                <p>
+                  <b>⚖️ Khối lượng:</b> {shipment.weight_kg} kg
+                </p>
+              </div>
+              <div>
+                <p>
+                  <b>👥 Người nhận:</b> {shipment.receiver_name} -{" "}
+                  {shipment.receiver_phone}
+                </p>
+                <p>
+                  <b>📍 Địa chỉ giao hàng:</b> {shipment.delivery_address}
+                </p>
+                <p>
+                  <b>💰 Tiền thu hộ:</b>{" "}
+                  {shipment.cod_amount?.toLocaleString("vi-VN")} VNĐ
+                </p>
+              </div>
+            </div>
+            <hr className="my-3 border-gray-300" />
+            <p>
+              <b>🚚 Trạng thái:</b>{" "}
+              <span className="text-blue-700 font-semibold">
+                {shipment.status}
+              </span>
+            </p>
+            <p>
+              <b>📡 Vị trí hiện tại:</b>{" "}
+              {shipment.current_location || "Chưa cập nhật"}
+            </p>
+            <p>
+              <b>🕒 Ngày tạo:</b>{" "}
+              {new Date(shipment.created_at).toLocaleString("vi-VN")}
+            </p>
+          </div>
+        )}
+
+        {!shipment && (
+          <p
+            className="text-center text-gray-400 mt-8 italic"
+            data-aos="fade-up"
+          >
+            Chưa có kết quả tra cứu nào...
           </p>
-          <p>
-            <strong>Người nhận:</strong> {shipment.receiver_name} -{" "}
-            {shipment.receiver_phone}
-          </p>
-          <p>
-            <strong>Địa chỉ lấy hàng:</strong> {shipment.pickup_address}
-          </p>
-          <p>
-            <strong>Địa chỉ giao hàng:</strong> {shipment.delivery_address}
-          </p>
-          <p>
-            <strong>Khối lượng:</strong> {shipment.weight_kg} kg
-          </p>
-          <p>
-            <strong>Tiền thu hộ:</strong>{" "}
-            {shipment.cod_amount?.toLocaleString()} VNĐ
-          </p>
-          <p>
-            <strong>Trạng thái:</strong>
-            <span className="ml-1 font-semibold text-blue-700">
-              {shipment.status}
-            </span>
-          </p>
-          <p>
-            <strong>Vị trí hiện tại:</strong>{" "}
-            {shipment.current_location || "Chưa cập nhật"}
-          </p>
-          <p>
-            <strong>Ngày tạo:</strong>{" "}
-            {new Date(shipment.created_at).toLocaleString()}
-          </p>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

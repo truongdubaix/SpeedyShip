@@ -29,7 +29,7 @@ export const updateCustomerProfile = async (req, res) => {
   }
 };
 
-// 3️⃣ Tạo đơn hàng mới
+// 🧾 3️⃣ Tạo đơn hàng mới (và tự động tạo thanh toán)
 export const createShipment = async (req, res) => {
   const {
     customer_id,
@@ -41,6 +41,7 @@ export const createShipment = async (req, res) => {
     delivery_address,
     weight_kg,
     cod_amount,
+    method = "COD", // thêm lựa chọn thanh toán
   } = req.body;
 
   try {
@@ -65,12 +66,22 @@ export const createShipment = async (req, res) => {
       ]
     );
 
+    const shipment_id = result.insertId;
+
+    // ✅ Sau khi tạo shipment => tạo luôn payment
+    await pool.query(
+      `INSERT INTO payments (shipment_id, customer_id, amount, method, status)
+       VALUES (?, ?, ?, ?, 'pending')`,
+      [shipment_id, customer_id, cod_amount, method]
+    );
+
     res.json({
-      message: "Tạo đơn hàng thành công",
-      shipment_id: result.insertId,
+      message: "✅ Tạo đơn hàng và thanh toán thành công",
+      shipment_id,
       tracking_code: tracking,
     });
   } catch (err) {
+    console.error("❌ Lỗi tạo đơn hàng:", err);
     res.status(500).json({ message: err.message });
   }
 };

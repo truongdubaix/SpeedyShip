@@ -2,9 +2,12 @@ import db from "../config/db.js";
 import bcrypt from "bcryptjs";
 
 // =================== 📊 Dashboard ===================
+// =================== 📊 Dashboard ===================
 export const getDriverDashboard = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Thống kê số lượng đơn theo trạng thái
     const [rows] = await db.query(
       `
       SELECT 
@@ -26,7 +29,32 @@ export const getDriverDashboard = async (req, res) => {
       assigned: 0,
     };
 
-    res.json(stats);
+    // 🔹 Lấy 5 đơn hàng gần đây của tài xế
+    const [recent] = await db.query(
+      `
+      SELECT 
+        s.id, 
+        s.tracking_code, 
+        s.receiver_name, 
+        s.status, 
+        s.updated_at 
+      FROM shipments s
+      JOIN assignments a ON s.id = a.shipment_id
+      WHERE a.driver_id = ?
+      ORDER BY s.updated_at DESC
+      LIMIT 5
+      `,
+      [id]
+    );
+
+    // ✅ Trả về dữ liệu tổng hợp
+    res.json({
+      completed: stats.completed,
+      delivering: stats.delivering,
+      picking: stats.picking,
+      assigned: stats.assigned,
+      recentShipments: recent,
+    });
   } catch (err) {
     console.error("❌ Lỗi getDriverDashboard:", err);
     res.status(500).json({ message: err.message || "Lỗi khi lấy dashboard" });

@@ -20,7 +20,7 @@ router.post("/shipments", createShipment);
 router.get("/shipments/:customer_id", getShipmentsByCustomer);
 router.get("/shipment/:id", getShipmentDetail); // ✅ chi tiết đơn hàng
 router.get("/track/:code", trackShipment);
-
+router.get("/:customer_id/shipments", getShipmentsByCustomer);
 // Feedback
 router.post("/feedback", createFeedback);
 

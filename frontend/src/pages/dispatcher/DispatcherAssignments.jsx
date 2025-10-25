@@ -9,18 +9,20 @@ export default function DispatcherAssignments() {
   const [drivers, setDrivers] = useState([]);
   const navigate = useNavigate();
 
+  // 🔹 Lấy toàn bộ dữ liệu ban đầu
   const fetchAll = async () => {
     try {
       const [a1, a2, a3] = await Promise.all([
-        API.get("/dispatcher/assignments"),
-        API.get("/dispatcher/shipments/unassigned"),
-        API.get("/dispatcher/drivers"),
+        API.get("/dispatcher/assignments"), // danh sách đã phân công
+        API.get("/dispatcher/shipments/unassigned"), // đơn chưa phân công
+        API.get("/dispatcher/drivers"), // tài xế
       ]);
       setAssignments(a1.data);
       setUnassigned(a2.data);
       setDrivers(a3.data);
     } catch (err) {
       console.error("❌ Lỗi khi tải dữ liệu:", err);
+      toast.error("Không thể tải dữ liệu");
     }
   };
 
@@ -28,22 +30,26 @@ export default function DispatcherAssignments() {
     fetchAll();
   }, []);
 
+  // 🚚 Phân công tài xế cho đơn hàng (gửi thông báo realtime)
   const handleAssign = async (shipment_id, driver_id) => {
     try {
-      await API.post("/dispatcher/assign", { shipment_id, driver_id });
-      toast.success("✅ Đã phân công tài xế!");
+      await API.post("/shipments/assign", { shipment_id, driver_id }); // ✅ API mới
+      toast.success("✅ Đã phân công tài xế và gửi thông báo!");
       fetchAll();
-    } catch {
+    } catch (err) {
+      console.error("❌ Lỗi khi phân công:", err);
       toast.error("❌ Phân công thất bại!");
     }
   };
 
+  // 🔁 Cập nhật trạng thái đơn
   const handleStatusChange = async (id, newStatus) => {
     try {
       await API.put(`/dispatcher/assignments/${id}`, { status: newStatus });
       toast.success("🔄 Cập nhật trạng thái thành công!");
       fetchAll();
-    } catch {
+    } catch (err) {
+      console.error("❌ Lỗi khi cập nhật trạng thái:", err);
       toast.error("❌ Lỗi cập nhật trạng thái!");
     }
   };
@@ -54,7 +60,7 @@ export default function DispatcherAssignments() {
         🚚 Quản lý phân công tài xế
       </h1>
 
-      {/* ====== Đơn chưa phân công ====== */}
+      {/* ====== Đơn hàng chưa phân công ====== */}
       <div className="bg-white p-4 rounded-lg shadow">
         <h2 className="text-xl font-semibold mb-3 text-gray-800">
           🕒 Đơn hàng chưa phân công
@@ -101,7 +107,7 @@ export default function DispatcherAssignments() {
                   colSpan="4"
                   className="p-3 text-center text-gray-500 italic"
                 >
-                  Tất cả đơn đã được phân công.
+                  ✅ Tất cả đơn đã được phân công.
                 </td>
               </tr>
             )}
