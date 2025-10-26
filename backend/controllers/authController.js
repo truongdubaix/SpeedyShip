@@ -78,7 +78,7 @@ export const login = async (req, res) => {
     const role = roles[0]?.code || "customer";
 
     const token = jwt.sign({ id: user.id, role }, "secret-key", {
-      expiresIn: "7d",
+      expiresIn: "2h",
     });
 
     res.json({

@@ -3,17 +3,48 @@ import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const [role, setRole] = useState(null);
-  const [name, setName] = useState("");
+  const [role, setRole] = useState(localStorage.getItem("role"));
+  const [name, setName] = useState(
+    localStorage.getItem("username") || "Người dùng"
+  );
 
+  // ✅ Theo dõi sự thay đổi của localStorage
   useEffect(() => {
-    setRole(localStorage.getItem("role"));
-    setName(localStorage.getItem("username") || "Người dùng");
+    const handleStorageChange = () => {
+      setRole(localStorage.getItem("role"));
+      setName(localStorage.getItem("username") || "");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const handleLogout = () => {
     localStorage.clear();
+    // ✅ Cập nhật ngay không cần reload
+    setRole(null);
+    setName("");
     navigate("/login");
+  };
+
+  const handleGoToDashboard = () => {
+    if (!role) return navigate("/login");
+    switch (role) {
+      case "admin":
+        navigate("/admin");
+        break;
+      case "dispatcher":
+        navigate("/dispatcher");
+        break;
+      case "driver":
+        navigate(`/driver/${localStorage.getItem("userId")}`);
+        break;
+      case "customer":
+        navigate("/customer");
+        break;
+      default:
+        navigate("/");
+    }
   };
 
   const getRoleLabel = (r) => {
@@ -63,11 +94,11 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Góc phải: đăng nhập / chào người dùng */}
-        <div className="flex items-center space-x-4">
+        {/* Góc phải */}
+        <div className="flex items-center space-x-3">
           {role ? (
             <>
-              <div className="hidden sm:flex flex-col items-end text-sm text-white">
+              <div className="hidden sm:flex flex-col items-end text-sm text-white mr-2">
                 <span className="font-semibold text-yellow-300">
                   Xin chào, {name}
                 </span>
@@ -75,6 +106,13 @@ export default function Navbar() {
                   ({getRoleLabel(role)})
                 </span>
               </div>
+
+              <button
+                onClick={handleGoToDashboard}
+                className="bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-1.5 rounded-md text-sm font-semibold shadow-sm transition"
+              >
+                🧭 Trung tâm
+              </button>
 
               <button
                 onClick={handleLogout}

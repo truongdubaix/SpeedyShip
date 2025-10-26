@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import ChatBubble from "../components/ChatBubble.jsx"; // 🧩 thêm import
 
 AOS.init({ duration: 800, once: true });
 
@@ -126,6 +127,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* 💬 Chat popup */}
+      <ChatBubble />
     </>
   );
 }
