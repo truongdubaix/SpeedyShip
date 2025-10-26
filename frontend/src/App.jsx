@@ -40,7 +40,8 @@ import DriverDashboard from "./pages/driver/DriverDashboard.jsx";
 import DriverAssignments from "./pages/driver/DriverAssignments.jsx";
 import DriverHistory from "./pages/driver/DriverHistory.jsx";
 import DriverProfile from "./pages/driver/DriverProfile.jsx";
-import DriverShipmentDetail from "./pages/driver/DriverShipmentDetail.jsx"; // ✅ đã import chuẩn
+import DriverShipmentDetail from "./pages/driver/DriverShipmentDetail.jsx";
+import DispatcherChat from "./pages/dispatcher/DispatcherChat.jsx";
 
 // 👤 Customer pages
 import CustomerDashboard from "./pages/customer/CustomerDashboard.jsx";
@@ -116,6 +117,7 @@ export default function App() {
           <Route path="assignments" element={<DispatcherAssignments />} />
           <Route path="tracking" element={<DispatcherTracking />} />
           <Route path="tracking/:id" element={<DispatcherTrackingDetail />} />
+          <Route path="chat" element={<DispatcherChat />} />
         </Route>
 
         {/* 🚚 Driver */}
