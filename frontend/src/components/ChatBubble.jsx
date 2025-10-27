@@ -8,6 +8,7 @@ export default function ChatBubble() {
   const [chatId, setChatId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [ready, setReady] = useState(false);
 
   const userId = localStorage.getItem("userId");
   const role = localStorage.getItem("role");
@@ -16,10 +17,13 @@ export default function ChatBubble() {
     if (!userId || role !== "customer") return;
 
     socket.on("chatStarted", (id) => {
+      console.log("✅ Chat ready:", id);
       setChatId(id);
-      socket.emit("joinChat", id); // ✅ join vào room khi bắt đầu
+      setReady(true);
+      socket.emit("joinChat", id);
     });
 
+    // 💬 Khi nhận tin nhắn mới từ server
     socket.on("newMessage", (msg) => {
       setMessages((prev) => [...prev, msg]);
     });
@@ -29,6 +33,7 @@ export default function ChatBubble() {
       setOpen(false);
       setChatId(null);
       setMessages([]);
+      setReady(false);
     });
 
     return () => {
@@ -47,11 +52,16 @@ export default function ChatBubble() {
     setOpen(true);
   };
 
+  // ✅ ĐÃ FIX: Không tự thêm tin nhắn vào messages nữa
   const sendMessage = () => {
+    if (!ready) {
+      alert("⏳ Đang kết nối với nhân viên hỗ trợ, vui lòng chờ...");
+      return;
+    }
     if (!chatId || !input.trim()) return;
     const msg = { chatId, senderId: userId, role: "customer", content: input };
-    socket.emit("sendMessage", msg);
-    setInput(""); // server sẽ gửi lại bản tin
+    socket.emit("sendMessage", msg); // server sẽ phát lại newMessage
+    setInput("");
   };
 
   const endChat = () => {
@@ -105,12 +115,20 @@ export default function ChatBubble() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Nhập tin nhắn..."
+              placeholder={
+                ready ? "Nhập tin nhắn..." : "⏳ Đang kết nối với nhân viên..."
+              }
+              disabled={!ready}
               className="flex-1 border rounded-lg p-2 text-sm outline-none"
             />
             <button
               onClick={sendMessage}
-              className="ml-2 bg-blue-600 text-white px-4 rounded-lg hover:bg-blue-700 transition"
+              disabled={!ready}
+              className={`ml-2 px-4 rounded-lg ${
+                ready
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-400 text-gray-200"
+              } transition`}
             >
               ➤
             </button>
