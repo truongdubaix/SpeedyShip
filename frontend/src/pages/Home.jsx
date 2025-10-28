@@ -1,35 +1,99 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import ChatBubble from "../components/ChatBubble.jsx"; // 🧩 thêm import
-
-AOS.init({ duration: 800, once: true });
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import "swiper/css/effect-fade";
+import ChatBubble from "../components/ChatBubble.jsx";
 
 export default function Home() {
   const [trackingCode, setTrackingCode] = useState("");
 
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
   return (
     <>
-      {/* Hero */}
-      <section className="relative h-[90vh] flex items-center justify-center text-center pt-16">
-        <img
-          src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&fit=crop&w=1600&q=80"
-          alt="logistics"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/55" />
-        <div className="relative z-10 max-w-3xl px-4" data-aos="fade-down">
-          <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-4">
-            Nhanh hơn. An toàn hơn. Tin cậy hơn.
-          </h2>
-          <p className="text-lg text-blue-100 mb-8">
-            SpeedyShip – nền tảng vận chuyển thông minh, giúp bạn gửi hàng dễ
-            dàng và theo dõi mọi lúc mọi nơi.
-          </p>
+      {/* 🌟 Hero Slider */}
+      <section className="relative h-[90vh]">
+        <Swiper
+          spaceBetween={0}
+          centeredSlides={true}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          pagination={{ clickable: true }}
+          navigation={true}
+          effect="fade"
+          modules={[Autoplay, Pagination, Navigation, EffectFade]}
+          className="h-full"
+        >
+          {/* Slide 1 */}
+          <SwiperSlide>
+            <div className="relative h-full flex items-center justify-center bg-red-600">
+              <img
+                src="/assets/banners/banner1.png"
+                alt="Tăng tốc vượt giới hạn"
+                className="absolute inset-0 w-full h-full object-cover opacity-90"
+              />
+              <div className="absolute inset-0 bg-red-800/40" />
+              <div className="relative z-10 text-center text-white px-6">
+                <h2 className="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">
+                  TĂNG TỐC VƯỢT GIỚI HẠN
+                </h2>
+                <p className="text-lg md:text-xl font-light">
+                  Giao đúng giờ – Nhận chu toàn
+                </p>
+              </div>
+            </div>
+          </SwiperSlide>
 
-          {/* Form tra cứu */}
-          <div className="bg-white rounded-lg shadow-lg p-3 flex flex-col md:flex-row gap-2 items-center justify-between max-w-2xl mx-auto">
+          {/* Slide 2 */}
+          <SwiperSlide>
+            <div className="relative h-full flex items-center justify-center bg-gradient-to-r from-red-700 to-red-500">
+              <img
+                src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&fit=crop&w=1600&q=80"
+                alt="Nhanh hơn an toàn hơn"
+                className="absolute inset-0 w-full h-full object-cover opacity-85"
+              />
+              <div className="absolute inset-0 bg-black/40" />
+              <div className="relative z-10 text-white text-center px-6">
+                <h2 className="text-5xl font-bold mb-2">
+                  Nhanh hơn – An toàn hơn
+                </h2>
+                <p className="text-lg">SpeedyShip – Vận chuyển đáng tin cậy</p>
+              </div>
+            </div>
+          </SwiperSlide>
+
+          {/* Slide 3 */}
+          <SwiperSlide>
+            <div className="relative h-full flex items-center justify-center bg-gray-900">
+              <img
+                src="https://images.unsplash.com/photo-1598515213640-5b086db46a42?auto=format&fit=crop&w=1600&q=80"
+                alt="Giao hàng toàn quốc"
+                className="absolute inset-0 w-full h-full object-cover opacity-85"
+              />
+              <div className="absolute inset-0 bg-black/50" />
+              <div className="relative z-10 text-white text-center px-6">
+                <h2 className="text-5xl font-bold mb-2">Giao hàng toàn quốc</h2>
+                <p className="text-lg">
+                  Mọi miền đất nước – Nhanh, uy tín, chuyên nghiệp
+                </p>
+              </div>
+            </div>
+          </SwiperSlide>
+        </Swiper>
+
+        {/* 🔍 Tracking form */}
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-2xl">
+          <div className="bg-white rounded-lg shadow-lg p-3 flex flex-col md:flex-row gap-2 items-center justify-between">
             <input
               type="text"
               value={trackingCode}
@@ -47,7 +111,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services teaser */}
+      {/* 🚀 Services */}
       <section id="services" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <h3
@@ -90,7 +154,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Partners */}
+      {/* 💼 Partners */}
       <section className="bg-blue-50 py-20">
         <div className="max-w-6xl mx-auto text-center px-6">
           <h3 className="text-3xl font-bold mb-8" data-aos="fade-up">

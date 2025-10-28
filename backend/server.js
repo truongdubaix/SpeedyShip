@@ -9,7 +9,7 @@ import initSocket from "./socket/initSocket.js"; // ⚡ Import module socket ri�
 
 // Import routes
 import authRoutes from "./routes/authRoutes.js";
-import driverRoutes from "./routes/driverRoutes.js";
+import driverRoutes from "./routes/driverRoutes.js"; // ✅ dùng /api/drivers
 import shipmentRoutes from "./routes/shipmentRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
@@ -57,7 +57,7 @@ export const { sendNotificationToDriver } = socketService;
 // 🚀 API ROUTES
 // ==========================
 app.use("/api/auth", authRoutes);
-app.use("/api/driver", driverRoutes);
+app.use("/api/drivers", driverRoutes); // ✅ đã sửa: từ /api/driver → /api/drivers
 app.use("/api/drivers", driverAdminRoutes);
 app.use("/api/drivers", driverLocationRoutes);
 app.use("/api/shipments", shipmentRoutes);
