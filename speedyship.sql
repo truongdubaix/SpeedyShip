@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 25, 2025 at 04:03 PM
+-- Generation Time: Oct 28, 2025 at 02:46 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.26
 
@@ -64,10 +64,52 @@ INSERT INTO `assignments` (`id`, `shipment_id`, `driver_id`, `assigned_at`, `sta
 (22, 30, 8, '2025-10-25 13:47:50', 'completed'),
 (23, 28, 8, '2025-10-25 13:47:54', 'picking'),
 (24, 29, 8, '2025-10-25 13:47:55', 'completed'),
-(25, 37, 8, '2025-10-25 19:26:41', 'picking'),
+(25, 37, 8, '2025-10-25 19:26:41', 'delivering'),
 (26, 34, 14, '2025-10-25 19:48:18', 'assigned'),
 (27, 33, 14, '2025-10-25 19:48:21', 'picking'),
 (28, 32, 14, '2025-10-25 19:48:23', 'picking');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chats`
+--
+
+CREATE TABLE `chats` (
+  `id` int NOT NULL,
+  `customer_id` int NOT NULL,
+  `dispatcher_id` int DEFAULT NULL,
+  `status` enum('active','closed') COLLATE utf8mb4_unicode_ci DEFAULT 'active',
+  `started_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `ended_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `chats`
+--
+
+INSERT INTO `chats` (`id`, `customer_id`, `dispatcher_id`, `status`, `started_at`, `ended_at`) VALUES
+(1, 9, NULL, 'closed', '2025-10-26 07:44:46', '2025-10-26 07:49:00'),
+(2, 9, NULL, 'closed', '2025-10-26 07:49:03', '2025-10-26 07:54:48'),
+(3, 9, NULL, 'closed', '2025-10-26 07:54:51', '2025-10-26 08:23:47'),
+(4, 9, NULL, 'closed', '2025-10-26 08:23:54', '2025-10-26 08:26:26'),
+(5, 9, NULL, 'closed', '2025-10-26 08:26:29', '2025-10-26 08:57:27'),
+(6, 9, NULL, 'closed', '2025-10-26 08:57:30', '2025-10-26 09:37:49'),
+(7, 9, NULL, 'closed', '2025-10-26 09:37:52', '2025-10-26 09:43:51'),
+(8, 9, NULL, 'closed', '2025-10-26 09:43:54', '2025-10-26 09:44:31'),
+(9, 9, NULL, 'closed', '2025-10-26 09:44:36', '2025-10-26 10:14:21'),
+(10, 9, NULL, 'closed', '2025-10-26 10:14:28', '2025-10-26 10:14:48'),
+(11, 9, NULL, 'closed', '2025-10-26 10:14:51', '2025-10-26 10:15:21'),
+(12, 9, NULL, 'closed', '2025-10-26 10:15:24', '2025-10-26 10:27:17'),
+(13, 9, NULL, 'closed', '2025-10-26 10:27:20', '2025-10-26 10:27:34'),
+(14, 9, NULL, 'closed', '2025-10-26 10:27:41', '2025-10-27 08:11:26'),
+(15, 9, NULL, 'closed', '2025-10-27 08:11:28', '2025-10-27 08:13:30'),
+(16, 9, NULL, 'closed', '2025-10-27 08:13:32', '2025-10-27 08:19:30'),
+(17, 9, NULL, 'closed', '2025-10-27 08:19:32', '2025-10-27 08:19:50'),
+(18, 9, NULL, 'closed', '2025-10-27 08:19:52', '2025-10-27 08:22:42'),
+(19, 9, NULL, 'closed', '2025-10-27 08:22:45', '2025-10-27 08:22:58'),
+(20, 9, NULL, 'closed', '2025-10-27 08:23:01', '2025-10-28 13:30:35'),
+(21, 9, NULL, 'closed', '2025-10-28 13:30:37', '2025-10-28 13:30:50');
 
 -- --------------------------------------------------------
 
@@ -137,6 +179,176 @@ INSERT INTO `feedbacks` (`id`, `customer_id`, `shipment_id`, `content`, `rating`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` int NOT NULL,
+  `chat_id` int NOT NULL,
+  `sender_id` int DEFAULT NULL,
+  `role` enum('customer','dispatcher') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`id`, `chat_id`, `sender_id`, `role`, `content`, `created_at`) VALUES
+(1, 1, 9, 'customer', 'alo', '2025-10-26 07:44:53'),
+(2, 1, 9, 'customer', 'alo', '2025-10-26 07:45:01'),
+(3, 2, 9, 'customer', 'a;lo', '2025-10-26 07:49:07'),
+(4, 2, 9, 'customer', 'alo', '2025-10-26 07:49:26'),
+(5, 2, 9, 'customer', 'alo', '2025-10-26 07:51:25'),
+(6, 2, 9, 'customer', 'alo', '2025-10-26 07:51:47'),
+(7, 2, 9, 'customer', 'alo', '2025-10-26 07:54:41'),
+(8, 3, 9, 'customer', 'alo', '2025-10-26 07:54:56'),
+(9, 3, 9, 'customer', 'alo', '2025-10-26 08:05:42'),
+(10, 3, 9, 'customer', 'alo', '2025-10-26 08:05:51'),
+(11, 3, 9, 'customer', 'alo', '2025-10-26 08:05:59'),
+(12, 3, 9, 'customer', 'ola', '2025-10-26 08:06:11'),
+(13, 3, 9, 'customer', 'alo', '2025-10-26 08:07:53'),
+(14, 3, 9, 'customer', 'alo', '2025-10-26 08:08:05'),
+(15, 3, 9, 'customer', 'xin chào', '2025-10-26 08:08:12'),
+(16, 3, 9, 'customer', 'truong dep trai', '2025-10-26 08:09:17'),
+(17, 3, 9, 'customer', 'hello', '2025-10-26 08:10:17'),
+(18, 3, 0, 'dispatcher', 'alo', '2025-10-26 08:12:55'),
+(19, 3, 9, 'customer', 'xin chào fen', '2025-10-26 08:13:08'),
+(20, 3, 0, 'dispatcher', 'tuyệt vời', '2025-10-26 08:13:21'),
+(21, 3, 9, 'customer', 'ok đó', '2025-10-26 08:13:28'),
+(22, 4, 9, 'customer', 'xin chào', '2025-10-26 08:24:04'),
+(23, 4, 9, 'customer', 'xin chào', '2025-10-26 08:24:13'),
+(24, 4, 0, 'dispatcher', 'alo', '2025-10-26 08:24:20'),
+(25, 4, 9, 'customer', 'chào', '2025-10-26 08:24:27'),
+(26, 4, 9, 'customer', 'alo', '2025-10-26 08:26:14'),
+(27, 4, 9, 'customer', 'ola', '2025-10-26 08:26:22'),
+(28, 5, 9, 'customer', 'alo', '2025-10-26 08:26:33'),
+(29, 5, 9, 'customer', 'alo', '2025-10-26 08:33:51'),
+(30, 5, 0, 'dispatcher', 'alo', '2025-10-26 08:48:19'),
+(31, 5, 9, 'customer', 'heeloo', '2025-10-26 08:52:01'),
+(32, 5, 9, 'customer', 'alo', '2025-10-26 08:52:20'),
+(33, 5, 0, 'dispatcher', 'alo', '2025-10-26 08:52:26'),
+(34, 5, 9, 'customer', '...', '2025-10-26 08:52:32'),
+(35, 5, 9, 'customer', 'aloo', '2025-10-26 08:52:41'),
+(36, 5, 0, 'dispatcher', 'aloooo', '2025-10-26 08:52:47'),
+(37, 5, 0, 'dispatcher', 'không được à', '2025-10-26 08:52:55'),
+(38, 5, 0, 'dispatcher', 'ok', '2025-10-26 08:53:19'),
+(39, 5, 9, 'customer', 'ola', '2025-10-26 08:55:13'),
+(40, 5, 0, 'dispatcher', 'ol', '2025-10-26 08:55:22'),
+(41, 5, 9, 'customer', 'alo', '2025-10-26 08:57:13'),
+(42, 6, 9, 'customer', 'alo', '2025-10-26 08:57:33'),
+(43, 5, 0, 'dispatcher', 'alo', '2025-10-26 08:57:41'),
+(44, 6, 9, 'customer', 'alo', '2025-10-26 09:05:46'),
+(45, 6, 0, 'dispatcher', 'alo', '2025-10-26 09:05:57'),
+(46, 6, 0, 'dispatcher', 'chào', '2025-10-26 09:06:02'),
+(47, 6, 9, 'customer', 'alo', '2025-10-26 09:13:45'),
+(48, 6, 9, 'customer', 'alo', '2025-10-26 09:14:41'),
+(49, 6, 0, 'dispatcher', 'alo', '2025-10-26 09:14:50'),
+(50, 6, 9, 'customer', 'alo', '2025-10-26 09:17:15'),
+(51, 6, 9, 'customer', 'alo', '2025-10-26 09:26:53'),
+(52, 6, 0, 'dispatcher', 'ok', '2025-10-26 09:27:00'),
+(53, 6, 9, 'customer', 'alo', '2025-10-26 09:33:00'),
+(54, 6, 9, 'customer', 'ola', '2025-10-26 09:33:14'),
+(55, 6, 0, 'dispatcher', 'xin chào ạ', '2025-10-26 09:33:23'),
+(56, 6, 0, 'dispatcher', 'Xin chào! 👋 Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-26 09:37:35'),
+(57, 6, 9, 'customer', 'alo', '2025-10-26 09:37:39'),
+(58, 7, 0, 'dispatcher', 'Xin chào! 👋 Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-26 09:37:53'),
+(59, 7, 9, 'customer', 'alo', '2025-10-26 09:37:56'),
+(60, 7, 0, 'dispatcher', 'xin chào', '2025-10-26 09:39:35'),
+(61, 7, 0, 'dispatcher', 'Xin chào! 👋 Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-26 09:43:32'),
+(62, 7, 9, 'customer', 'xin chào', '2025-10-26 09:43:43'),
+(63, 8, 0, 'dispatcher', 'Xin chào! 👋 Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-26 09:43:54'),
+(64, 8, 9, 'customer', 'chào bạn', '2025-10-26 09:43:59'),
+(65, 8, 9, 'customer', 'chào', '2025-10-26 09:44:13'),
+(66, 8, 9, 'customer', 'alo...', '2025-10-26 09:44:23'),
+(67, 9, 0, 'dispatcher', 'Xin chào! 👋 Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-26 09:44:37'),
+(68, 9, 9, 'customer', 'hello', '2025-10-26 09:44:45'),
+(69, 9, 0, 'dispatcher', 'Xin chào! 👋 Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-26 10:02:05'),
+(70, 9, 9, 'customer', 'alo', '2025-10-26 10:02:18'),
+(71, 9, 0, 'dispatcher', 'alo', '2025-10-26 10:02:26'),
+(72, 9, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:09:13'),
+(73, 9, 9, 'customer', 'alo', '2025-10-26 10:09:18'),
+(74, 9, 0, 'dispatcher', 'xin chào', '2025-10-26 10:09:23'),
+(75, 9, 9, 'customer', 'alo', '2025-10-26 10:11:35'),
+(76, 9, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:14:07'),
+(77, 9, 9, 'customer', 'alo', '2025-10-26 10:14:14'),
+(78, 10, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:14:28'),
+(79, 10, 9, 'customer', 'hello', '2025-10-26 10:14:38'),
+(80, 11, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:14:51'),
+(81, 11, 9, 'customer', 'hello', '2025-10-26 10:14:59'),
+(82, 12, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:15:24'),
+(83, 12, 9, 'customer', 'hello', '2025-10-26 10:15:31'),
+(84, 12, 9, 'customer', 'hello', '2025-10-26 10:16:47'),
+(85, 12, 0, 'dispatcher', '...', '2025-10-26 10:16:52'),
+(86, 12, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:17:01'),
+(87, 12, 9, 'customer', 'chào bạn', '2025-10-26 10:17:09'),
+(88, 12, 0, 'dispatcher', 'chào fen', '2025-10-26 10:17:30'),
+(89, 12, 9, 'customer', 'helllo', '2025-10-26 10:18:19'),
+(90, 12, 9, 'customer', 'được không', '2025-10-26 10:18:26'),
+(91, 12, 9, 'customer', 'hello 2', '2025-10-26 10:20:41'),
+(92, 12, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:21:24'),
+(93, 12, 9, 'customer', 'hello', '2025-10-26 10:21:32'),
+(94, 12, 9, 'customer', 'slo', '2025-10-26 10:22:59'),
+(95, 12, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:23:08'),
+(96, 12, 9, 'customer', 'alo', '2025-10-26 10:23:11'),
+(97, 12, 0, 'dispatcher', 'alo', '2025-10-26 10:23:17'),
+(98, 12, 9, 'customer', 'alo', '2025-10-26 10:23:40'),
+(99, 12, 9, 'customer', 'alo', '2025-10-26 10:24:00'),
+(100, 12, 9, 'customer', 'alo', '2025-10-26 10:24:11'),
+(101, 12, 9, 'customer', 'alo', '2025-10-26 10:24:51'),
+(102, 12, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:25:05'),
+(103, 12, 9, 'customer', 'alo', '2025-10-26 10:25:13'),
+(104, 12, 0, 'dispatcher', 'được rồi nè', '2025-10-26 10:25:19'),
+(105, 12, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:26:57'),
+(106, 12, 9, 'customer', 'alo', '2025-10-26 10:27:01'),
+(107, 12, 0, 'dispatcher', 'alo', '2025-10-26 10:27:13'),
+(108, 13, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:27:20'),
+(109, 13, 9, 'customer', 'alo', '2025-10-26 10:27:27'),
+(110, 14, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip.', '2025-10-26 10:27:41'),
+(111, 14, 0, 'dispatcher', 'Xin chào! 👋 Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:00:11'),
+(112, 14, 9, 'customer', 'alo', '2025-10-27 08:00:14'),
+(113, 14, 0, 'dispatcher', 'Xin chào! 👋 Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:00:47'),
+(114, 14, 9, 'customer', 'alo', '2025-10-27 08:00:52'),
+(115, 14, 0, 'dispatcher', 'chào', '2025-10-27 08:00:56'),
+(116, 14, 9, 'customer', 'đang làm gì đó', '2025-10-27 08:01:03'),
+(117, 14, 0, 'dispatcher', 'đang chat nè', '2025-10-27 08:01:36'),
+(118, 14, 9, 'customer', 'ok ', '2025-10-27 08:01:45'),
+(119, 14, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:10:06'),
+(120, 14, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:10:09'),
+(121, 14, 9, 'customer', 'alo', '2025-10-27 08:10:15'),
+(122, 14, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:10:33'),
+(123, 14, 9, 'customer', 'alo', '2025-10-27 08:10:42'),
+(124, 14, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:11:26'),
+(125, 15, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:11:29'),
+(126, 15, 9, 'customer', 'alo', '2025-10-27 08:11:31'),
+(127, 16, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:13:33'),
+(128, 16, 9, 'customer', 'a', '2025-10-27 08:13:34'),
+(129, 16, 0, 'dispatcher', 'alo', '2025-10-27 08:13:40'),
+(130, 16, 9, 'customer', '...', '2025-10-27 08:13:43'),
+(131, 16, 0, 'dispatcher', 'hellop', '2025-10-27 08:13:47'),
+(132, 16, 9, 'customer', 'ok', '2025-10-27 08:13:50'),
+(133, 16, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:19:25'),
+(134, 17, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:19:33'),
+(135, 17, 9, 'customer', 'xalo', '2025-10-27 08:19:42'),
+(136, 18, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:19:53'),
+(137, 18, 9, 'customer', 'áda', '2025-10-27 08:19:56'),
+(138, 19, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:22:46'),
+(139, 19, 9, 'customer', 'alo', '2025-10-27 08:22:56'),
+(140, 20, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:23:02'),
+(141, 20, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:23:35'),
+(142, 20, 0, 'dispatcher', 'alo', '2025-10-27 08:23:46'),
+(143, 20, 9, 'customer', 'aol', '2025-10-27 08:23:49'),
+(144, 20, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-27 08:26:17'),
+(145, 20, 9, 'customer', 'alo', '2025-10-27 08:26:26'),
+(146, 20, 0, 'dispatcher', 'tuyệt vời', '2025-10-27 08:26:34'),
+(147, 20, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-28 13:30:26'),
+(148, 21, 0, 'dispatcher', 'Xin chào 👋! Chúng tôi là đội ngũ hỗ trợ SpeedyShip. Bạn cần giúp gì hôm nay?', '2025-10-28 13:30:38'),
+(149, 21, 9, 'customer', 'alo', '2025-10-28 13:30:44');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `notifications`
 --
 
@@ -192,7 +404,8 @@ INSERT INTO `payments` (`id`, `shipment_id`, `customer_id`, `amount`, `method`, 
 (18, 40, 9, 18000.00, 'Momo', 'completed', '2025-10-25 11:22:45', '2025-10-25 11:24:19'),
 (19, 41, 9, 80000.00, 'COD', 'completed', '2025-10-25 11:25:45', '2025-10-25 11:29:52'),
 (20, 42, 9, 90000.00, 'Momo', 'completed', '2025-10-25 11:29:08', '2025-10-25 11:29:50'),
-(21, 43, 9, 80000.00, 'Momo', 'pending', '2025-10-25 13:26:37', '2025-10-25 13:26:37');
+(21, 43, 9, 80000.00, 'Momo', 'pending', '2025-10-25 13:26:37', '2025-10-25 13:26:37'),
+(22, 44, 9, 120000.00, 'Momo', 'completed', '2025-10-28 14:32:38', '2025-10-28 14:34:05');
 
 -- --------------------------------------------------------
 
@@ -255,31 +468,32 @@ INSERT INTO `shipments` (`id`, `tracking_code`, `customer_id`, `sender_name`, `s
 (4, 'SP1004', 5, 'Phạm Huy 2', '0909333111', 'Bùi Trang', '0909555999', '321 Hai Bà Trưng, Q3', '789 Lê Văn Sỹ, Q10', 2.20, 80000.00, 'delivered', 'Q3 - HCM', '2025-10-20 13:09:32', '2025-10-22 05:32:07', 21.027800, 105.834200, 20.844900, 106.688100),
 (5, 'SP1005', 4, 'Nguyễn Hà', '0909333222', 'Trần Bình', '0909444111', '14 Võ Văn Kiệt, Q1', '99 Nguyễn Thị Minh Khai, Q3', 6.00, 170000.00, 'delivered', 'Q3 - HCM', '2025-10-20 13:09:32', '2025-10-21 16:26:34', 10.776900, 106.700900, 16.047100, 108.206800),
 (6, 'SP1007', NULL, 'Phạm Huy 3', '0909333111', 'Diễm Trang', '0909555999', '321 Hai Bà Trưng, Q2', '789 Lê Văn Sỹ, Q11', 4.60, 90000.00, 'delivered', 'Q3 - HCM', '2025-10-20 13:33:25', '2025-10-22 05:32:10', NULL, NULL, NULL, NULL),
-(17, 'SP2001', 4, 'Nguyễn Thị Mai', '0909123456', 'Trần Văn Cường', '0909555666', '123 Lê Lợi, TP.HCM', '25 Trần Hưng Đạo, Hà Nội', 5.20, 120000.00, 'delivered', 'Hà Nội', '2025-09-05 01:30:00', '2025-10-21 05:10:06', NULL, NULL, NULL, NULL),
-(18, 'SP2002', 5, 'Lê Văn Long', '0909234567', 'Phạm Thị Hoa', '0909666777', '55 Nguyễn Văn Linh, Đà Nẵng', '12 Lý Thường Kiệt, Huế', 2.30, 95000.00, 'delivered', '54 Nguyễn Văn Linh', '2025-09-10 02:45:00', '2025-10-22 05:32:11', NULL, NULL, NULL, NULL),
-(19, 'SP2003', 6, 'Trần Thị Ngọc', '0909345678', 'Lê Văn Thành', '0909777888', '89 Trần Quang Diệu, Cần Thơ', '88 Đại lộ Bình Dương', 8.10, 175000.00, 'delivered', 'Bình Dương', '2025-10-01 03:10:00', '2025-10-22 05:32:14', NULL, NULL, NULL, NULL),
+(17, 'SP2001', 4, 'Nguyễn Thị Mai', '0909123456', 'Trần Văn Cường', '0909555666', '123 Lê Lợi, TP.HCM', '25 Trần Hưng Đạo, Hà Nội', 5.20, 120000.00, 'delivered', 'Hà Nội', '2025-09-05 01:30:00', '2025-10-28 14:36:29', 10.776900, 106.700900, 21.028500, 105.854200),
+(18, 'SP2002', 5, 'Lê Văn Long', '0909234567', 'Phạm Thị Hoa', '0909666777', '55 Nguyễn Văn Linh, Đà Nẵng', '12 Lý Thường Kiệt, Huế', 2.30, 95000.00, 'delivered', '54 Nguyễn Văn Linh', '2025-09-10 02:45:00', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.463700, 107.590900),
+(19, 'SP2003', 6, 'Trần Thị Ngọc', '0909345678', 'Lê Văn Thành', '0909777888', '89 Trần Quang Diệu, Cần Thơ', '88 Đại lộ Bình Dương', 8.10, 175000.00, 'delivered', 'Bình Dương', '2025-10-01 03:10:00', '2025-10-28 14:36:29', 10.045200, 105.746900, 10.980400, 106.651900),
 (22, 'SP1009', NULL, 'Kim Loan', '012347594', 'Ngọc Trường', '033218412', 'Đà Nẵng', 'Quảng Nam', 4.60, 200000.00, 'delivering', 'Đà Nẵng', '2025-10-21 14:28:49', '2025-10-25 07:31:37', 16.054400, 108.202200, 15.573600, 108.474000),
 (23, 'SP1010', NULL, 'Ngọc Trường', '0321393213', 'Kim Loan', '0234566783', 'Quảng Nam', 'Đà Nẵng', 5.20, 900000.00, 'pending', 'Hà Nội', '2025-10-21 14:29:46', '2025-10-25 06:36:28', 15.573600, 108.474000, 16.054400, 108.202200),
 (24, 'SPA001', NULL, 'Kim Loan', '0123456779', 'Ngọc Trường', '098764221', 'Đà Nẵng', 'Bình Sơn', 5.20, 90000.00, 'completed', 'Đà Nẵng', '2025-10-22 05:29:37', '2025-10-25 06:36:28', 16.054400, 108.202200, 15.286000, 108.813000),
-(25, 'SPA100', NULL, 'Nguyễn Thị Mai', '0909333111', 'Diễm Trang', '0909555666', '321 Hai Bà Trưng, Q2', '25 Trần Hưng Đạo, Hà Nội', 4.60, 120000.00, 'delivered', 'Hà Nội', '2025-10-22 05:53:21', '2025-10-25 06:36:28', 10.791500, 106.730700, 21.028500, 105.854200),
-(26, 'SPA200', NULL, 'Nguyễn Tấn Sang', '0132131323', 'Ngọc Trường', '0909555999', '166 Nguyễn Xí', 'K62/23 Nguyễn Huy Tưởng', 5.20, 90000.00, 'delivered', 'Kho Đà Nẵng', '2025-10-22 05:54:33', '2025-10-25 06:36:28', 16.054400, 108.202200, 16.056500, 108.230900),
+(25, 'SPA100', NULL, 'Nguyễn Thị Mai', '0909333111', 'Diễm Trang', '0909555666', '321 Hai Bà Trưng, Q2', '25 Trần Hưng Đạo, Hà Nội', 4.60, 120000.00, 'delivered', 'Hà Nội', '2025-10-22 05:53:21', '2025-10-28 14:36:29', 10.776900, 106.700900, 21.028500, 105.854200),
+(26, 'SPA200', NULL, 'Nguyễn Tấn Sang', '0132131323', 'Ngọc Trường', '0909555999', '166 Nguyễn Xí', 'K62/23 Nguyễn Huy Tưởng', 5.20, 90000.00, 'delivered', 'Kho Đà Nẵng', '2025-10-22 05:54:33', '2025-10-28 14:36:29', 16.054400, 108.202200, 21.028500, 105.854200),
 (27, 'SPA101', NULL, 'Bảo Minh', '0232039992', 'Quốc Khanh', '0231131312', 'Đà Nẵng ', 'Quảng Trị', 5.20, 120000.00, 'picking', 'Đà Nẵng', '2025-10-22 08:54:47', '2025-10-25 06:36:28', 16.054400, 108.202200, 16.818100, 107.100000),
-(28, 'SP396533', NULL, 'Phạm Huy 3', '0909123456', 'Diễm Trang 22', '0909555999', '321 Hai Bà Trưng, Q2', '789 Lê Văn Sỹ, Q11', 4.60, 90000.00, 'picking', 'Kho Nguyễn Lương Bằng', '2025-10-25 06:06:36', '2025-10-25 12:35:22', NULL, NULL, NULL, NULL),
-(29, 'TEST001', 9, 'Truong KH', '0909123456', 'Ngọc Trường', '0909988776', 'Đà Nẵng', 'Hà Nội', 3.50, 80000.00, 'completed', 'Kho Tôn Đức Thắng', '2025-10-25 06:15:57', '2025-10-25 06:48:14', 16.054400, 108.202200, 21.028500, 105.854200),
+(28, 'SP396533', NULL, 'Phạm Huy 3', '0909123456', 'Diễm Trang 22', '0909555999', '321 Hai Bà Trưng, Q2', '789 Lê Văn Sỹ, Q11', 4.60, 90000.00, 'picking', 'Kho Nguyễn Lương Bằng', '2025-10-25 06:06:36', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(29, 'TEST001', 9, 'Truong KH', '0909123456', 'Ngọc Trường', '0909988776', 'Đà Nẵng', 'Hà Nội', 3.50, 80000.00, 'completed', 'Kho Tôn Đức Thắng', '2025-10-25 06:15:57', '2025-10-28 14:36:29', 10.776900, 106.700900, 21.028500, 105.854200),
 (30, 'SP114618', 9, 'Viet Ngoc', '0909234567', 'Ngọc Trường', '0905050505', 'Nguyễn Như Hạnh', 'Nguyễn Huy Tưởng', 4.60, 90000.00, 'completed', 'Kho Đà Nẵng', '2025-10-25 06:18:34', '2025-10-25 12:39:13', 16.054400, 108.202200, 16.054400, 108.202200),
-(31, 'SP386563', 9, 'Hoài Bảo', '0123456998', 'Viết Ngọc', '09050600060', 'Sơn Trà', 'Nguyễn Như Hạnh', 9.00, 4500000.00, 'assigned', 'Kho Tô Hiệu', '2025-10-25 06:23:06', '2025-10-25 06:46:42', 16.093500, 108.242000, 16.067800, 108.220800),
-(32, 'SP950332', 9, 'Phạm Huy 5', '0909123452', 'Diễm Trang', '0125544886', 'Đà Nẵng 2', 'Đà Nẵng 1', 4.60, 190000.00, 'picking', NULL, '2025-10-25 10:25:50', '2025-10-25 12:48:37', NULL, NULL, NULL, NULL),
-(33, 'SP766968', 9, 'Nguyễn Thị Mai 2', '012345989', 'Bảo Minh', '0363599987', '123 NVL', '62/23 NHT', 9.50, 1500000.00, 'picking', NULL, '2025-10-25 10:39:26', '2025-10-25 12:48:44', NULL, NULL, NULL, NULL),
-(34, 'SP009005', 9, 'Lê Văn Long 22', '0909123456', 'Phạm Thị Hoa', '0905050505', '94 Nguyễn Như Hạnh ', '62 Nguyễn Huy Tưởng', 4.60, 900000.00, 'assigned', NULL, '2025-10-25 10:43:29', '2025-10-25 12:48:18', NULL, NULL, NULL, NULL),
-(35, 'SP194149', 9, 'Phạm Huy 9', '0909234567', 'Diễm Trang 2', '0909666777', '123 Lê Lợi, TP.HCM', '12 Lý Thường Kiệt, Huế', 4.60, 900000.00, 'delivered', NULL, '2025-10-25 10:46:34', '2025-10-25 11:07:26', NULL, NULL, NULL, NULL),
-(36, 'SP965709', 9, 'Phạm Huy 3', '0909234567', 'test', '0123456799', 'Test 1', 'Test', 4.90, 90000.00, 'delivered', NULL, '2025-10-25 10:59:25', '2025-10-25 11:07:21', NULL, NULL, NULL, NULL),
-(37, 'SP119665', 9, 'Test 2', '0123456998', 'Test Cuoi', '01545454558', '123 Lê Lợi, TP.HCM', 'Test Cuoi cung', 4.60, 800000.00, 'picking', NULL, '2025-10-25 11:18:39', '2025-10-25 12:35:12', NULL, NULL, NULL, NULL),
-(38, 'SP273096', 9, 'Sang Nguyễn', '0973673151', 'Ngọc Trường', '0998441166', 'K62/23 Nguyễn Huy Tưởng', 'Nguyễn Xí', 4.90, 440000.00, 'delivered', NULL, '2025-10-25 11:21:13', '2025-10-25 11:27:35', NULL, NULL, NULL, NULL),
-(39, 'SP328431', 9, 'Trường ', '0988141667', 'Sang', '0919118886', 'Nguyễn Như Hạnh', 'Nguyễn Huy Tưởng', 2.50, 15000.00, 'delivered', NULL, '2025-10-25 11:22:08', '2025-10-25 11:27:31', NULL, NULL, NULL, NULL),
-(40, 'SP365416', 9, 'Trường', '0905886442', 'Ngọc', '0778449663', 'Nguyễn Như Hạnh', 'Nguyễn Huy Tưởng', 4.80, 18000.00, 'delivered', NULL, '2025-10-25 11:22:45', '2025-10-25 11:27:27', NULL, NULL, NULL, NULL),
-(41, 'SP545874', 9, 'Tesst 22', '0909234567', 'Test 99', '0909555999', 'K62 NHT', 'K45 NHH', 4.50, 80000.00, 'delivered', NULL, '2025-10-25 11:25:45', '2025-10-25 11:27:22', NULL, NULL, NULL, NULL),
-(42, 'SP748623', 9, 'Test 33', '0909234567', 'Diễm Trang', '0909555666', 'Test 1', '789 Lê Văn Sỹ, Q11', 5.20, 90000.00, 'delivered', NULL, '2025-10-25 11:29:08', '2025-10-25 11:30:06', NULL, NULL, NULL, NULL),
-(43, 'SP797768', 9, 'Sắp Push', '0123456998', 'Push Code', '0775992441', 'K62/23 Nguyễn Huy Tưởng', 'K45 Nguyễn Như Hạnh', 2.30, 80000.00, 'delivered', NULL, '2025-10-25 13:26:37', '2025-10-25 13:29:41', NULL, NULL, NULL, NULL);
+(31, 'SP386563', 9, 'Hoài Bảo', '0123456998', 'Viết Ngọc', '09050600060', 'Sơn Trà', 'Nguyễn Như Hạnh', 9.00, 4500000.00, 'assigned', 'Kho Tô Hiệu', '2025-10-25 06:23:06', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(32, 'SP950332', 9, 'Phạm Huy 5', '0909123452', 'Diễm Trang', '0125544886', 'Đà Nẵng 2', 'Đà Nẵng 1', 4.60, 190000.00, 'picking', NULL, '2025-10-25 10:25:50', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(33, 'SP766968', 9, 'Nguyễn Thị Mai 2', '012345989', 'Bảo Minh', '0363599987', '123 NVL', '62/23 NHT', 9.50, 1500000.00, 'picking', NULL, '2025-10-25 10:39:26', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(34, 'SP009005', 9, 'Lê Văn Long 22', '0909123456', 'Phạm Thị Hoa', '0905050505', '94 Nguyễn Như Hạnh ', '62 Nguyễn Huy Tưởng', 4.60, 900000.00, 'assigned', NULL, '2025-10-25 10:43:29', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(35, 'SP194149', 9, 'Phạm Huy 9', '0909234567', 'Diễm Trang 2', '0909666777', '123 Lê Lợi, TP.HCM', '12 Lý Thường Kiệt, Huế', 4.60, 900000.00, 'delivered', NULL, '2025-10-25 10:46:34', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(36, 'SP965709', 9, 'Phạm Huy 3', '0909234567', 'test', '0123456799', 'Test 1', 'Test', 4.90, 90000.00, 'delivered', NULL, '2025-10-25 10:59:25', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(37, 'SP119665', 9, 'Test 2', '0123456998', 'Test Cuoi', '01545454558', '123 Lê Lợi, TP.HCM', 'Test Cuoi cung', 4.60, 800000.00, 'delivering', NULL, '2025-10-25 11:18:39', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(38, 'SP273096', 9, 'Sang Nguyễn', '0973673151', 'Ngọc Trường', '0998441166', 'K62/23 Nguyễn Huy Tưởng', 'Nguyễn Xí', 4.90, 440000.00, 'delivered', NULL, '2025-10-25 11:21:13', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(39, 'SP328431', 9, 'Trường ', '0988141667', 'Sang', '0919118886', 'Nguyễn Như Hạnh', 'Nguyễn Huy Tưởng', 2.50, 15000.00, 'delivered', NULL, '2025-10-25 11:22:08', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(40, 'SP365416', 9, 'Trường', '0905886442', 'Ngọc', '0778449663', 'Nguyễn Như Hạnh', 'Nguyễn Huy Tưởng', 4.80, 18000.00, 'delivered', NULL, '2025-10-25 11:22:45', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(41, 'SP545874', 9, 'Tesst 22', '0909234567', 'Test 99', '0909555999', 'K62 NHT', 'K45 NHH', 4.50, 80000.00, 'delivered', NULL, '2025-10-25 11:25:45', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(42, 'SP748623', 9, 'Test 33', '0909234567', 'Diễm Trang', '0909555666', 'Test 1', '789 Lê Văn Sỹ, Q11', 5.20, 90000.00, 'delivered', NULL, '2025-10-25 11:29:08', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(43, 'SP797768', 9, 'Sắp Push', '0123456998', 'Push Code', '0775992441', 'K62/23 Nguyễn Huy Tưởng', 'K45 Nguyễn Như Hạnh', 2.30, 80000.00, 'delivered', NULL, '2025-10-25 13:26:37', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200),
+(44, 'SP958580', 9, 'Trường 123', '0909123456', 'Trường 456', '0121212121', '55 Nguyễn Văn Linh, Đà Nẵng', '62 Nguyễn Huy Tưởng', 4.90, 120000.00, 'pending', NULL, '2025-10-28 14:32:38', '2025-10-28 14:36:29', 16.054400, 108.202200, 16.054400, 108.202200);
 
 -- --------------------------------------------------------
 
@@ -404,6 +618,13 @@ ALTER TABLE `assignments`
   ADD KEY `driver_id` (`driver_id`);
 
 --
+-- Indexes for table `chats`
+--
+ALTER TABLE `chats`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer_id` (`customer_id`);
+
+--
 -- Indexes for table `drivers`
 --
 ALTER TABLE `drivers`
@@ -419,6 +640,13 @@ ALTER TABLE `feedbacks`
   ADD PRIMARY KEY (`id`),
   ADD KEY `customer_id` (`customer_id`),
   ADD KEY `shipment_id` (`shipment_id`);
+
+--
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `chat_id` (`chat_id`);
 
 --
 -- Indexes for table `notifications`
@@ -491,6 +719,12 @@ ALTER TABLE `assignments`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
+-- AUTO_INCREMENT for table `chats`
+--
+ALTER TABLE `chats`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
 -- AUTO_INCREMENT for table `drivers`
 --
 ALTER TABLE `drivers`
@@ -503,6 +737,12 @@ ALTER TABLE `feedbacks`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=150;
+
+--
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
@@ -512,7 +752,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -524,7 +764,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `shipments`
 --
 ALTER TABLE `shipments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `system_configs`
@@ -556,6 +796,12 @@ ALTER TABLE `assignments`
   ADD CONSTRAINT `assignments_ibfk_2` FOREIGN KEY (`driver_id`) REFERENCES `drivers` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `chats`
+--
+ALTER TABLE `chats`
+  ADD CONSTRAINT `chats_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `drivers`
 --
 ALTER TABLE `drivers`
@@ -568,6 +814,12 @@ ALTER TABLE `drivers`
 ALTER TABLE `feedbacks`
   ADD CONSTRAINT `feedbacks_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `feedbacks_ibfk_2` FOREIGN KEY (`shipment_id`) REFERENCES `shipments` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `notifications`
