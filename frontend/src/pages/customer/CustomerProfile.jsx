@@ -12,7 +12,9 @@ function getCurrentUserId() {
       const parsed = JSON.parse(u);
       if (parsed?.id) return String(parsed.id);
     }
-  } catch (_) {}
+  } catch (_) {
+    /* empty */
+  }
 
   const directId =
     localStorage.getItem("userId") ||
@@ -27,7 +29,9 @@ function getCurrentUserId() {
       const fromJwt =
         payload?.id || payload?.userId || payload?.sub || payload?.uid;
       if (fromJwt) return String(fromJwt);
-    } catch (_) {}
+    } catch (_) {
+      /* empty */
+    }
   }
 
   return null;
@@ -39,7 +43,12 @@ export default function CustomerProfile() {
   const userId = getCurrentUserId();
 
   useEffect(() => {
-    AOS.init({ duration: 800, once: true });
+    // 👇 Hiệu ứng nhẹ, không delay, chỉ fade mượt
+    AOS.init({
+      duration: 400,
+      easing: "ease-in-out",
+      once: true,
+    });
 
     if (!userId) {
       toast.error("❌ Không tìm thấy người dùng, vui lòng đăng nhập lại!");
@@ -95,24 +104,16 @@ export default function CustomerProfile() {
     >
       <h1
         className="text-3xl font-extrabold text-blue-700 text-center mb-4"
-        data-aos="fade-down"
+        data-aos="fade-up"
       >
         👤 Hồ sơ khách hàng
       </h1>
-      <p
-        className="text-gray-500 text-center text-sm"
-        data-aos="fade-up"
-        data-aos-delay="100"
-      >
+
+      <p className="text-gray-500 text-center text-sm" data-aos="fade-up">
         Cập nhật thông tin cá nhân để SpeedyShip phục vụ bạn tốt hơn 🚚
       </p>
 
-      <form
-        onSubmit={handleUpdate}
-        className="space-y-5"
-        data-aos="zoom-in"
-        data-aos-delay="200"
-      >
+      <form onSubmit={handleUpdate} className="space-y-5" data-aos="fade-up">
         <div>
           <label className="block font-semibold mb-2 text-gray-700">
             Họ và tên:

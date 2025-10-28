@@ -26,7 +26,8 @@ export default function CustomerDashboard() {
   const userId = getCurrentUserId();
 
   useEffect(() => {
-    AOS.init({ duration: 700, once: true });
+    // 👇 Hiệu ứng nhẹ hơn
+    AOS.init({ duration: 400, easing: "ease-in-out", once: true });
 
     if (!userId) {
       toast.error("❌ Không tìm thấy người dùng, vui lòng đăng nhập lại!");
@@ -62,7 +63,7 @@ export default function CustomerDashboard() {
       {/* Header */}
       <h2
         className="text-3xl font-bold text-gray-700 mb-10 text-center"
-        data-aos="fade-down"
+        data-aos="fade-up"
       >
         👋 Xin chào,{" "}
         <span className="text-blue-600 capitalize">
@@ -100,7 +101,6 @@ export default function CustomerDashboard() {
       <section
         className="bg-white rounded-2xl shadow-lg p-6"
         data-aos="fade-up"
-        data-aos-delay="100"
       >
         <h3 className="text-xl font-semibold mb-5 text-gray-700 flex items-center gap-2">
           📋 Đơn hàng gần đây
