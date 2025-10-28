@@ -1,16 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
-import AOS from "aos";
-import "aos/dist/aos.css";
 
 export default function CustomerTrack() {
   const [trackingCode, setTrackingCode] = useState("");
   const [shipment, setShipment] = useState(null);
-
-  useEffect(() => {
-    AOS.init({ duration: 700, once: true });
-  }, []);
 
   const handleTrack = async (e) => {
     e.preventDefault();
@@ -28,11 +22,8 @@ export default function CustomerTrack() {
   };
 
   return (
-    <div className="pt-28 pb-16 bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen">
-      <div
-        className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8"
-        data-aos="fade-up"
-      >
+    <div className="pt-28 pb-16 bg-gray-50 min-h-screen">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
         <h2 className="text-3xl font-bold text-center mb-6 text-blue-700">
           🔍 Theo dõi đơn hàng
         </h2>
@@ -45,14 +36,13 @@ export default function CustomerTrack() {
         <form
           onSubmit={handleTrack}
           className="flex flex-col md:flex-row items-center gap-3 mb-6"
-          data-aos="zoom-in"
         >
           <input
             type="text"
             placeholder="Nhập mã vận đơn (VD: SP1001)"
             value={trackingCode}
             onChange={(e) => setTrackingCode(e.target.value)}
-            className="w-full md:flex-1 border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+            className="w-full md:flex-1 border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none transition"
           />
           <button
             type="submit"
@@ -63,11 +53,8 @@ export default function CustomerTrack() {
         </form>
 
         {/* Hiển thị kết quả */}
-        {shipment && (
-          <div
-            className="border border-gray-200 rounded-xl bg-gradient-to-r from-white to-blue-50 shadow p-6 space-y-3"
-            data-aos="fade-up"
-          >
+        {shipment ? (
+          <div className="border border-gray-200 rounded-xl bg-white shadow-sm p-6 space-y-3">
             <h3 className="text-xl font-semibold text-green-700 mb-3">
               📦 Mã đơn:{" "}
               <span className="text-gray-800">{shipment.tracking_code}</span>
@@ -95,7 +82,7 @@ export default function CustomerTrack() {
                 </p>
                 <p>
                   <b>💰 Tiền thu hộ:</b>{" "}
-                  {shipment.cod_amount?.toLocaleString("vi-VN")} VNĐ
+                  {shipment.cod_amount?.toLocaleString("vi-VN")}₫
                 </p>
               </div>
             </div>
@@ -115,13 +102,8 @@ export default function CustomerTrack() {
               {new Date(shipment.created_at).toLocaleString("vi-VN")}
             </p>
           </div>
-        )}
-
-        {!shipment && (
-          <p
-            className="text-center text-gray-400 mt-8 italic"
-            data-aos="fade-up"
-          >
+        ) : (
+          <p className="text-center text-gray-400 mt-8 italic">
             Chưa có kết quả tra cứu nào...
           </p>
         )}

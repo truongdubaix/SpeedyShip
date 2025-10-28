@@ -24,26 +24,23 @@ export default function TaoDonHang() {
   const customerId =
     localStorage.getItem("customer_id") || localStorage.getItem("userId");
 
+  // 👇 Giảm hiệu ứng xuống mức nhẹ
   useEffect(() => {
-    AOS.init({ duration: 700, once: true });
+    AOS.init({ duration: 400, easing: "ease-in-out", once: true });
   }, []);
 
   const handleChange = (e) =>
     setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
 
-  // 🧾 Khi bấm nút "Tạo đơn hàng" → mở popup chọn phương thức
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!customerId) {
       toast.error("⚠️ Bạn chưa đăng nhập!");
       return;
     }
-
     setShowPaymentChoice(true);
   };
 
-  // 💳 Hàm tạo đơn hàng thực tế (sau khi chọn phương thức)
   const createOrderWithMethod = async (method) => {
     setCreating(true);
     try {
@@ -53,8 +50,6 @@ export default function TaoDonHang() {
         res.data.shipment_id || res.data.id || res.data.insertId;
 
       toast.success("✅ Tạo đơn hàng thành công!");
-
-      // Điều hướng tùy theo phương thức thanh toán
       if (method === "MOMO" && shipmentId) {
         navigate(
           `/customer/payment?shipment_id=${shipmentId}&amount=${form.cod_amount}`
@@ -76,7 +71,7 @@ export default function TaoDonHang() {
       className="p-8 max-w-3xl mx-auto bg-white rounded-2xl shadow-lg mt-6 relative"
       data-aos="fade-up"
     >
-      <h2 className="text-3xl font-bold mb-6 text-center text-blue-600 flex items-center justify-center gap-2">
+      <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
         🚚 Tạo đơn hàng mới
       </h2>
       <p className="text-center text-gray-500 mb-8">
@@ -87,7 +82,8 @@ export default function TaoDonHang() {
         onSubmit={handleSubmit}
         className="grid md:grid-cols-2 gap-5 text-gray-700"
       >
-        <div data-aos="fade-right">
+        {/* Gửi */}
+        <div>
           <label className="block mb-1 font-medium">👤 Tên người gửi</label>
           <input
             name="sender_name"
@@ -99,7 +95,7 @@ export default function TaoDonHang() {
           />
         </div>
 
-        <div data-aos="fade-left">
+        <div>
           <label className="block mb-1 font-medium">📞 SĐT người gửi</label>
           <input
             name="sender_phone"
@@ -111,7 +107,8 @@ export default function TaoDonHang() {
           />
         </div>
 
-        <div data-aos="fade-right">
+        {/* Nhận */}
+        <div>
           <label className="block mb-1 font-medium">👤 Tên người nhận</label>
           <input
             name="receiver_name"
@@ -123,7 +120,7 @@ export default function TaoDonHang() {
           />
         </div>
 
-        <div data-aos="fade-left">
+        <div>
           <label className="block mb-1 font-medium">📞 SĐT người nhận</label>
           <input
             name="receiver_phone"
@@ -135,7 +132,8 @@ export default function TaoDonHang() {
           />
         </div>
 
-        <div className="md:col-span-2" data-aos="fade-up">
+        {/* Địa chỉ */}
+        <div className="md:col-span-2">
           <label className="block mb-1 font-medium">🏠 Địa chỉ lấy hàng</label>
           <input
             name="pickup_address"
@@ -147,7 +145,7 @@ export default function TaoDonHang() {
           />
         </div>
 
-        <div className="md:col-span-2" data-aos="fade-up">
+        <div className="md:col-span-2">
           <label className="block mb-1 font-medium">📍 Địa chỉ giao hàng</label>
           <input
             name="delivery_address"
@@ -159,7 +157,8 @@ export default function TaoDonHang() {
           />
         </div>
 
-        <div data-aos="fade-right">
+        {/* Thông tin thêm */}
+        <div>
           <label className="block mb-1 font-medium">⚖️ Khối lượng (kg)</label>
           <input
             type="number"
@@ -173,7 +172,7 @@ export default function TaoDonHang() {
           />
         </div>
 
-        <div data-aos="fade-left">
+        <div>
           <label className="block mb-1 font-medium">💰 Tiền thu hộ (VNĐ)</label>
           <input
             type="number"
@@ -186,7 +185,8 @@ export default function TaoDonHang() {
           />
         </div>
 
-        <div className="md:col-span-2 text-center mt-4" data-aos="zoom-in">
+        {/* Nút gửi */}
+        <div className="md:col-span-2 text-center mt-4">
           <button
             type="submit"
             className="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-10 py-3 rounded-lg font-semibold text-lg shadow-md hover:opacity-90 transition"
@@ -199,7 +199,7 @@ export default function TaoDonHang() {
       {/* 💳 Popup chọn phương thức thanh toán */}
       {showPaymentChoice && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl p-8 shadow-xl text-center space-y-6 w-[90%] md:w-[400px] animate-fadeIn">
+          <div className="bg-white rounded-xl p-8 shadow-xl text-center space-y-6 w-[90%] md:w-[400px]">
             <h3 className="text-xl font-semibold text-gray-800">
               Chọn phương thức thanh toán
             </h3>
