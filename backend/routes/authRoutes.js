@@ -1,9 +1,19 @@
 import { Router } from "express";
-import { login, register } from "../controllers/authController.js";
+import {
+  login,
+  register,
+  sendOtp,
+  verifyOtp,
+} from "../controllers/authController.js";
 
 const router = Router();
+// Gửi mã OTP
+router.post("/send-otp", sendOtp);
 
-// POST /api/auth/register
+// Xác thực mã OTP
+router.post("/verify-otp", verifyOtp);
+
+// Đăng ký (sau khi xác thực OTP)
 router.post("/register", register);
 
 // POST /api/auth/login
