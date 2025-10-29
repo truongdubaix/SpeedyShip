@@ -1,40 +1,86 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion"; // 👈 thêm framer motion
+import { motion } from "framer-motion";
 import API from "../services/api";
 
 export default function Register() {
   const navigate = useNavigate();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
     phone: "",
   });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [countdown, setCountdown] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
+  // 🕒 Tự giảm thời gian đếm ngược mỗi giây
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = setInterval(() => setCountdown((c) => c - 1), 1000);
+    return () => clearInterval(timer);
+  }, [countdown]);
 
-    if (!form.name || !form.email || !form.password) {
-      setError("Vui lòng nhập đầy đủ thông tin bắt buộc");
-      return;
-    }
+  // 🟦 Gửi OTP
+  const handleSendOtp = async () => {
+    if (!form.email)
+      return setMessage({ type: "error", text: "Vui lòng nhập email" });
 
     try {
       setLoading(true);
+      await API.post("/auth/send-otp", { email: form.email });
+      setMessage({
+        type: "success",
+        text: "✅ Mã OTP đã gửi đến email của bạn!",
+      });
+      setOtpSent(true);
+      setCountdown(60); // 60 giây đếm ngược
+    } catch (err) {
+      setMessage({
+        type: "error",
+        text: err.response?.data?.message || "Không gửi được OTP, thử lại sau!",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🟩 Xác thực OTP + Đăng ký
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setMessage({ type: "", text: "" });
+
+    if (!otpSent)
+      return setMessage({ type: "error", text: "Vui lòng gửi OTP trước!" });
+    if (!otp)
+      return setMessage({ type: "error", text: "Vui lòng nhập mã OTP" });
+
+    try {
+      setLoading(true);
+
+      // B1: kiểm tra OTP
+      await API.post("/auth/verify-otp", { email: form.email, otp });
+
+      // B2: đăng ký người dùng
       await API.post("/auth/register", form);
-      setSuccess("🎉 Đăng ký thành công! Đang chuyển hướng...");
+
+      setMessage({
+        type: "success",
+        text: "🎉 Đăng ký thành công! Đang chuyển hướng...",
+      });
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
-      setError("Email đã tồn tại hoặc dữ liệu không hợp lệ");
+      setMessage({
+        type: "error",
+        text: err.response?.data?.message || "Đăng ký thất bại!",
+      });
     } finally {
       setLoading(false);
     }
@@ -42,7 +88,6 @@ export default function Register() {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-400">
-      {/* 👇 Motion wrapper cho hiệu ứng fade + slide */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -63,38 +108,64 @@ export default function Register() {
             SpeedyShip
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Tạo tài khoản mới để bắt đầu
+            Xác thực email trước khi đăng ký
           </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit}>
-          {error && (
-            <p className="text-red-500 text-sm text-center mb-3">{error}</p>
-          )}
-          {success && (
-            <p className="text-green-600 text-sm text-center mb-3">{success}</p>
+        <form onSubmit={handleRegister}>
+          {message.text && (
+            <p
+              className={`text-center mb-3 text-sm ${
+                message.type === "error" ? "text-red-500" : "text-green-600"
+              }`}
+            >
+              {message.text}
+            </p>
           )}
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-4"
-          >
+          <div className="space-y-4">
+            {/* Email + Gửi OTP */}
+            <div className="flex gap-2">
+              <input
+                type="email"
+                name="email"
+                placeholder="Địa chỉ Email"
+                value={form.email}
+                onChange={handleChange}
+                className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleSendOtp}
+                disabled={loading || countdown > 0}
+                className={`px-4 py-2 rounded-lg text-white font-semibold transition ${
+                  countdown > 0
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
+              >
+                {countdown > 0 ? `Gửi lại (${countdown}s)` : "Gửi OTP"}
+              </button>
+            </div>
+
+            {otpSent && (
+              <motion.input
+                type="text"
+                placeholder="Nhập mã OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+              />
+            )}
+
             <input
               type="text"
               name="name"
               placeholder="Họ và tên"
               value={form.name}
-              onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Địa chỉ Email"
-              value={form.email}
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
             />
@@ -114,18 +185,19 @@ export default function Register() {
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
             />
+
             <button
               type="submit"
               disabled={loading}
               className={`w-full py-3 text-white font-semibold rounded-lg shadow-md transition transform hover:scale-[1.02] ${
                 loading
-                  ? "bg-blue-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
+                  ? "bg-green-400 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-700"
               }`}
             >
-              {loading ? "Đang đăng ký..." : "Đăng ký"}
+              {loading ? "Đang xử lý..." : "Xác nhận & Đăng ký"}
             </button>
-          </motion.div>
+          </div>
         </form>
 
         <p className="text-center text-sm text-gray-600 mt-6">
