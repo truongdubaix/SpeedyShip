@@ -1,21 +1,35 @@
 import pool from "../config/db.js";
-// 🧾 Lấy danh sách người dùng
+
+// 🧾 Lấy danh sách người dùng (hỗ trợ lọc role qua query ?role=)
 export const getAllUsers = async (req, res) => {
   try {
-    const [rows] = await pool.query(`
+    const { role } = req.query; // 👉 nhận ?role=dispatcher hoặc ?role=driver
+
+    let sql = `
       SELECT 
-        u.id,
+        DISTINCT u.id,
         u.name,
         u.email,
         u.status,
         u.created_at,
         ur.role_id,
-        r.name AS role_name
+        r.name AS role_name,  
+        r.code AS role_code
       FROM users u
       LEFT JOIN user_roles ur ON u.id = ur.user_id
       LEFT JOIN roles r ON ur.role_id = r.id
-      ORDER BY u.id DESC
-    `);
+    `;
+
+    // 👉 Nếu có ?role=... thì thêm điều kiện WHERE
+    const params = [];
+    if (role) {
+      sql += ` WHERE r.code = ? `;
+      params.push(role);
+    }
+
+    sql += " ORDER BY u.id DESC";
+
+    const [rows] = await pool.query(sql, params);
     res.json(rows);
   } catch (error) {
     console.error("❌ Lỗi lấy danh sách người dùng:", error);

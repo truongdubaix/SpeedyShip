@@ -98,6 +98,18 @@ export default function DispatcherLayout() {
               🗺️ Theo dõi đơn hàng
             </NavLink>
 
+            {/* 🆕 Liên hệ khách hàng */}
+            <NavLink
+              to="/dispatcher/contacts"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-lg hover:bg-blue-600 transition ${
+                  isActive ? "bg-blue-600 font-semibold shadow" : ""
+                }`
+              }
+            >
+              📞 Liên hệ khách hàng
+            </NavLink>
+
             {/* 💬 Hỗ trợ khách hàng có thông báo */}
             <NavLink
               to="/dispatcher/chat"

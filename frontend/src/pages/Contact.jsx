@@ -1,9 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import API from "../services/api";
+import toast, { Toaster } from "react-hot-toast";
 
 // 🗺️ Icon marker văn phòng
 const officeIcon = new L.Icon({
@@ -21,26 +23,48 @@ function ZoomToOffice() {
 }
 
 export default function Contact() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
 
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await API.post("/contact", form);
+      toast.success("✅ Gửi yêu cầu thành công! Cảm ơn bạn đã liên hệ.");
+      setForm({ name: "", email: "", phone: "", message: "" });
+    } catch {
+      toast.error("❌ Không thể gửi yêu cầu, vui lòng thử lại sau!");
+    }
+  };
+
   return (
     <>
+      <Toaster position="top-center" />
       {/* Header */}
       <section className="pt-28 pb-12 bg-gradient-to-r from-blue-600 to-sky-500 text-white text-center">
         <h2 className="text-4xl font-extrabold mb-4" data-aos="fade-down">
           Liên hệ & Hỗ trợ
         </h2>
         <p className="text-blue-100 max-w-2xl mx-auto" data-aos="fade-up">
-          SpeedyShip Đà Nẵng luôn sẵn sàng lắng nghe và hỗ trợ bạn 24/7 — nhanh
-          chóng, tận tâm, chuyên nghiệp.
+          SpeedyShip Đà Nẵng luôn sẵn sàng hỗ trợ bạn 24/7 — nhanh chóng, tận
+          tâm, chuyên nghiệp.
         </p>
       </section>
 
-      {/* Contact info + Form */}
+      {/* Main */}
       <section className="max-w-6xl mx-auto py-16 px-6 grid md:grid-cols-2 gap-10">
-        {/* Left - Info */}
+        {/* Left Info */}
         <div data-aos="fade-right">
           <h3 className="text-2xl font-bold mb-4 text-gray-800">
             📍 Văn phòng chính - Đà Nẵng
@@ -58,7 +82,6 @@ export default function Contact() {
             Giờ làm việc: <strong>Thứ 2 - Thứ 7 (8:00 - 18:00)</strong>
           </p>
 
-          {/* Leaflet Map */}
           <div className="rounded-lg shadow-lg mt-6 overflow-hidden h-[320px]">
             <MapContainer
               center={[16.0544, 108.2022]}
@@ -82,46 +105,50 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Right - Form */}
+        {/* Right Form */}
         <div data-aos="fade-left">
           <h3 className="text-2xl font-bold mb-4 text-gray-800">
             ✉️ Gửi yêu cầu hỗ trợ
           </h3>
           <p className="text-gray-600 mb-6">
-            Điền thông tin bên dưới, đội ngũ SpeedyShip Đà Nẵng sẽ phản hồi
-            trong thời gian sớm nhất.
+            Điền thông tin bên dưới, đội ngũ SpeedyShip sẽ phản hồi sớm nhất.
           </p>
 
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert(
-                "✅ Yêu cầu của bạn đã được gửi! Cảm ơn bạn đã liên hệ SpeedyShip Đà Nẵng."
-              );
-            }}
-          >
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <input
               type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
               placeholder="Họ và tên"
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
             <input
               type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
               placeholder="Email liên hệ"
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
             <input
               type="tel"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
               placeholder="Số điện thoại"
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <textarea
               rows="5"
+              name="message"
+              value={form.message}
+              onChange={handleChange}
               placeholder="Nội dung yêu cầu..."
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
             />
             <button
               type="submit"
@@ -146,8 +173,7 @@ export default function Contact() {
           data-aos="fade-up"
           data-aos-delay="100"
         >
-          Liên hệ tổng đài <strong>1900 888 999</strong> hoặc chat trực tuyến
-          với đội ngũ SpeedyShip Đà Nẵng.
+          Liên hệ tổng đài <strong>1900 888 999</strong> hoặc chat trực tuyến.
         </p>
         <a
           href="mailto:support@speedyship.com"
