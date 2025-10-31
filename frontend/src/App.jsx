@@ -28,12 +28,14 @@ import AdminCustomers from "./pages/admin/AdminCustomers.jsx";
 import AdminPayments from "./pages/admin/AdminPayments.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
 import AdminFeedbacks from "./pages/admin/AdminFeedbacks.jsx";
+import AdminContacts from "./pages/admin/AdminContacts";
 
 // 🚛 Dispatcher pages
 import DispatcherDashboard from "./pages/dispatcher/DispatcherDashboard.jsx";
 import DispatcherAssignments from "./pages/dispatcher/DispatcherAssignments.jsx";
 import DispatcherTracking from "./pages/dispatcher/DispatcherTracking.jsx";
 import DispatcherTrackingDetail from "./pages/dispatcher/DispatcherTrackingDetail.jsx";
+import DispatcherContacts from "./pages/dispatcher/DispatcherContacts.jsx";
 
 // 🚚 Driver pages
 import DriverDashboard from "./pages/driver/DriverDashboard.jsx";
@@ -102,6 +104,7 @@ export default function App() {
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="payments" element={<AdminPayments />} />
           <Route path="feedbacks" element={<AdminFeedbacks />} />
+          <Route path="contact" element={<AdminContacts />} />
         </Route>
 
         {/* 🧩 Dispatcher */}
@@ -118,6 +121,7 @@ export default function App() {
           <Route path="tracking" element={<DispatcherTracking />} />
           <Route path="tracking/:id" element={<DispatcherTrackingDetail />} />
           <Route path="chat" element={<DispatcherChat />} />
+          <Route path="contacts" element={<DispatcherContacts />} />
         </Route>
 
         {/* 🚚 Driver */}

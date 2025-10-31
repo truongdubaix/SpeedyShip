@@ -22,42 +22,37 @@ import vehicleRoutes from "./routes/vehicleRoutes.js";
 import customerRoutes from "./routes/customerRoutes.js";
 import feedbackRoutes from "./routes/feedbackRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 dotenv.config();
 const app = express();
 
-// ==========================
-// 🔧 Middleware setup
-// ==========================
+// Middleware setup
 app.use(cors({ origin: process.env.CLIENT_URL || "*", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Kiểm tra kết nối MySQL
+//  Kiểm tra kết nối MySQL
 pool
   .query("SELECT 1")
-  .then(() => console.log("✅ MySQL connected"))
+  .then(() => console.log("MySQL connected"))
   .catch(console.error);
 
-// ==========================
-// ⚡ Socket.io setup
-// ==========================
+//  Socket.io setup
 const server = createServer(app);
 const io = new Server(server, {
   cors: { origin: process.env.CLIENT_URL || "*", methods: ["GET", "POST"] },
 });
 
-// ✅ Khởi tạo socket và nhận các hàm tiện ích (notification,...)
+// Khởi tạo socket và nhận các hàm tiện ích (notification,...)
 const socketService = initSocket(io, pool);
 
-// ✅ Export hàm để controller khác gọi được (như shipmentController)
+// Export hàm để controller khác gọi được (như shipmentController)
 export const { sendNotificationToDriver } = socketService;
 
-// ==========================
-// 🚀 API ROUTES
-// ==========================
+//  API ROUTES
 app.use("/api/auth", authRoutes);
-app.use("/api/drivers", driverRoutes); // ✅ đã sửa: từ /api/driver → /api/drivers
+app.use("/api/drivers", driverRoutes);
 app.use("/api/drivers", driverAdminRoutes);
 app.use("/api/drivers", driverLocationRoutes);
 app.use("/api/shipments", shipmentRoutes);
@@ -70,18 +65,15 @@ app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/contact", contactRoutes);
 
-// ==========================
-// 🧪 Test route
-// ==========================
+// Test route
 app.get("/", (_req, res) =>
   res.send("🚀 SpeedyShip API running with realtime chat & notifications")
 );
 
-// ==========================
-// ✅ START SERVER
-// ==========================
+// START SERVER
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () =>
-  console.log(`✅ Server đang chạy tại: http://localhost:${PORT}`)
+  console.log(`Server đang chạy tại: http://localhost:${PORT}`)
 );

@@ -96,7 +96,6 @@ export default function AdminLayout() {
               💳 Quản lý thanh toán
             </NavLink>
 
-            {/* 🆕 Thêm mới phần quản lý đánh giá */}
             <NavLink
               to="/admin/feedbacks"
               className={({ isActive }) =>
@@ -117,6 +116,18 @@ export default function AdminLayout() {
               }
             >
               🧑‍💼 Quản lý người dùng
+            </NavLink>
+
+            {/* 🆕 Thêm mới menu quản lý liên hệ */}
+            <NavLink
+              to="/admin/contact"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-lg hover:bg-blue-600 transition ${
+                  isActive ? "bg-blue-600 font-semibold shadow" : ""
+                }`
+              }
+            >
+              📞 Quản lý liên hệ
             </NavLink>
           </nav>
         </div>
