@@ -70,14 +70,16 @@ export default function Navbar() {
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <div className="bg-white text-blue-600 w-10 h-10 flex items-center justify-center rounded-full font-bold text-xl shadow-inner">
-            🚀
-          </div>
+          {/* 🔹 Logo thật của SpeedyShip */}
+          <img
+            src="/assets/logo/logoSpeedyShip.png"
+            alt="SpeedyShip Logo"
+            className="w-12 h-12 rounded-full object-cover drop-shadow-md"
+          />
           <span className="text-white font-extrabold text-xl tracking-wide">
             SpeedyShip
           </span>
         </div>
-
         {/* Menu chính */}
         <div className="hidden md:flex space-x-6 text-white text-sm font-medium">
           <Link to="/" className="hover:text-yellow-300 transition">

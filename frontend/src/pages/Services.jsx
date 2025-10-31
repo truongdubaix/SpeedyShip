@@ -11,6 +11,13 @@ export default function About() {
     <>
       {/* Hero */}
       <section className="pt-28 pb-16 bg-gradient-to-r from-blue-600 to-sky-500 text-white text-center">
+        <img
+          src="/assets/logo/logoSpeedyShip.png"
+          alt="SpeedyShip Logo"
+          className="w-40 h-40 mx-auto mb-6 rounded-full object-cover drop-shadow-2xl border-4 border-white"
+          data-aos="zoom-in"
+        />
+
         <h2 className="text-4xl font-extrabold mb-4" data-aos="fade-down">
           Về chúng tôi
         </h2>
@@ -26,17 +33,24 @@ export default function About() {
 
       {/* Vision & Mission */}
       <section className="max-w-6xl mx-auto py-20 px-6 grid md:grid-cols-2 gap-10 items-center">
-        <img
-          src="https://images.unsplash.com/photo-1597096870063-6c89e0b5a362?auto=format&fit=crop&w=800&q=80"
-          alt="SpeedyShip logistics Da Nang"
-          className="rounded-lg shadow-lg hover:scale-[1.02] transition-transform duration-300"
-          data-aos="fade-right"
-        />
+        <div className="relative" data-aos="fade-right">
+          <img
+            src="https://sp-ao.shortpixel.ai/client/to_avif,q_lossless,ret_img,w_1024/https://phulinh.vn/wp-content/uploads/2020/07/kh-1024x683.jpg"
+            alt="SpeedyShip logistics Da Nang"
+            className="rounded-lg shadow-lg hover:scale-[1.02] transition-transform duration-300"
+          />
+          <img
+            src="/assets/logo/logoSpeedyShip.png"
+            alt="SpeedyShip Logo"
+            className="absolute bottom-4 right-4 w-14 h-14 rounded-full bg-white p-1 shadow-md"
+          />
+        </div>
 
         <div data-aos="fade-left">
           <h3 className="text-3xl font-bold mb-4 text-gray-800">
             💡 Tầm nhìn & Sứ mệnh
           </h3>
+
           <p className="text-gray-600 mb-4 leading-relaxed">
             Với trung tâm hoạt động tại <strong>TP. Đà Nẵng</strong> – thành phố
             năng động nhất miền Trung, SpeedyShip hướng đến mục tiêu trở thành
@@ -136,6 +150,14 @@ export default function About() {
           className="text-3xl font-bold mb-6 text-gray-800"
           data-aos="fade-up"
         >
+          {" "}
+          {/* Logo thương hiệu */}
+          <img
+            src="/assets/logo/logoSpeedyShip.png"
+            alt="SpeedyShip Logo"
+            className="w-24 h-24 mx-auto mb-6 rounded-full object-cover drop-shadow-md"
+            data-aos="zoom-in"
+          />
           👨‍💻 Đội ngũ SpeedyShip Đà Nẵng
         </h3>
         <p
