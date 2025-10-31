@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
+<<<<<<< HEAD
 -- Generation Time: Oct 29, 2025 at 07:01 AM
+=======
+-- Generation Time: Oct 25, 2025 at 08:24 AM
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 -- Server version: 8.4.3
 -- PHP Version: 8.3.26
 
@@ -61,6 +65,7 @@ INSERT INTO `assignments` (`id`, `shipment_id`, `driver_id`, `assigned_at`, `sta
 (19, 27, 1, '2025-10-22 16:31:35', 'completed'),
 (20, 27, 6, '2025-10-25 12:55:41', 'picking'),
 (21, 31, 5, '2025-10-25 13:46:42', 'assigned'),
+<<<<<<< HEAD
 (22, 30, 8, '2025-10-25 13:47:50', 'completed'),
 (23, 28, 8, '2025-10-25 13:47:54', 'picking'),
 (24, 29, 8, '2025-10-25 13:47:55', 'completed'),
@@ -110,6 +115,11 @@ INSERT INTO `chats` (`id`, `customer_id`, `dispatcher_id`, `status`, `started_at
 (19, 9, NULL, 'closed', '2025-10-27 08:22:45', '2025-10-27 08:22:58'),
 (20, 9, NULL, 'closed', '2025-10-27 08:23:01', '2025-10-28 13:30:35'),
 (21, 9, NULL, 'closed', '2025-10-28 13:30:37', '2025-10-28 13:30:50');
+=======
+(22, 30, 8, '2025-10-25 13:47:50', 'assigned'),
+(23, 28, 8, '2025-10-25 13:47:54', 'delivering'),
+(24, 29, 8, '2025-10-25 13:47:55', 'completed');
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 -- --------------------------------------------------------
 
@@ -140,6 +150,7 @@ CREATE TABLE `drivers` (
 INSERT INTO `drivers` (`id`, `name`, `email`, `phone`, `license_no`, `vehicle_type`, `status`, `user_id`, `created_at`, `latitude`, `longitude`, `vehicle_id`, `updated_at`) VALUES
 (1, 'Tài xế A', 'driver1@speedyship.vn', '0909222222', '79A-123.45', 'Xe tải 1.5T', 'delivering', NULL, '2025-10-20 14:02:02', 10.762622, 106.660172, NULL, NULL),
 (3, 'Điều phối viên', 'dispatcher@speedyship.vn', '0909111111', '51B-67890', 'Xe tải lớn', 'delivering', NULL, '2025-10-20 14:02:02', 21.028511, 105.804817, NULL, NULL),
+<<<<<<< HEAD
 (4, 'Truong tai xe', 'truongtaixe@speedyship.vn', '0123456789', '92B-67891', 'Xe SH', 'delivering', NULL, '2025-10-20 14:08:19', 16.054407, 108.202167, NULL, '2025-10-25 12:44:57'),
 (5, 'Nguyễn Văn A', 'driverA@speedyship.vn', '0909123456', '79A-12345', 'Xe tải nhỏ', 'delivering', 4, '2025-10-21 04:39:26', 16.054407, 108.202167, NULL, '2025-10-25 12:44:57'),
 (6, 'Trần Văn B', 'driverB@speedyship.vn', '0909234567', '51B-56789', 'Xe máy', 'delivering', 5, '2025-10-21 04:39:26', 16.054407, 108.202167, NULL, '2025-10-25 12:44:57'),
@@ -152,6 +163,20 @@ INSERT INTO `drivers` (`id`, `name`, `email`, `phone`, `license_no`, `vehicle_ty
 (13, 'Phan Văn I', 'driverI@speedyship.vn', '0909901234', '92A-99999', 'Xe máy', 'available', 12, '2025-10-21 04:39:26', 16.054407, 108.202167, 1, '2025-10-25 12:44:57'),
 (14, 'truong ne', 'driver@speedyship.vn', '0363337081', NULL, 'SH', 'delivering', NULL, '2025-10-22 09:32:06', 10.762622, 106.660172, 2, '2025-10-25 12:48:18'),
 (15, 'Nguyen Van A', 'a@example.com', '0363337081', NULL, 'Bike', 'delivering', 15, '2025-10-23 15:25:50', 10.762622, 106.660172, 2, '2025-10-25 12:09:29');
+=======
+(4, 'Truong tai xe', 'truongtaixe@speedyship.vn', '0123456789', '92B-67891', 'Xe SH', 'delivering', NULL, '2025-10-20 14:08:19', NULL, NULL, NULL, NULL),
+(5, 'Nguyễn Văn A', 'driverA@speedyship.vn', '0909123456', '79A-12345', 'Xe tải nhỏ', 'delivering', 4, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(6, 'Trần Văn B', 'driverB@speedyship.vn', '0909234567', '51B-56789', 'Xe máy', 'delivering', 5, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(7, 'Lê Văn C', 'driverC@speedyship.vn', '0909345678', '30B-34567', 'Xe tải lớn', 'available', 6, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(8, 'Phạm Văn D', 'driverD@speedyship.vn', '0909456789', '60B-98765', 'SEEP', 'delivering', 7, '2025-10-21 04:39:26', NULL, NULL, 2, '2025-10-25 06:47:50'),
+(9, 'Hoàng Văn E', 'driverE@speedyship.vn', '0909567890', '43C-11111', 'Xe tải 1.5T', 'available', 8, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(10, 'Ngô Văn F', 'driverF@speedyship.vn', '0909678901', '81D-55555', 'Xe máy', 'available', 9, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(11, 'Đỗ Văn G', 'driverG@speedyship.vn', '0909789012', '77B-77777', 'Xe tải 2T', 'available', 10, '2025-10-21 04:39:26', NULL, NULL, NULL, NULL),
+(12, 'Bùi Văn H', 'driverH@speedyship.vn', '0909890123', '88C-88888', 'Xe container', 'available', 11, '2025-10-21 04:39:26', NULL, NULL, 2, '2025-10-24 07:32:14'),
+(13, 'Phan Văn I', 'driverI@speedyship.vn', '0909901234', '92A-99999', 'Xe máy', 'available', 12, '2025-10-21 04:39:26', NULL, NULL, 1, NULL),
+(14, 'truong ne', 'driver@speedyship.vn', '0363337081', NULL, 'SH', 'inactive', NULL, '2025-10-22 09:32:06', 10.762622, 106.660172, 2, '2025-10-25 05:36:31'),
+(15, 'Nguyen Van A', 'a@example.com', '0363337081', NULL, 'Bike', 'inactive', 15, '2025-10-23 15:25:50', 10.762622, 106.660172, 2, '2025-10-25 05:36:29');
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 -- --------------------------------------------------------
 
@@ -167,6 +192,7 @@ CREATE TABLE `feedbacks` (
   `rating` int DEFAULT '5',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+<<<<<<< HEAD
 
 --
 -- Dumping data for table `feedbacks`
@@ -394,6 +420,8 @@ INSERT INTO `otp_codes` (`id`, `email`, `code`, `expires_at`) VALUES
 (3, 'truongdubaix107@gmail.com', '280555', 1761720234122),
 (4, 'truongdubai2704@gmail.com', '872278', 1761720559002),
 (5, 'khuongkhuong1604@gmail.com', '375002', 1761720732400);
+=======
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 -- --------------------------------------------------------
 
@@ -421,6 +449,7 @@ INSERT INTO `payments` (`id`, `shipment_id`, `customer_id`, `amount`, `method`, 
 (10, 3, 5, 90000.00, 'BankTransfer', 'completed', '2025-10-20 17:23:09', '2025-10-25 05:36:08'),
 (11, 4, 6, 150000.00, 'Momo', 'completed', '2025-10-20 17:23:09', '2025-10-21 04:39:01'),
 (12, 5, 11, 65000.00, 'COD', 'completed', '2025-10-20 17:23:09', '2025-10-25 05:36:07'),
+<<<<<<< HEAD
 (13, 6, 12, 210000.00, 'BankTransfer', 'completed', '2025-10-20 17:23:09', '2025-10-25 11:29:58'),
 (15, 37, 9, 800000.00, 'COD', 'completed', '2025-10-25 11:18:39', '2025-10-25 11:19:37'),
 (16, 38, 9, 440000.00, 'COD', 'completed', '2025-10-25 11:21:13', '2025-10-25 11:29:55'),
@@ -432,6 +461,9 @@ INSERT INTO `payments` (`id`, `shipment_id`, `customer_id`, `amount`, `method`, 
 (22, 44, 9, 120000.00, 'Momo', 'completed', '2025-10-28 14:32:38', '2025-10-28 14:34:05'),
 (23, 45, 9, 12000.00, 'Momo', 'pending', '2025-10-28 17:37:53', '2025-10-28 17:37:53'),
 (24, 46, 9, 150000.00, 'Momo', 'pending', '2025-10-29 05:09:51', '2025-10-29 05:09:51');
+=======
+(13, 6, 12, 210000.00, 'BankTransfer', 'completed', '2025-10-20 17:23:09', '2025-10-20 17:23:09');
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 -- --------------------------------------------------------
 
@@ -489,6 +521,7 @@ CREATE TABLE `shipments` (
 --
 
 INSERT INTO `shipments` (`id`, `tracking_code`, `customer_id`, `sender_name`, `sender_phone`, `receiver_name`, `receiver_phone`, `pickup_address`, `delivery_address`, `weight_kg`, `cod_amount`, `status`, `current_location`, `created_at`, `updated_at`, `pickup_lat`, `pickup_lng`, `delivery_lat`, `delivery_lng`) VALUES
+<<<<<<< HEAD
 (2, 'SP1002', 5, 'Khách hàng B', '0909444444', 'Phạm Bình', '0909666666', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', 3.20, 90000.00, 'pending', 'Đà Nẵng', '2025-10-20 08:43:49', '2025-10-28 16:36:18', 16.065000, 108.187000, 16.083400, 108.247000),
 (3, 'SP1003', 6, 'Lê Văn C', '0909777777', 'Ngô Bình', '0909888888', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', 4.30, 150000.00, 'delivered', 'Đà Nẵng', '2025-10-20 13:09:32', '2025-10-28 16:36:18', 16.072400, 108.160000, 16.018000, 108.206000),
 (4, 'SP1004', 5, 'Phạm Huy 2', '0909333111', 'Bùi Trang', '0909555999', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', 2.20, 80000.00, 'delivered', 'Đà Nẵng', '2025-10-20 13:09:32', '2025-10-28 16:36:18', 16.083400, 108.247000, 16.065000, 108.187000),
@@ -522,6 +555,26 @@ INSERT INTO `shipments` (`id`, `tracking_code`, `customer_id`, `sender_name`, `s
 (44, 'SP958580', 9, 'Trường 123', '0909123456', 'Trường 456', '0121212121', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', 4.90, 120000.00, 'pending', 'Đà Nẵng', '2025-10-28 14:32:38', '2025-10-28 16:36:18', 16.065000, 108.187000, 16.083400, 108.247000),
 (45, 'SP073308', 9, 'Phạm Huy 3', '0909234567', 'Phạm Thị Hoa', '0909555999', '123 Lê Lợi, TP.HCM', '789 Lê Văn Sỹ, Q11', 4.60, 12000.00, 'pending', NULL, '2025-10-28 17:37:53', '2025-10-28 17:37:53', NULL, NULL, NULL, NULL),
 (46, 'SP591838', 9, 'bảo minh', '0123456789', 'Ngọc Trường', '0987654321', 'Phạm Tứ', 'Nguyễn Huy Tưởng', 4.00, 150000.00, 'pending', NULL, '2025-10-29 05:09:51', '2025-10-29 05:09:51', NULL, NULL, NULL, NULL);
+=======
+(2, 'SP1002', 5, 'Khách hàng B', '0909444444', 'Phạm Bình', '0909666666', '789 Điện Biên Phủ, Q3', '23 Nguyễn Trãi, Q5', 3.20, 90000.00, 'pending', 'Q5 TPHCM', '2025-10-20 08:43:49', '2025-10-22 05:28:18', 16.054400, 108.202200, 16.463700, 107.590900),
+(3, 'SP1003', 6, 'Lê Văn C', '0909777777', 'Ngô Bình', '0909888888', '15 Nguyễn Huệ, Q1, HCM', '89 Trần Hưng Đạo, Q5, HCM', 4.30, 150000.00, 'delivered', 'Kho Q1', '2025-10-20 13:09:32', '2025-10-22 06:52:45', 10.045200, 105.746900, 10.980400, 106.651900),
+(4, 'SP1004', 5, 'Phạm Huy 2', '0909333111', 'Bùi Trang', '0909555999', '321 Hai Bà Trưng, Q3', '789 Lê Văn Sỹ, Q10', 2.20, 80000.00, 'delivered', 'Q3 - HCM', '2025-10-20 13:09:32', '2025-10-22 05:32:07', 21.027800, 105.834200, 20.844900, 106.688100),
+(5, 'SP1005', 4, 'Nguyễn Hà', '0909333222', 'Trần Bình', '0909444111', '14 Võ Văn Kiệt, Q1', '99 Nguyễn Thị Minh Khai, Q3', 6.00, 170000.00, 'delivered', 'Q3 - HCM', '2025-10-20 13:09:32', '2025-10-21 16:26:34', 10.776900, 106.700900, 16.047100, 108.206800),
+(6, 'SP1007', NULL, 'Phạm Huy 3', '0909333111', 'Diễm Trang', '0909555999', '321 Hai Bà Trưng, Q2', '789 Lê Văn Sỹ, Q11', 4.60, 90000.00, 'delivered', 'Q3 - HCM', '2025-10-20 13:33:25', '2025-10-22 05:32:10', NULL, NULL, NULL, NULL),
+(17, 'SP2001', 4, 'Nguyễn Thị Mai', '0909123456', 'Trần Văn Cường', '0909555666', '123 Lê Lợi, TP.HCM', '25 Trần Hưng Đạo, Hà Nội', 5.20, 120000.00, 'delivered', 'Hà Nội', '2025-09-05 01:30:00', '2025-10-21 05:10:06', NULL, NULL, NULL, NULL),
+(18, 'SP2002', 5, 'Lê Văn Long', '0909234567', 'Phạm Thị Hoa', '0909666777', '55 Nguyễn Văn Linh, Đà Nẵng', '12 Lý Thường Kiệt, Huế', 2.30, 95000.00, 'delivered', '54 Nguyễn Văn Linh', '2025-09-10 02:45:00', '2025-10-22 05:32:11', NULL, NULL, NULL, NULL),
+(19, 'SP2003', 6, 'Trần Thị Ngọc', '0909345678', 'Lê Văn Thành', '0909777888', '89 Trần Quang Diệu, Cần Thơ', '88 Đại lộ Bình Dương', 8.10, 175000.00, 'delivered', 'Bình Dương', '2025-10-01 03:10:00', '2025-10-22 05:32:14', NULL, NULL, NULL, NULL),
+(22, 'SP1009', NULL, 'Kim Loan', '012347594', 'Ngọc Trường', '033218412', 'Đà Nẵng', 'Quảng Nam', 4.60, 200000.00, 'delivering', 'Đà Nẵng', '2025-10-21 14:28:49', '2025-10-25 07:31:37', 16.054400, 108.202200, 15.573600, 108.474000),
+(23, 'SP1010', NULL, 'Ngọc Trường', '0321393213', 'Kim Loan', '0234566783', 'Quảng Nam', 'Đà Nẵng', 5.20, 900000.00, 'pending', 'Hà Nội', '2025-10-21 14:29:46', '2025-10-25 06:36:28', 15.573600, 108.474000, 16.054400, 108.202200),
+(24, 'SPA001', NULL, 'Kim Loan', '0123456779', 'Ngọc Trường', '098764221', 'Đà Nẵng', 'Bình Sơn', 5.20, 90000.00, 'completed', 'Đà Nẵng', '2025-10-22 05:29:37', '2025-10-25 06:36:28', 16.054400, 108.202200, 15.286000, 108.813000),
+(25, 'SPA100', NULL, 'Nguyễn Thị Mai', '0909333111', 'Diễm Trang', '0909555666', '321 Hai Bà Trưng, Q2', '25 Trần Hưng Đạo, Hà Nội', 4.60, 120000.00, 'delivered', 'Hà Nội', '2025-10-22 05:53:21', '2025-10-25 06:36:28', 10.791500, 106.730700, 21.028500, 105.854200),
+(26, 'SPA200', NULL, 'Nguyễn Tấn Sang', '0132131323', 'Ngọc Trường', '0909555999', '166 Nguyễn Xí', 'K62/23 Nguyễn Huy Tưởng', 5.20, 90000.00, 'delivered', 'Kho Đà Nẵng', '2025-10-22 05:54:33', '2025-10-25 06:36:28', 16.054400, 108.202200, 16.056500, 108.230900),
+(27, 'SPA101', NULL, 'Bảo Minh', '0232039992', 'Quốc Khanh', '0231131312', 'Đà Nẵng ', 'Quảng Trị', 5.20, 120000.00, 'picking', 'Đà Nẵng', '2025-10-22 08:54:47', '2025-10-25 06:36:28', 16.054400, 108.202200, 16.818100, 107.100000),
+(28, 'SP396533', NULL, 'Phạm Huy 3', '0909123456', 'Diễm Trang 22', '0909555999', '321 Hai Bà Trưng, Q2', '789 Lê Văn Sỹ, Q11', 4.60, 90000.00, 'delivering', 'Kho Nguyễn Lương Bằng', '2025-10-25 06:06:36', '2025-10-25 06:48:10', NULL, NULL, NULL, NULL),
+(29, 'TEST001', 9, 'Truong KH', '0909123456', 'Ngọc Trường', '0909988776', 'Đà Nẵng', 'Hà Nội', 3.50, 80000.00, 'completed', 'Kho Tôn Đức Thắng', '2025-10-25 06:15:57', '2025-10-25 06:48:14', 16.054400, 108.202200, 21.028500, 105.854200),
+(30, 'SP114618', 9, 'Viet Ngoc', '0909234567', 'Ngọc Trường', '0905050505', 'Nguyễn Như Hạnh', 'Nguyễn Huy Tưởng', 4.60, 90000.00, 'assigned', 'Kho Đà Nẵng', '2025-10-25 06:18:34', '2025-10-25 06:47:50', 16.054400, 108.202200, 16.054400, 108.202200),
+(31, 'SP386563', 9, 'Hoài Bảo', '0123456998', 'Viết Ngọc', '09050600060', 'Sơn Trà', 'Nguyễn Như Hạnh', 9.00, 4500000.00, 'assigned', 'Kho Tô Hiệu', '2025-10-25 06:23:06', '2025-10-25 06:46:42', 16.093500, 108.242000, 16.067800, 108.220800);
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 -- --------------------------------------------------------
 
@@ -580,9 +633,13 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `role`, `status
 (12, 'Trần Văn B', 'driver2@gmail.com', '123456', '0909988776', 'driver', 'active', '2025-10-20 13:49:37', 4),
 (13, 'truong khach hang 2', 'kh2@speedyship.vn', '$2a$10$IqNKaY2seeSoKVJhIQSCMODnGNMRSEAZJ7EDoMYrSq5p3kU8UJMwa', '0363337081', 'customer', 'active', '2025-10-21 06:53:25', 4),
 (14, 'baominh', 'baominh@speedyship.vn', '$2a$10$254H.EsGI7./ZvXznWagbeI8D9AktW4doQDw3ycArQGloRZFFwq16', '0987123456', 'driver', 'active', '2025-10-23 04:45:30', 3),
+<<<<<<< HEAD
 (15, 'Nguyen Van A', 'a@example.com', '$2a$10$SSv0RwBdV.WPrCN2E27slejtxmyytOgdL732sFmjXej.WL9uM6CNS', '0363337081', 'customer', 'active', '2025-10-23 15:02:12', 4),
 (16, 'Ngoc Truong', 'truongdubaix107@gmail.com', '$2a$10$rg3ewnkUdBAqSkjnAfZtx.TMNEIf.sI42yEjutmnGrhWy.YrzWYF.', '0909999999', 'customer', 'active', '2025-10-29 06:42:20', 4),
 (17, 'Truong TestOTP', 'truongdubai2704@gmail.com', '$2a$10$taXgEnmtvOwgfE71SD.REexELToftcqsvnbpEW941JR4qp.WdUBWW', '', 'customer', 'active', '2025-10-29 06:46:39', 4);
+=======
+(15, 'Nguyen Van A', 'a@example.com', '$2a$10$SSv0RwBdV.WPrCN2E27slejtxmyytOgdL732sFmjXej.WL9uM6CNS', '0363337081', 'customer', 'active', '2025-10-23 15:02:12', 4);
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 -- --------------------------------------------------------
 
@@ -672,6 +729,7 @@ ALTER TABLE `feedbacks`
   ADD PRIMARY KEY (`id`),
   ADD KEY `customer_id` (`customer_id`),
   ADD KEY `shipment_id` (`shipment_id`);
+<<<<<<< HEAD
 
 --
 -- Indexes for table `messages`
@@ -693,6 +751,8 @@ ALTER TABLE `notifications`
 --
 ALTER TABLE `otp_codes`
   ADD PRIMARY KEY (`id`);
+=======
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 --
 -- Indexes for table `payments`
@@ -754,6 +814,7 @@ ALTER TABLE `vehicles`
 -- AUTO_INCREMENT for table `assignments`
 --
 ALTER TABLE `assignments`
+<<<<<<< HEAD
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
@@ -761,6 +822,9 @@ ALTER TABLE `assignments`
 --
 ALTER TABLE `chats`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+=======
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 --
 -- AUTO_INCREMENT for table `drivers`
@@ -808,7 +872,11 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `shipments`
 --
 ALTER TABLE `shipments`
+<<<<<<< HEAD
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+=======
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 --
 -- AUTO_INCREMENT for table `system_configs`
@@ -820,7 +888,11 @@ ALTER TABLE `system_configs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
+<<<<<<< HEAD
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+=======
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 --
 -- AUTO_INCREMENT for table `vehicles`
@@ -858,6 +930,7 @@ ALTER TABLE `drivers`
 ALTER TABLE `feedbacks`
   ADD CONSTRAINT `feedbacks_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `feedbacks_ibfk_2` FOREIGN KEY (`shipment_id`) REFERENCES `shipments` (`id`) ON DELETE CASCADE;
+<<<<<<< HEAD
 
 --
 -- Constraints for table `messages`
@@ -871,6 +944,8 @@ ALTER TABLE `messages`
 ALTER TABLE `notifications`
   ADD CONSTRAINT `fk_notif_driver` FOREIGN KEY (`driver_id`) REFERENCES `drivers` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_notif_shipment` FOREIGN KEY (`shipment_id`) REFERENCES `shipments` (`id`) ON DELETE CASCADE;
+=======
+>>>>>>> 1716ada0cd6e1bc7f6b979d93047b6fe902f1bfb
 
 --
 -- Constraints for table `payments`
