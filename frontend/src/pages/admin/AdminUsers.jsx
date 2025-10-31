@@ -6,6 +6,8 @@ export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // 🔹 Lấy danh sách người dùng
   const fetchUsers = async () => {
@@ -18,7 +20,7 @@ export default function AdminUsers() {
     }
   };
 
-  // 🔹 Lấy danh sách vai trò (từ bảng roles)
+  // 🔹 Lấy danh sách vai trò
   const fetchRoles = async () => {
     try {
       const res = await API.get("/roles");
@@ -33,7 +35,7 @@ export default function AdminUsers() {
     fetchRoles();
   }, []);
 
-  // 🔹 Cập nhật quyền hoặc trạng thái người dùng
+  // 🔹 Cập nhật quyền hoặc trạng thái
   const handleUpdate = async (id, field, value) => {
     try {
       const payload =
@@ -74,6 +76,19 @@ export default function AdminUsers() {
     );
   });
 
+  // 🔢 Phân trang
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentUsers = filteredUsers.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  // Reset về trang đầu khi tìm kiếm
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
+
   return (
     <div className="p-6 space-y-6">
       {/* Tiêu đề và ô tìm kiếm */}
@@ -81,13 +96,18 @@ export default function AdminUsers() {
         <h1 className="text-2xl font-bold text-gray-700">
           👥 Quản lý người dùng
         </h1>
-        <input
-          type="text"
-          placeholder="🔍 Tìm theo tên hoặc email..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border rounded-lg px-3 py-2 w-72"
-        />
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="🔍 Tìm theo tên hoặc email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border rounded-lg px-3 py-2 w-72"
+          />
+          <span className="text-sm text-gray-500">
+            Tổng: <b>{filteredUsers.length}</b> người
+          </span>
+        </div>
       </div>
 
       {/* Bảng danh sách người dùng */}
@@ -95,7 +115,7 @@ export default function AdminUsers() {
         <table className="w-full border-collapse border border-gray-200 text-sm">
           <thead className="bg-blue-600 text-white">
             <tr>
-              <th className="p-3">ID</th>
+              <th className="p-3">#</th>
               <th className="p-3">Họ tên</th>
               <th className="p-3">Email</th>
               <th className="p-3">Vai trò</th>
@@ -105,18 +125,18 @@ export default function AdminUsers() {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((u) => (
+            {currentUsers.length > 0 ? (
+              currentUsers.map((u, index) => (
                 <tr
                   key={u.id}
-                  className="border-b hover:bg-blue-50 transition text-gray-700"
+                  className="border-b hover:bg-blue-50 transition text-gray-700 text-center"
                 >
-                  <td className="p-3 text-center">{u.id}</td>
-                  <td className="p-3 font-semibold text-blue-600">{u.name}</td>
-                  <td className="p-3">{u.email}</td>
-
-                  {/* Dropdown chọn role */}
-                  <td className="p-3 text-center">
+                  <td className="p-3">{startIndex + index + 1}</td>
+                  <td className="p-3 font-semibold text-blue-600 text-left">
+                    {u.name}
+                  </td>
+                  <td className="p-3 text-left">{u.email}</td>
+                  <td className="p-3">
                     <select
                       value={u.role_id}
                       onChange={(e) =>
@@ -131,9 +151,7 @@ export default function AdminUsers() {
                       ))}
                     </select>
                   </td>
-
-                  {/* Dropdown chọn trạng thái */}
-                  <td className="p-3 text-center">
+                  <td className="p-3">
                     <select
                       value={u.status}
                       onChange={(e) =>
@@ -141,20 +159,18 @@ export default function AdminUsers() {
                       }
                       className={`border rounded px-2 py-1 ${
                         u.status === "active"
-                          ? "text-green-600"
-                          : "text-gray-500"
+                          ? "text-green-600 border-green-400"
+                          : "text-gray-500 border-gray-300"
                       }`}
                     >
                       <option value="active">Hoạt động</option>
                       <option value="inactive">Vô hiệu hóa</option>
                     </select>
                   </td>
-
-                  <td className="p-3 text-gray-500 text-center">
+                  <td className="p-3 text-gray-500">
                     {new Date(u.created_at).toLocaleString("vi-VN")}
                   </td>
-
-                  <td className="p-3 text-center">
+                  <td className="p-3">
                     <button
                       onClick={() => handleDelete(u.id)}
                       className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
@@ -177,6 +193,39 @@ export default function AdminUsers() {
           </tbody>
         </table>
       </div>
+
+      {/* 🔸 PHÂN TRANG */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4 mt-4 text-sm">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((p) => p - 1)}
+            className={`px-4 py-2 rounded border ${
+              currentPage === 1
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white hover:bg-gray-100 text-gray-700"
+            }`}
+          >
+            ← Trước
+          </button>
+
+          <span className="text-gray-700 font-medium">
+            Trang {currentPage}/{totalPages}
+          </span>
+
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((p) => p + 1)}
+            className={`px-4 py-2 rounded border ${
+              currentPage === totalPages
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white hover:bg-gray-100 text-gray-700"
+            }`}
+          >
+            Sau →
+          </button>
+        </div>
+      )}
     </div>
   );
 }

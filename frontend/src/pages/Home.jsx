@@ -19,32 +19,31 @@ export default function Home() {
 
   return (
     <>
-      {/* 🌟 Hero Slider */}
+      {/*  Hero Slider */}
       <section className="relative h-[90vh]">
         <Swiper
           spaceBetween={0}
-          centeredSlides={true}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
+          centeredSlides
+          loop
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
           pagination={{ clickable: true }}
-          navigation={true}
+          navigation
           effect="fade"
           modules={[Autoplay, Pagination, Navigation, EffectFade]}
           className="h-full"
         >
           {/* Slide 1 */}
           <SwiperSlide>
-            <div className="relative h-full flex items-center justify-center bg-red-600">
+            <div className="relative h-full flex items-center justify-center">
               <img
                 src="/assets/banners/banner1.png"
                 alt="Tăng tốc vượt giới hạn"
-                className="absolute inset-0 w-full h-full object-cover opacity-90"
+                className="absolute inset-0 w-full h-full object-cover object-center"
               />
-              <div className="absolute inset-0 bg-red-800/40" />
+              {/* overlay mờ sang đen để nổi chữ */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
               <div className="relative z-10 text-center text-white px-6">
-                <h2 className="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">
+                <h2 className="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-xl">
                   TĂNG TỐC VƯỢT GIỚI HẠN
                 </h2>
                 <p className="text-lg md:text-xl font-light">
@@ -56,15 +55,15 @@ export default function Home() {
 
           {/* Slide 2 */}
           <SwiperSlide>
-            <div className="relative h-full flex items-center justify-center bg-gradient-to-r from-red-700 to-red-500">
+            <div className="relative h-full flex items-center justify-center">
               <img
-                src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&fit=crop&w=1600&q=80"
+                src="/assets/banners/banner2.png"
                 alt="Nhanh hơn an toàn hơn"
-                className="absolute inset-0 w-full h-full object-cover opacity-85"
+                className="absolute inset-0 w-full h-full object-cover object-center"
               />
-              <div className="absolute inset-0 bg-black/40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
               <div className="relative z-10 text-white text-center px-6">
-                <h2 className="text-5xl font-bold mb-2">
+                <h2 className="text-5xl font-bold mb-2 drop-shadow-xl">
                   Nhanh hơn – An toàn hơn
                 </h2>
                 <p className="text-lg">SpeedyShip – Vận chuyển đáng tin cậy</p>
@@ -74,15 +73,17 @@ export default function Home() {
 
           {/* Slide 3 */}
           <SwiperSlide>
-            <div className="relative h-full flex items-center justify-center bg-gray-900">
+            <div className="relative h-full flex items-center justify-center">
               <img
-                src="https://images.unsplash.com/photo-1598515213640-5b086db46a42?auto=format&fit=crop&w=1600&q=80"
+                src="/assets/banners/banner3.png"
                 alt="Giao hàng toàn quốc"
-                className="absolute inset-0 w-full h-full object-cover opacity-85"
+                className="absolute inset-0 w-full h-full object-cover object-center"
               />
-              <div className="absolute inset-0 bg-black/50" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
               <div className="relative z-10 text-white text-center px-6">
-                <h2 className="text-5xl font-bold mb-2">Giao hàng toàn quốc</h2>
+                <h2 className="text-5xl font-bold mb-2 drop-shadow-xl">
+                  Giao hàng toàn quốc
+                </h2>
                 <p className="text-lg">
                   Mọi miền đất nước – Nhanh, uy tín, chuyên nghiệp
                 </p>
@@ -173,19 +174,35 @@ export default function Home() {
             data-aos="zoom-in"
           >
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Shopee_logo.svg/512px-Shopee_logo.svg.png"
+              src="/assets/logo/applelogo.png"
               className="w-32 mx-auto grayscale hover:grayscale-0 transition"
             />
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Lazada_%282019%29.svg/512px-Lazada_%282019%29.svg.png"
+              src="/assets/logo/samsung.png"
               className="w-32 mx-auto grayscale hover:grayscale-0 transition"
             />
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Tiki_logo_2021.svg/512px-Tiki_logo_2021.svg.png"
+              src="/assets/logo/shopee.png"
               className="w-28 mx-auto grayscale hover:grayscale-0 transition"
             />
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Grab_Logo.svg/512px-Grab_Logo.svg.png"
+              src="/assets/logo/tiktok.png"
+              className="w-28 mx-auto grayscale hover:grayscale-0 transition"
+            />
+            <img
+              src="/assets/logo/lazada.png"
+              className="w-28 mx-auto grayscale hover:grayscale-0 transition"
+            />
+            <img
+              src="/assets/logo/vivo.png"
+              className="w-28 mx-auto grayscale hover:grayscale-0 transition"
+            />
+            <img
+              src="/assets/logo/oppo.png"
+              className="w-28 mx-auto grayscale hover:grayscale-0 transition"
+            />
+            <img
+              src="/assets/logo/lazada.png"
               className="w-28 mx-auto grayscale hover:grayscale-0 transition"
             />
           </div>
