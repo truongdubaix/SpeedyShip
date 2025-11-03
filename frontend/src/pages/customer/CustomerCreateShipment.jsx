@@ -1,3 +1,4 @@
+// src/pages/customer/TaoDonHang.jsx
 import { useState, useEffect } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
@@ -44,12 +45,21 @@ export default function TaoDonHang() {
   const createOrderWithMethod = async (method) => {
     setCreating(true);
     try {
-      const payload = { ...form, customer_id: Number(customerId), method };
-      const res = await API.post("/customers/shipments", payload);
-      const shipmentId =
-        res.data.shipment_id || res.data.id || res.data.insertId;
+      // ✅ API backend thật là /api/shipments
+      const payload = {
+        ...form,
+        customer_id: Number(customerId),
+        payment_method: method,
+      };
 
-      toast.success("✅ Tạo đơn hàng thành công!");
+      const res = await API.post("/shipments", payload); // <-- đổi endpoint này
+      const shipmentId =
+        res.data.shipmentId || res.data.id || res.data.insertId;
+      const tracking = res.data.tracking_code;
+
+      toast.success(`✅ Tạo đơn hàng thành công! Mã: ${tracking || "N/A"}`);
+
+      // 🔁 Điều hướng
       if (method === "MOMO" && shipmentId) {
         navigate(
           `/customer/payment?shipment_id=${shipmentId}&amount=${form.cod_amount}`
