@@ -1,5 +1,8 @@
 import db from "../config/db.js";
-import { sendNotificationToDriver } from "../server.js";
+import {
+  sendNotificationToDriver,
+  sendNotificationToDispatcher,
+} from "../server.js";
 
 /**
  * 🧾 Lấy danh sách tất cả đơn hàng
@@ -35,11 +38,10 @@ export const getShipmentById = async (req, res) => {
 /**
  * ➕ Tạo đơn hàng mới (mô phỏng vị trí quanh Đà Nẵng)
  */
+
 export const createShipment = async (req, res) => {
   try {
     const {
-      tracking_code,
-      customer_id,
       sender_name,
       sender_phone,
       receiver_name,
@@ -48,25 +50,20 @@ export const createShipment = async (req, res) => {
       delivery_address,
       weight_kg,
       cod_amount,
-      status,
-      current_location,
+      customer_id,
     } = req.body;
 
-    // 📍 Mô phỏng vị trí ngẫu nhiên quanh Đà Nẵng
-    const baseLat = 16.054407; // trung tâm Đà Nẵng
-    const baseLng = 108.202167; // trung tâm Đà Nẵng
-    const randomOffset = () => (Math.random() - 0.5) / 100; // lệch trong bán kính ~1km
-    const latitude = baseLat + randomOffset();
-    const longitude = baseLng + randomOffset();
+    // 🔹 Tạo tracking code ngẫu nhiên
+    const tracking_code = "SP" + Date.now().toString().slice(-6);
 
-    // 🔹 Thêm đơn hàng vào CSDL (có cả toạ độ)
-    await db.query(
+    const [result] = await db.query(
       `INSERT INTO shipments 
-      (tracking_code, customer_id, sender_name, sender_phone, receiver_name, receiver_phone, pickup_address, delivery_address, weight_kg, cod_amount, status, current_location, latitude, longitude)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (tracking_code, sender_name, sender_phone, receiver_name, receiver_phone, 
+        pickup_address, delivery_address, weight_kg, cod_amount, 
+        customer_id, status, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())`,
       [
         tracking_code,
-        customer_id,
         sender_name,
         sender_phone,
         receiver_name,
@@ -75,20 +72,28 @@ export const createShipment = async (req, res) => {
         delivery_address,
         weight_kg,
         cod_amount,
-        status || "pending",
-        current_location || "",
-        latitude,
-        longitude,
+        customer_id,
       ]
     );
 
-    res.json({
-      message: "✅ Tạo đơn hàng thành công (vị trí mô phỏng quanh Đà Nẵng)",
-      location: { latitude, longitude },
-    });
+    const newShipmentId = result.insertId;
+
+    await sendNotificationToDispatcher(
+      1,
+      newShipmentId,
+      `🆕 Đơn hàng #${newShipmentId} vừa được khách hàng tạo mới.`
+    );
+
+    res
+      .status(201)
+      .json({
+        message: "Tạo đơn hàng thành công!",
+        shipmentId: newShipmentId,
+        tracking_code,
+      });
   } catch (err) {
-    console.error("❌ Lỗi khi tạo đơn hàng:", err);
-    res.status(500).json({ error: "Không thể tạo đơn hàng mới" });
+    console.error("❌ Lỗi tạo đơn hàng:", err);
+    res.status(500).json({ error: "Không thể tạo đơn hàng" });
   }
 };
 

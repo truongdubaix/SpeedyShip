@@ -2,30 +2,35 @@
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
+import DispatcherNotifications from "../components/DispatcherNotifications";
 
-const socket = io("http://localhost:5000");
+// ⚡ Khởi tạo socket kết nối backend
+const socket = io("http://localhost:5000", { transports: ["websocket"] });
 
 export default function DispatcherLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const username = localStorage.getItem("username") || "Dispatcher";
+  const dispatcherId = localStorage.getItem("dispatcher_id") || 1; // 🆔 ID dispatcher
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
+  // 🚪 Đăng xuất
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("username");
+    localStorage.removeItem("dispatcher_id");
     navigate("/login");
   };
 
-  // 🟣 Kết nối socket
+  // 🟣 Kết nối socket cho Dispatcher
   useEffect(() => {
     socket.emit("joinDispatcher");
 
+    // Khi có tin nhắn mới từ khách hàng
     socket.on("newMessage", (msg) => {
       if (msg.role === "customer") {
-        console.log("📩 Khách hàng gửi tin mới:", msg);
-        // Nếu dispatcher chưa ở trang chat → bật thông báo
+        console.log("📩 Tin nhắn mới từ khách hàng:", msg);
         if (!location.pathname.includes("/dispatcher/chat")) {
           setHasNewMessage(true);
         }
@@ -37,7 +42,7 @@ export default function DispatcherLayout() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* SIDEBAR */}
+      {/* =============== SIDEBAR =============== */}
       <aside className="w-64 bg-blue-700 text-white flex flex-col">
         <div className="p-5 space-y-5 border-b border-blue-600">
           {/* 👋 Lời chào */}
@@ -47,14 +52,16 @@ export default function DispatcherLayout() {
               {username}
             </p>
           </div>
-          {/* 🔵 Nút quay lại trang chủ */}
+
+          {/* 🏠 Trang chủ */}
           <button
             onClick={() => navigate("/")}
             className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition shadow mt-2"
           >
             🏠 Về trang chủ
           </button>
-          {/* 🔴 Nút đăng xuất */}
+
+          {/* 🚪 Đăng xuất */}
           <button
             onClick={handleLogout}
             className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold transition shadow"
@@ -104,7 +111,6 @@ export default function DispatcherLayout() {
               🗺️ Theo dõi đơn hàng
             </NavLink>
 
-            {/* 🆕 Liên hệ khách hàng */}
             <NavLink
               to="/dispatcher/contacts"
               className={({ isActive }) =>
@@ -116,10 +122,10 @@ export default function DispatcherLayout() {
               📞 Liên hệ khách hàng
             </NavLink>
 
-            {/* 💬 Hỗ trợ khách hàng có thông báo */}
+            {/* 💬 Hỗ trợ khách hàng */}
             <NavLink
               to="/dispatcher/chat"
-              onClick={() => setHasNewMessage(false)} // 🔕 Xóa thông báo khi click vào
+              onClick={() => setHasNewMessage(false)} // Xóa chấm đỏ khi click
               className={({ isActive }) =>
                 `relative px-3 py-2 rounded-lg hover:bg-blue-600 transition ${
                   isActive ? "bg-blue-600 font-semibold shadow" : ""
@@ -135,10 +141,18 @@ export default function DispatcherLayout() {
         </div>
       </aside>
 
-      {/* MAIN CONTENT */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        <Outlet />
-      </main>
+      {/* =============== MAIN AREA =============== */}
+      <div className="flex-1 flex flex-col">
+        {/* 🔔 THANH HEADER (chứa chuông thông báo) */}
+        <header className="w-full flex justify-end items-center p-4 bg-white shadow-md">
+          <DispatcherNotifications dispatcherId={dispatcherId} />
+        </header>
+
+        {/* NỘI DUNG CHÍNH */}
+        <main className="flex-1 p-8 overflow-y-auto">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }
