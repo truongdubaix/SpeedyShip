@@ -28,6 +28,13 @@ export default function CustomerLayout() {
           <p className="text-2xl font-extrabold text-yellow-300">{username}</p>
 
           {/* Logout */}
+          {/* 🔵 Nút quay lại trang chủ */}
+          <button
+            onClick={() => navigate("/")}
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition shadow mt-2"
+          >
+            🏠 Về trang chủ
+          </button>
           <button
             onClick={handleLogout}
             className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold transition shadow"

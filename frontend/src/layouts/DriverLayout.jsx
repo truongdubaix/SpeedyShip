@@ -41,7 +41,13 @@ export default function DriverLayout() {
             {username}
           </p>
           <p className="text-sm text-gray-200 italic">Mã tài xế: #{driverId}</p>
-
+          {/* 🔵 Nút quay lại trang chủ */}
+          <button
+            onClick={() => navigate("/")}
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition shadow mt-2"
+          >
+            🏠 Về trang chủ
+          </button>
           {/* Nút đăng xuất */}
           <button
             onClick={handleLogout}
