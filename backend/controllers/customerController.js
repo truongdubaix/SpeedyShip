@@ -113,19 +113,57 @@ export const createFeedback = async (req, res) => {
   }
 };
 
-// 6️⃣ Theo dõi đơn hàng theo mã (tracking_code)
+// 6️⃣ Theo dõi đơn hàng theo mã (tracking_code) — chỉ cho khách hàng của chính mình
 export const trackShipment = async (req, res) => {
   try {
     const { code } = req.params;
+    const customerId = req.query.customer_id; // 👈 Nhận ID khách hàng gửi từ FE
+
+    if (!customerId)
+      return res.status(400).json({ message: "Thiếu thông tin khách hàng!" });
+
     const [rows] = await pool.query(
-      "SELECT * FROM shipments WHERE tracking_code = ?",
-      [code]
+      `SELECT 
+          s.id, s.tracking_code, s.customer_id,
+          s.sender_name, s.sender_phone, s.pickup_address,
+          s.receiver_name, s.receiver_phone, s.delivery_address,
+          s.status, s.cod_amount, s.updated_at,
+          s.pickup_lat, s.pickup_lng, s.delivery_lat, s.delivery_lng,
+          d.name AS driver_name, d.phone AS driver_phone,
+          d.vehicle_type, d.license_no AS plate_number,
+          d.latitude AS driver_lat, d.longitude AS driver_lng
+        FROM shipments s
+        LEFT JOIN assignments a ON a.shipment_id = s.id
+        LEFT JOIN drivers d ON a.driver_id = d.id
+        WHERE s.tracking_code = ? AND s.customer_id = ?`,
+      [code, customerId]
     );
-    if (rows.length === 0)
-      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
-    res.json(rows[0]);
+
+    // ❌ Không có đơn hoặc đơn không thuộc khách hàng này
+    if (!rows.length) {
+      return res.status(404).json({
+        message: "Không tìm thấy đơn hàng hoặc bạn không có quyền truy cập!",
+      });
+    }
+
+    const shipment = rows[0];
+
+    // 🕓 Mô phỏng tiến trình
+    const now = new Date();
+    const makeTime = (minAgo) =>
+      new Date(now.getTime() - minAgo * 60000).toISOString();
+
+    const timeline = [
+      { label: "Đã nhận đơn", time: makeTime(120) },
+      { label: "Đã lấy hàng", time: makeTime(90) },
+      { label: "Đang giao", time: makeTime(30) },
+      { label: "Đã giao", time: now.toISOString() },
+    ];
+
+    res.json({ ...shipment, timeline });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("❌ Lỗi khi tra cứu đơn:", err);
+    res.status(500).json({ message: "Lỗi máy chủ!" });
   }
 };
 

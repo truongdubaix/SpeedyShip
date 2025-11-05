@@ -5,7 +5,7 @@ export default function Header() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const token = localStorage.getItem("token");
-
+  //đăng xuất trở lại trang login
   const logout = () => {
     localStorage.clear();
     navigate("/login");

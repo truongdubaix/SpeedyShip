@@ -56,6 +56,7 @@ import CustomerPayment from "./pages/customer/CustomerPayment.jsx";
 import PaymentSuccess from "./pages/customer/PaymentSuccess.jsx";
 import PaymentFail from "./pages/customer/PaymentFail.jsx";
 import CustomerFeedback from "./pages/customer/CustomerFeedback.jsx";
+//import CustomerTrackDetail from "./pages/customer/CustomerTrackDetail.jsx";
 
 export default function App() {
   return (
@@ -163,6 +164,10 @@ export default function App() {
           <Route path="payment-success" element={<PaymentSuccess />} />
           <Route path="payment-fail" element={<PaymentFail />} />
           <Route path="feedback" element={<CustomerFeedback />} />
+          {/* <Route
+            path="/customer/track/:code"
+            element={<CustomerTrackDetail />}
+          /> */}
         </Route>
 
         {/* ❌ 404 fallback */}
