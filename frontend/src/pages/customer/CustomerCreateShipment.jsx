@@ -1,4 +1,4 @@
-// src/pages/customer/TaoDonHang.jsx
+// src/pages/customer/CustomerCreateShipment.jsx
 import { useState, useEffect } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
@@ -77,14 +77,18 @@ export default function TaoDonHang() {
       const tracking = res.data.tracking_code;
 
       toast.success(`✅ Tạo đơn hàng thành công! Mã: ${tracking || "N/A"}`);
-
+      // 🟪 2️⃣ Nếu chọn thanh toán MoMo → chuyển sang trang thanh toán
       if (method === "MOMO" && shipmentId) {
+        // ✅ Tính tổng tiền phải thanh toán (COD + phí vận chuyển)
         const totalAmount =
           (parseFloat(form.cod_amount) || 0) + (parseFloat(estimatedFee) || 0);
+
+        // ✅ Điều hướng sang trang thanh toán kèm tổng tiền
         navigate(
-          `/customer/payment?shipment_id=${shipmentId}&amount=${totalAmount}`
+          `/customer/payment?shipment_id=${shipmentId}&amount=${totalAmount}&shipping_fee=${estimatedFee}`
         );
-        return;
+
+        return; // 🔥 Dừng tại đây, không chạy xuống navigate("/customer/history")
       }
 
       navigate("/customer/history");
@@ -273,38 +277,29 @@ export default function TaoDonHang() {
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-xl p-8 shadow-xl text-center space-y-6 w-[90%] md:w-[400px]">
             <h3 className="text-xl font-semibold text-gray-800">
-              Chọn phương thức thanh toán
+              Xác nhận tiến hành thanh toán
             </h3>
 
             {creating ? (
               <div className="flex flex-col items-center justify-center py-6 space-y-3">
-                <div className="w-10 h-10 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-gray-600">Đang xử lý đơn hàng...</p>
+                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-gray-600">Đang tạo đơn hàng...</p>
               </div>
             ) : (
               <div className="flex flex-col gap-4">
                 <button
                   onClick={() => createOrderWithMethod("MOMO")}
-                  className="bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-medium"
+                  className="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium"
                 >
-                  💜 Thanh toán bằng MoMo
+                  🚀 Tiến hành thanh toán
                 </button>
                 <button
-                  onClick={() => createOrderWithMethod("COD")}
-                  className="bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium"
+                  onClick={() => setShowPaymentChoice(false)}
+                  className="text-gray-500 hover:text-gray-700 mt-2"
                 >
-                  💵 Thanh toán khi nhận hàng (COD)
+                  ❌ Hủy
                 </button>
               </div>
-            )}
-
-            {!creating && (
-              <button
-                onClick={() => setShowPaymentChoice(false)}
-                className="text-gray-500 hover:text-gray-700 mt-4"
-              >
-                ❌ Hủy
-              </button>
             )}
           </div>
         </div>

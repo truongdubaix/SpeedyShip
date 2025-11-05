@@ -38,7 +38,10 @@ export default function Login() {
       localStorage.setItem("role", user.role);
       localStorage.setItem("username", user.name);
       localStorage.setItem("userId", user.id.toString());
-
+      // ✅ Nếu là khách hàng thì lưu thêm customer_id
+      if (user.role === "customer") {
+        localStorage.setItem("customer_id", user.id.toString());
+      }
       // ✅ Điều hướng đúng theo role
       if (user.role === "admin") navigate("/admin");
       else if (user.role === "dispatcher") navigate("/dispatcher");
