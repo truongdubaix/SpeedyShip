@@ -65,31 +65,34 @@ export default function DispatcherAssignments() {
         <h2 className="text-xl font-semibold mb-3 text-gray-800">
           🕒 Đơn hàng chưa phân công
         </h2>
-        <table className="w-full text-sm border border-gray-200">
-          <thead className="bg-blue-600 text-white">
-            <tr>
-              <th className="p-2">Mã đơn</th>
-              <th className="p-2">Người gửi</th>
-              <th className="p-2">Người nhận</th>
-              <th className="p-2">Hành động</th>
+        <table className="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+          <thead>
+            <tr className="bg-blue-600 text-white text-left">
+              <th className="p-3 w-[15%] text-center">Mã đơn</th>
+              <th className="p-3 w-[30%]">Người gửi</th>
+              <th className="p-3 w-[30%]">Người nhận</th>
+              <th className="p-3 w-[25%] text-center">Hành động</th>
             </tr>
           </thead>
           <tbody>
             {unassigned.length > 0 ? (
               unassigned.map((s) => (
-                <tr key={s.id} className="border-b hover:bg-blue-50">
-                  <td className="p-2 font-semibold text-blue-700">
+                <tr
+                  key={s.id}
+                  className="border-b hover:bg-blue-50 even:bg-gray-50 transition-all"
+                >
+                  <td className="p-3 font-semibold text-blue-700 text-center align-middle">
                     {s.tracking_code}
                   </td>
-                  <td className="p-2">{s.sender_name}</td>
-                  <td className="p-2">{s.receiver_name}</td>
-                  <td className="p-2">
+                  <td className="p-3 align-middle">{s.sender_name}</td>
+                  <td className="p-3 align-middle">{s.receiver_name}</td>
+                  <td className="p-3 text-center align-middle">
                     <select
                       onChange={(e) =>
                         handleAssign(s.id, e.target.value || null)
                       }
                       defaultValue=""
-                      className="border rounded px-2 py-1"
+                      className="border border-gray-300 rounded-md px-3 py-1 w-44 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                     >
                       <option value="">-- Chọn tài xế --</option>
                       {drivers.map((d) => (
@@ -105,7 +108,7 @@ export default function DispatcherAssignments() {
               <tr>
                 <td
                   colSpan="4"
-                  className="p-3 text-center text-gray-500 italic"
+                  className="p-4 text-center text-gray-500 italic"
                 >
                   ✅ Tất cả đơn đã được phân công.
                 </td>
@@ -120,30 +123,37 @@ export default function DispatcherAssignments() {
         <h2 className="text-xl font-semibold mb-3 text-gray-800">
           📋 Danh sách phân công
         </h2>
-        <table className="w-full text-sm border border-gray-200">
-          <thead className="bg-green-600 text-white">
-            <tr>
-              <th className="p-2">Mã đơn</th>
-              <th className="p-2">Tài xế</th>
-              <th className="p-2">Phương tiện</th>
-              <th className="p-2">Trạng thái</th>
-              <th className="p-2">Hành động</th>
+        <table className="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+          <thead>
+            <tr className="bg-green-600 text-white text-left">
+              <th className="p-3 w-[15%] text-center">Mã đơn</th>
+              <th className="p-3 w-[25%]">Tài xế</th>
+              <th className="p-3 w-[20%] text-center">Phương tiện</th>
+              <th className="p-3 w-[25%] text-center">Trạng thái</th>
+              <th className="p-3 w-[15%] text-center">Hành động</th>
             </tr>
           </thead>
+
           <tbody>
             {assignments.length > 0 ? (
               assignments.map((a) => (
-                <tr key={a.id} className="border-b hover:bg-green-50">
-                  <td className="p-2 font-semibold text-green-700">
+                <tr
+                  key={a.id}
+                  className="border-b even:bg-gray-50 hover:bg-green-50 transition-all"
+                >
+                  <td className="p-3 font-semibold text-green-700 text-center align-middle">
                     {a.tracking_code}
                   </td>
-                  <td className="p-2">{a.driver_name}</td>
-                  <td className="p-2">{a.vehicle_type}</td>
-                  <td className="p-2">
+                  <td className="p-3 align-middle">{a.driver_name}</td>
+                  <td className="p-3 text-center align-middle">
+                    {a.vehicle_type}
+                  </td>
+
+                  <td className="p-3 text-center align-middle">
                     <select
                       value={a.assignment_status}
                       onChange={(e) => handleStatusChange(a.id, e.target.value)}
-                      className="border rounded px-2 py-1"
+                      className="border border-gray-300 rounded-md px-3 py-1 w-40 focus:ring-2 focus:ring-green-400 focus:outline-none"
                     >
                       <option value="assigned">Đã phân công</option>
                       <option value="picking">Đang lấy hàng</option>
@@ -152,12 +162,13 @@ export default function DispatcherAssignments() {
                       <option value="failed">Thất bại</option>
                     </select>
                   </td>
-                  <td className="p-2 text-center flex justify-center gap-2">
+
+                  <td className="p-3 text-center align-middle">
                     <button
                       onClick={() =>
                         navigate(`/dispatcher/tracking/${a.shipment_id}`)
                       }
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm flex items-center justify-center gap-1 mx-auto"
                     >
                       🔍 Xem chi tiết
                     </button>
@@ -168,7 +179,7 @@ export default function DispatcherAssignments() {
               <tr>
                 <td
                   colSpan="5"
-                  className="p-3 text-center text-gray-500 italic"
+                  className="p-4 text-center text-gray-500 italic"
                 >
                   Không có phân công nào.
                 </td>

@@ -30,6 +30,19 @@ export default function DispatcherChat() {
   useEffect(() => {
     socket.emit("joinDispatcher");
     console.log("🟣 Dispatcher joined global room");
+    // 🆕 Khi có khách hàng bắt đầu chat mới
+    socket.on("newChat", ({ chatId, customerId }) => {
+      console.log("🆕 Có khách hàng mới bắt đầu chat:", chatId, customerId);
+      setActiveChats((prev) => {
+        if (prev.includes(chatId)) return prev;
+        const updated = [...prev, chatId];
+        saveToStorage(updated, selectedChat, messages);
+        return updated;
+      });
+
+      // ✅ Hiện thông báo popup nếu đang ở trang khác
+      showToast(`Khách hàng #${customerId} vừa bắt đầu chat #${chatId}`);
+    });
 
     // 🔁 Load từ localStorage
     const saved = localStorage.getItem("dispatcherChatData");
@@ -83,9 +96,10 @@ export default function DispatcherChat() {
       }
     });
 
-    // ❌ Khi chat kết thúc
-    socket.on("chatClosed", (chatId) => {
+    // ✅ Khi chat kết thúc
+    socket.on("chatEnded", ({ chatId }) => {
       console.log("❌ Chat kết thúc:", chatId);
+      showToast(`Cuộc trò chuyện #${chatId} đã kết thúc.`);
       setActiveChats((prev) => {
         const updated = prev.filter((id) => id !== chatId);
         saveToStorage(updated, selectedChat, messages);
@@ -102,7 +116,7 @@ export default function DispatcherChat() {
       socket.off("newChat");
       socket.off("newMessage");
       socket.off("customerMessage");
-      socket.off("chatClosed");
+      socket.off("chatEnded");
     };
   }, [selectedChat]);
 
