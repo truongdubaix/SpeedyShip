@@ -1,6 +1,5 @@
-// src/pages/customer/CustomerPayment.jsx
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import API from "../../services/api";
 import toast from "react-hot-toast";
 
@@ -11,8 +10,6 @@ export default function CustomerPayment() {
   const codAmount = Number(params.get("amount")) || 0;
   const shippingFee = Number(params.get("shipping_fee")) || 0;
   const totalAmount = codAmount + shippingFee;
-
-  // ✅ Lấy customer_id linh hoạt
   const customerId =
     localStorage.getItem("customer_id") ||
     localStorage.getItem("userId") ||
@@ -20,38 +17,8 @@ export default function CustomerPayment() {
 
   const [method, setMethod] = useState("momo");
   const [loading, setLoading] = useState(false);
-
-  // 🟢 Theo dõi trạng thái shipment => nếu completed thì tự redirect
-  useEffect(() => {
-    if (!shipmentId) return;
-
-    let interval;
-
-    const checkPaymentStatus = async () => {
-      try {
-        const res = await API.get(`/shipments/${shipmentId}`);
-        const shipment = res.data;
-        console.log("🔍 Kiểm tra shipment:", shipment.status);
-
-        if (shipment.status === "completed") {
-          toast.success("✅ Thanh toán thành công!");
-          navigate(
-            `/customer/payment-success?orderId=${shipmentId}&resultCode=0`
-          );
-        }
-      } catch (err) {
-        console.error("❌ Lỗi kiểm tra trạng thái shipment:", err);
-      }
-    };
-
-    // 🟢 Gọi ngay lần đầu tiên
-    checkPaymentStatus();
-
-    // ⏱️ Sau đó kiểm tra mỗi 3 giây
-    interval = setInterval(checkPaymentStatus, 3000);
-
-    return () => clearInterval(interval);
-  }, [shipmentId]);
+  const [showMomoPopup, setShowMomoPopup] = useState(false);
+  const [momoUrl, setMomoUrl] = useState("");
 
   const handlePayment = async () => {
     if (!customerId) {
@@ -65,7 +32,7 @@ export default function CustomerPayment() {
       return;
     }
 
-    // 🔹 Thanh toán MoMo
+    // ✅ Thanh toán MoMo hiển thị trong popup
     setLoading(true);
     try {
       const res = await API.post("/payments/momo", {
@@ -76,10 +43,10 @@ export default function CustomerPayment() {
 
       const payUrl = res.data?.payUrl;
       if (payUrl) {
-        // 🪟 Mở tab MoMo
-        const momoTab = window.open(payUrl, "_blank");
+        setMomoUrl(payUrl);
+        setShowMomoPopup(true);
 
-        // 💡 Polling: kiểm tra thanh toán mỗi 3s
+        // 🔁 Kiểm tra trạng thái thanh toán mỗi 3s
         const checkPaymentStatus = setInterval(async () => {
           try {
             const res = await API.get(`/payments`);
@@ -89,12 +56,11 @@ export default function CustomerPayment() {
 
             if (payment && payment.status === "completed") {
               clearInterval(checkPaymentStatus);
-              if (momoTab && !momoTab.closed) momoTab.close(); // 🔒 Đóng tab MoMo
-              // ✅ Chuyển sang trang loading trước khi hiển thị success
+              setShowMomoPopup(false);
               window.location.href = `/customer/payment-success?orderId=${payment.order_id}&resultCode=0&loading=true`;
             }
           } catch (err) {
-            console.error("❌ Lỗi khi kiểm tra trạng thái:", err.message);
+            console.error("❌ Lỗi kiểm tra:", err.message);
           }
         }, 3000);
       } else {
@@ -109,7 +75,7 @@ export default function CustomerPayment() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 relative">
       <div className="bg-white shadow-xl rounded-2xl p-10 max-w-lg w-full text-center">
         <h2 className="text-2xl font-bold text-blue-700 mb-6">
           💳 Thanh toán đơn hàng
@@ -177,6 +143,33 @@ export default function CustomerPayment() {
             : "Xác nhận thanh toán tiền mặt"}
         </button>
       </div>
+
+      {/* Popup MoMo nhỏ gọn */}
+      {showMomoPopup && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+          <div className="bg-white rounded-2xl shadow-2xl p-4 w-[950px] h-[600px] relative flex flex-col items-center justify-center">
+            {/* ❌ Nút đóng */}
+            <button
+              onClick={() => setShowMomoPopup(false)}
+              className="absolute top-3 right-4 text-gray-500 hover:text-red-500 text-2xl"
+            >
+              ✖
+            </button>
+
+            {/* 💜 Tiêu đề */}
+            <h3 className="text-2xl font-bold text-pink-600 mb-3">
+              Cổng thanh toán MoMo
+            </h3>
+
+            {/* 💳 Iframe MoMo — full rộng, QR hiển thị rõ */}
+            <iframe
+              src={momoUrl}
+              title="MoMo Payment"
+              className="w-[900px] h-[520px] rounded-xl border shadow-inner"
+            ></iframe>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
