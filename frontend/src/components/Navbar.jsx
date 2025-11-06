@@ -8,7 +8,6 @@ export default function Navbar() {
     localStorage.getItem("username") || "Người dùng"
   );
 
-  // ✅ Theo dõi sự thay đổi của localStorage
   useEffect(() => {
     const handleStorageChange = () => {
       setRole(localStorage.getItem("role"));
@@ -21,7 +20,6 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.clear();
-    // ✅ Cập nhật ngay không cần reload
     setRole(null);
     setName("");
     navigate("/login");
@@ -70,7 +68,6 @@ export default function Navbar() {
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          {/* 🔹 Logo thật của SpeedyShip */}
           <img
             src="/assets/logo/logoSpeedyShip.png"
             alt="SpeedyShip Logo"
@@ -80,6 +77,7 @@ export default function Navbar() {
             SpeedyShip
           </span>
         </div>
+
         {/* Menu chính */}
         <div className="hidden md:flex space-x-6 text-white text-sm font-medium">
           <Link to="/" className="hover:text-yellow-300 transition">
@@ -91,6 +89,12 @@ export default function Navbar() {
           <Link to="/contact" className="hover:text-yellow-300 transition">
             Liên hệ
           </Link>
+
+          {/* ✅ Thêm mục Tuyển dụng */}
+          <Link to="/apply-driver" className="hover:text-yellow-300 transition">
+            Tuyển dụng
+          </Link>
+
           <Link to="/tracking" className="hover:text-yellow-300 transition">
             Tra cứu đơn
           </Link>
