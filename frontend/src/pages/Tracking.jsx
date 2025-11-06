@@ -49,6 +49,7 @@ export default function Tracking() {
   const initialCode = searchParams.get("code") || "";
 
   const [code, setCode] = useState(initialCode);
+  const [last4, setLast4] = useState(""); // ✅ cho khách vãng lai
   const [shipment, setShipment] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -74,10 +75,26 @@ export default function Tracking() {
     setError("");
 
     try {
-      const res = await API.get(`/customers/track/${code.trim()}`);
+      const customerId = localStorage.getItem("customer_id");
+      let url = `/customers/track/${code.trim()}`;
+
+      // ✅ Nếu đã đăng nhập → chỉ gửi customer_id
+      if (customerId) {
+        url += `?customer_id=${customerId}`;
+      } else {
+        // ✅ Khách vãng lai → yêu cầu nhập 4 số cuối SĐT
+        if (!last4 || last4.length !== 4) {
+          setError("⚠️ Vui lòng nhập 4 số cuối SĐT người nhận!");
+          setLoading(false);
+          return;
+        }
+        url += `?last4=${last4}`;
+      }
+
+      const res = await API.get(url);
       setShipment(res.data);
     } catch {
-      setError("❌ Không tìm thấy đơn hàng hoặc xảy ra lỗi máy chủ!");
+      setError("❌ Không tìm thấy đơn hàng hoặc thông tin xác thực sai!");
     } finally {
       setLoading(false);
     }
@@ -131,6 +148,19 @@ export default function Tracking() {
             placeholder="Nhập mã vận đơn (VD: SP123456)"
             className="w-full md:w-3/4 p-3 rounded text-gray-700 focus:outline-none shadow"
           />
+
+          {/* ✅ Chỉ hiện khi KHÔNG đăng nhập */}
+          {!localStorage.getItem("customer_id") && (
+            <input
+              value={last4}
+              onChange={(e) => setLast4(e.target.value)}
+              type="number"
+              maxLength={4}
+              placeholder="4 số cuối SĐT"
+              className="w-full md:w-1/2 p-3 rounded text-gray-700 focus:outline-none shadow"
+            />
+          )}
+
           <button
             onClick={handleSearch}
             disabled={loading}

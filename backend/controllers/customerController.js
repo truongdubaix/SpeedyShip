@@ -117,52 +117,54 @@ export const createFeedback = async (req, res) => {
 export const trackShipment = async (req, res) => {
   try {
     const { code } = req.params;
-    const customerId = req.query.customer_id; // 👈 Nhận ID khách hàng gửi từ FE
+    const customerId = req.query.customer_id || null;
+    const last4 = req.query.last4 || null; // 4 số cuối SĐT
 
-    if (!customerId)
-      return res.status(400).json({ message: "Thiếu thông tin khách hàng!" });
+    if (!code) {
+      return res.status(400).json({ message: "Thiếu mã vận đơn!" });
+    }
 
-    const [rows] = await pool.query(
-      `SELECT 
-          s.id, s.tracking_code, s.customer_id,
-          s.sender_name, s.sender_phone, s.pickup_address,
-          s.receiver_name, s.receiver_phone, s.delivery_address,
-          s.status, s.cod_amount, s.updated_at,
-          s.pickup_lat, s.pickup_lng, s.delivery_lat, s.delivery_lng,
-          d.name AS driver_name, d.phone AS driver_phone,
-          d.vehicle_type, d.license_no AS plate_number,
-          d.latitude AS driver_lat, d.longitude AS driver_lng
-        FROM shipments s
-        LEFT JOIN assignments a ON a.shipment_id = s.id
-        LEFT JOIN drivers d ON a.driver_id = d.id
-        WHERE s.tracking_code = ? AND s.customer_id = ?`,
-      [code, customerId]
-    );
+    let query = `
+      SELECT 
+        s.*, 
+        d.name AS driver_name, d.phone AS driver_phone,
+        d.latitude AS driver_lat, d.longitude AS driver_lng
+      FROM shipments s
+      LEFT JOIN assignments a ON a.shipment_id = s.id
+      LEFT JOIN drivers d ON a.driver_id = d.id
+      WHERE s.tracking_code = ?
+    `;
+    const params = [code];
 
-    // ❌ Không có đơn hoặc đơn không thuộc khách hàng này
+    // ✅ Nếu là khách hàng đã đăng nhập → chỉ xem đơn của mình
+    if (customerId) {
+      query += " AND s.customer_id = ?";
+      params.push(customerId);
+    }
+    // ✅ Nếu là khách vãng lai → yêu cầu nhập 4 số cuối SĐT
+    else if (last4) {
+      query +=
+        " AND RIGHT(REGEXP_REPLACE(s.receiver_phone, '[^0-9]', ''), 4) = ?";
+      params.push(last4);
+    } else {
+      return res.status(400).json({
+        message: "Khách vãng lai phải nhập 4 số cuối SĐT người nhận!",
+      });
+    }
+
+    const [rows] = await pool.query(query, params);
+
     if (!rows.length) {
       return res.status(404).json({
-        message: "Không tìm thấy đơn hàng hoặc bạn không có quyền truy cập!",
+        message: "Không tìm thấy đơn hàng hoặc thông tin xác thực không đúng!",
       });
     }
 
     const shipment = rows[0];
 
-    // 🕓 Mô phỏng tiến trình
-    const now = new Date();
-    const makeTime = (minAgo) =>
-      new Date(now.getTime() - minAgo * 60000).toISOString();
-
-    const timeline = [
-      { label: "Đã nhận đơn", time: makeTime(120) },
-      { label: "Đã lấy hàng", time: makeTime(90) },
-      { label: "Đang giao", time: makeTime(30) },
-      { label: "Đã giao", time: now.toISOString() },
-    ];
-
-    res.json({ ...shipment, timeline });
+    res.json(shipment);
   } catch (err) {
-    console.error("❌ Lỗi khi tra cứu đơn:", err);
+    console.error("❌ Lỗi tra cứu đơn:", err);
     res.status(500).json({ message: "Lỗi máy chủ!" });
   }
 };

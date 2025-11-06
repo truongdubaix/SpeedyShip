@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 router.get("/", getAllShipments);
-router.get("/:id", getShipmentById); // ✅ route mới để xem chi tiết
+router.get("/:id", getShipmentById);
 router.post("/", createShipment);
 router.put("/:id", updateShipment);
 router.patch("/:id/status", updateShipmentStatus);
