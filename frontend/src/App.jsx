@@ -13,6 +13,7 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Logout from "./pages/Logout.jsx";
 import Unauthorized from "./pages/Unauthorized.jsx";
+import ApplyDriver from "./pages/ApplyDriver.jsx";
 
 // 🧩 Layouts
 import AdminLayout from "./layouts/AdminLayout.jsx";
@@ -71,6 +72,9 @@ export default function App() {
           { path: "/contact", element: <Contact /> },
           { path: "/login", element: <Login /> },
           { path: "/register", element: <Register /> },
+
+          // ✅ Trang tuyển dụng tài xế mới
+          { path: "/apply-driver", element: <ApplyDriver /> },
         ].map(({ path, element }) => (
           <Route
             key={path}
