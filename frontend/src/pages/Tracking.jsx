@@ -153,14 +153,19 @@ export default function Tracking() {
           {!localStorage.getItem("customer_id") && (
             <input
               value={last4}
-              onChange={(e) => setLast4(e.target.value)}
-              type="number"
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ""); // chỉ cho nhập số
+                setLast4(value); // ✅ đúng state
+              }}
+              type="text"
               maxLength={4}
               placeholder="4 số cuối SĐT"
-              className="w-full md:w-1/2 p-3 rounded text-gray-700 focus:outline-none shadow"
+              className="w-full md:w-1/2 p-3 rounded text-gray-700 focus:outline-none shadow
+               appearance-none
+               [&::-webkit-inner-spin-button]:hidden
+               [&::-webkit-outer-spin-button]:hidden"
             />
           )}
-
           <button
             onClick={handleSearch}
             disabled={loading}
