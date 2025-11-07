@@ -2,9 +2,8 @@ import pool from "../config/db.js";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 
-// ================================
 // ✅ Setup gửi email
-// ================================
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -13,9 +12,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// ================================
 // ✅ Ứng viên nộp đơn (PUBLIC)
-// ================================
+
 export const applyDriver = async (req, res) => {
   try {
     const { name, phone, email, license_plate, vehicle_type, experience } =
@@ -62,10 +60,8 @@ export const getApplications = async (_req, res) => {
     res.status(500).json({ error: "Lỗi server!" });
   }
 };
+// ✅ Admin duyệt hồ sơ + tạo xe + tạo driver
 
-// ================================
-// ✅ Admin duyệt hồ sơ
-// ================================
 export const approveApplication = async (req, res) => {
   const { id } = req.params;
 
@@ -80,7 +76,7 @@ export const approveApplication = async (req, res) => {
     }
 
     // ===========================================================
-    // ✅ 1. Kiểm tra xem email đã có user chưa
+    // ✅ 1. Kiểm tra email có tồn tại trong users chưa
     // ===========================================================
     const [[existingUser]] = await pool.query(
       "SELECT id FROM users WHERE email = ?",
@@ -94,7 +90,6 @@ export const approveApplication = async (req, res) => {
       userId = existingUser.id;
       console.log("⚠ User đã tồn tại, dùng lại userId =", userId);
     } else {
-      // ✅ Tạo user mới
       const hashed = await bcrypt.hash(plainPassword, 10);
 
       const [userRes] = await pool.query(
@@ -107,7 +102,7 @@ export const approveApplication = async (req, res) => {
     }
 
     // ===========================================================
-    // ✅ 2. Tạo driver mới (KHÔNG kiểm tra trùng email nữa)
+    // ✅ 2. Tạo driver
     // ===========================================================
     const [driverRes] = await pool.query(
       `INSERT INTO drivers (user_id, name, phone, email, license_no, vehicle_type, status)
@@ -122,8 +117,24 @@ export const approveApplication = async (req, res) => {
       ]
     );
 
+    const driverId = driverRes.insertId;
+
     // ===========================================================
-    // ✅ 3. Cập nhật trạng thái đơn
+    // ✅ 3. Thêm xe vào bảng vehicles (tự động tạo xe theo hồ sơ)
+    // ===========================================================
+    const [vehicleRes] = await pool.query(
+      `INSERT INTO vehicles (plate_no, type, capacity_kg, driver_id, status)
+       VALUES (?, ?, ?, ?, 'available')`,
+      [
+        app.license_plate,
+        app.vehicle_type,
+        150, // default capacity, bạn có thể sửa
+        driverId,
+      ]
+    );
+
+    // ===========================================================
+    // ✅ 4. Update application status
     // ===========================================================
     await pool.query(
       "UPDATE driver_applications SET status='approved' WHERE id = ?",
@@ -131,7 +142,7 @@ export const approveApplication = async (req, res) => {
     );
 
     // ===========================================================
-    // ✅ 4. Gửi mail thông báo tài khoản cho tài xế
+    // ✅ 5. Gửi email thông báo tài khoản login cho tài xế
     // ===========================================================
     await transporter.sendMail({
       from: `"SpeedyShip" <${process.env.EMAIL_USER}>`,
@@ -145,15 +156,19 @@ export const approveApplication = async (req, res) => {
           <li><strong>Email:</strong> ${app.email}</li>
           <li><strong>Mật khẩu:</strong> 123456</li>
         </ul>
-        <p>Vui lòng đăng nhập và cập nhật lại mật khẩu của bạn.</p>
+        <p>Vui lòng đăng nhập và đổi mật khẩu của bạn sớm nhất.</p>
         <br>
         <p>Chúc bạn làm việc hiệu quả!</p>
       `,
     });
 
+    // ===========================================================
+    // ✅ 6. Trả kết quả
+    // ===========================================================
     res.json({
-      message: "✅ Duyệt thành công! Tài xế đã được tạo & gửi email.",
-      driverId: driverRes.insertId,
+      message: "✅ Duyệt thành công! Tài xế + Xe đã được tạo & email đã gửi.",
+      driverId,
+      vehicleId: vehicleRes.insertId,
     });
   } catch (err) {
     console.error("approveApplication:", err);

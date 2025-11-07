@@ -219,3 +219,37 @@ export const updateDriverVehicle = async (req, res) => {
     res.status(500).json({ message: "Lỗi server khi cập nhật xe cho tài xế" });
   }
 };
+// ✅ Hồ sơ tài xế bằng userId
+export const getDriverProfileByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const [rows] = await db.query(
+      `
+      SELECT 
+        d.id,
+        d.user_id,
+        d.name,
+        d.email,
+        d.phone,
+        d.status,
+        v.plate_no,
+        v.type,
+        v.capacity_kg,
+        v.status AS vehicle_status
+      FROM drivers d
+      LEFT JOIN vehicles v ON d.vehicle_id = v.id
+      WHERE d.user_id = ?
+      `,
+      [userId]
+    );
+
+    if (!rows.length)
+      return res.status(404).json({ message: "Không tìm thấy tài xế" });
+
+    res.json(rows[0]);
+  } catch (err) {
+    console.error("❌ Lỗi getDriverProfileByUser:", err);
+    res.status(500).json({ message: "Lỗi khi lấy thông tin tài xế" });
+  }
+};
