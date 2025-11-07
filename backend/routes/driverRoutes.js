@@ -7,6 +7,7 @@ import {
   getDriverProfile,
   changeDriverPassword,
   updateDriverVehicle, // 👈 thêm dòng này
+  getDriverProfileByUser,
 } from "../controllers/driverController.js";
 
 const router = express.Router();
@@ -52,5 +53,5 @@ router.patch("/password/:id", changeDriverPassword);
  * PUT /api/drivers/:id/vehicle
  */
 router.put("/:id/vehicle", updateDriverVehicle);
-
+router.get("/profile/user/:userId", getDriverProfileByUser);
 export default router;

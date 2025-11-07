@@ -169,9 +169,17 @@ export default function Tracking() {
           <button
             onClick={handleSearch}
             disabled={loading}
-            className={`${
-              loading ? "bg-gray-400" : "bg-orange-500 hover:bg-orange-600"
-            } text-white px-6 py-3 rounded font-semibold transition`}
+            className={`
+    px-6 py-3 rounded-lg font-semibold text-white
+    whitespace-nowrap           // ✅ Không cho xuống dòng
+    flex items-center justify-center
+    transition-all duration-300
+    ${
+      loading
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-orange-500 hover:bg-orange-600"
+    }
+  `}
           >
             {loading ? "Đang tra cứu..." : "Tra cứu"}
           </button>

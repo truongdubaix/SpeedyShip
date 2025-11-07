@@ -28,15 +28,11 @@ export default function DriverProfile() {
 
     const fetchStats = async () => {
       try {
-        // Nếu backend chưa có route này, bạn có thể fake tạm dữ liệu
-        const res = await API.get(`/drivers/stats/${id}`);
+        const res = await API.get(`/drivers/dashboard/${id}`);
         setStats(res.data);
       } catch (err) {
-        console.warn(
-          "⚠️ Không tìm thấy dữ liệu thống kê, dùng dữ liệu mô phỏng"
-        );
-        // dữ liệu mẫu nếu chưa có API
-        setStats({ total: 45, completed: 42, rating: 4.8 });
+        console.warn("❌ Không thể tải dashboard");
+        setStats({ total: 0, completed: 0, rating: 0 });
       }
     };
 
