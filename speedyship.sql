@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
+<<<<<<< HEAD
 -- Generation Time: Nov 05, 2025 at 08:33 PM
+=======
+-- Generation Time: Nov 01, 2025 at 08:01 AM
+>>>>>>> 289cdd01080e6a66bbfd6a4570d2b4e21edf2fcb
 -- Server version: 8.4.3
 -- PHP Version: 8.3.26
 
@@ -126,6 +130,7 @@ INSERT INTO `chats` (`id`, `customer_id`, `dispatcher_id`, `status`, `started_at
 (18, 9, NULL, 'closed', '2025-10-27 08:19:52', '2025-10-27 08:22:42'),
 (19, 9, NULL, 'closed', '2025-10-27 08:22:45', '2025-10-27 08:22:58'),
 (20, 9, NULL, 'closed', '2025-10-27 08:23:01', '2025-10-28 13:30:35'),
+<<<<<<< HEAD
 (21, 9, NULL, 'closed', '2025-10-28 13:30:37', '2025-10-28 13:30:50'),
 (22, 9, NULL, 'closed', '2025-11-03 09:45:24', '2025-11-03 09:55:18'),
 (23, 9, NULL, 'closed', '2025-11-03 09:56:24', '2025-11-03 09:56:44'),
@@ -138,6 +143,9 @@ INSERT INTO `chats` (`id`, `customer_id`, `dispatcher_id`, `status`, `started_at
 (30, 9, NULL, 'closed', '2025-11-03 10:09:34', '2025-11-03 10:12:07'),
 (31, 9, NULL, 'closed', '2025-11-03 10:12:10', '2025-11-03 10:12:20'),
 (32, 9, NULL, 'active', '2025-11-03 10:12:25', NULL);
+=======
+(21, 9, NULL, 'closed', '2025-10-28 13:30:37', '2025-10-28 13:30:50');
+>>>>>>> 289cdd01080e6a66bbfd6a4570d2b4e21edf2fcb
 
 -- --------------------------------------------------------
 
@@ -206,8 +214,13 @@ INSERT INTO `drivers` (`id`, `name`, `email`, `phone`, `license_no`, `vehicle_ty
 (11, 'Đỗ Văn G', 'driverG@speedyship.vn', '0909789012', '77B-77777', 'Xe tải 2T', 'available', 10, '2025-10-21 04:39:26', 16.054407, 108.202167, NULL, '2025-10-25 12:44:57'),
 (12, 'Bùi Văn H', 'driverH@speedyship.vn', '0909890123', '88C-88888', 'Xe container', 'available', 11, '2025-10-21 04:39:26', 16.054407, 108.202167, 2, '2025-10-25 12:44:57'),
 (13, 'Phan Văn I', 'driverI@speedyship.vn', '0909901234', '92A-99999', 'Xe máy', 'available', 12, '2025-10-21 04:39:26', 16.054407, 108.202167, 1, '2025-10-25 12:44:57'),
+<<<<<<< HEAD
 (14, 'truong ne', 'driver@speedyship.vn', '0363337081', NULL, 'SH', 'delivering', NULL, '2025-10-22 09:32:06', 10.762622, 106.660172, 2, '2025-11-03 07:31:23'),
 (17, 'Truong TestOTP', 'truongdubai2704@gmail.com', '', NULL, NULL, 'delivering', 17, '2025-11-04 10:15:27', 10.762622, 106.660172, 2, '2025-11-04 10:23:51');
+=======
+(14, 'truong ne', 'driver@speedyship.vn', '0363337081', NULL, 'SH', 'delivering', NULL, '2025-10-22 09:32:06', 10.762622, 106.660172, 2, '2025-10-25 12:48:18'),
+(15, 'Nguyen Van A', 'a@example.com', '0363337081', NULL, 'Bike', 'delivering', 15, '2025-10-23 15:25:50', 10.762622, 106.660172, 2, '2025-10-25 12:09:29');
+>>>>>>> 289cdd01080e6a66bbfd6a4570d2b4e21edf2fcb
 
 -- --------------------------------------------------------
 
@@ -554,6 +567,7 @@ CREATE TABLE `payments` (
 -- Dumping data for table `payments`
 --
 
+<<<<<<< HEAD
 INSERT INTO `payments` (`id`, `order_id`, `shipment_id`, `customer_id`, `amount`, `method`, `status`, `created_at`, `updated_at`) VALUES
 (9, NULL, 2, 4, 120000.00, 'COD', 'completed', '2025-10-20 17:23:09', '2025-10-20 17:23:09'),
 (10, NULL, 3, 5, 90000.00, 'BankTransfer', 'completed', '2025-10-20 17:23:09', '2025-10-25 05:36:08'),
@@ -620,6 +634,32 @@ INSERT INTO `payments` (`id`, `order_id`, `shipment_id`, `customer_id`, `amount`
 (92, 'MM1762373873341', 164, 9, 217400.00, 'Momo', 'pending', '2025-11-05 20:17:53', '2025-11-05 20:17:53'),
 (93, 'MM1762373942346', 165, 9, 252800.00, 'Momo', 'completed', '2025-11-05 20:19:02', '2025-11-05 20:19:48'),
 (94, 'MM1762374077595', 165, 9, 252800.00, 'Momo', 'completed', '2025-11-05 20:21:17', '2025-11-05 20:32:01');
+=======
+INSERT INTO `payments` (`id`, `shipment_id`, `customer_id`, `amount`, `method`, `status`, `created_at`, `updated_at`) VALUES
+(9, 2, 4, 120000.00, 'COD', 'completed', '2025-10-20 17:23:09', '2025-10-20 17:23:09'),
+(10, 3, 5, 90000.00, 'BankTransfer', 'completed', '2025-10-20 17:23:09', '2025-10-25 05:36:08'),
+(11, 4, 6, 150000.00, 'Momo', 'completed', '2025-10-20 17:23:09', '2025-10-21 04:39:01'),
+(12, 5, 11, 65000.00, 'COD', 'completed', '2025-10-20 17:23:09', '2025-10-25 05:36:07'),
+(13, 6, 12, 210000.00, 'BankTransfer', 'completed', '2025-10-20 17:23:09', '2025-10-25 11:29:58'),
+(15, 37, 9, 800000.00, 'COD', 'completed', '2025-10-25 11:18:39', '2025-10-25 11:19:37'),
+(16, 38, 9, 440000.00, 'COD', 'completed', '2025-10-25 11:21:13', '2025-10-25 11:29:55'),
+(17, 39, 9, 15000.00, 'COD', 'completed', '2025-10-25 11:22:08', '2025-10-25 11:29:54'),
+(18, 40, 9, 18000.00, 'Momo', 'completed', '2025-10-25 11:22:45', '2025-10-25 11:24:19'),
+(19, 41, 9, 80000.00, 'COD', 'completed', '2025-10-25 11:25:45', '2025-10-25 11:29:52'),
+(20, 42, 9, 90000.00, 'Momo', 'completed', '2025-10-25 11:29:08', '2025-10-25 11:29:50'),
+(21, 43, 9, 80000.00, 'Momo', 'pending', '2025-10-25 13:26:37', '2025-10-25 13:26:37'),
+(22, 44, 9, 120000.00, 'Momo', 'completed', '2025-10-28 14:32:38', '2025-10-28 14:34:05'),
+(23, 45, 9, 12000.00, 'Momo', 'pending', '2025-10-28 17:37:53', '2025-10-28 17:37:53'),
+(24, 46, 9, 150000.00, 'Momo', 'pending', '2025-10-29 05:09:51', '2025-10-29 05:09:51'),
+(41, 101, 4, 85000.00, 'COD', 'completed', '2025-07-12 03:25:00', '2025-07-12 03:25:00'),
+(42, 102, 5, 92000.00, 'Momo', 'completed', '2025-07-25 07:10:00', '2025-07-25 07:10:00'),
+(43, 103, 6, 110000.00, 'BankTransfer', 'completed', '2025-08-08 02:15:00', '2025-08-08 02:15:00'),
+(44, 104, 7, 97000.00, 'COD', 'completed', '2025-08-20 06:00:00', '2025-08-20 06:00:00'),
+(45, 105, 8, 150000.00, 'Momo', 'completed', '2025-09-05 01:45:00', '2025-09-05 01:45:00'),
+(46, 106, 9, 120000.00, 'BankTransfer', 'completed', '2025-09-22 10:20:00', '2025-09-22 10:20:00'),
+(47, 107, 10, 95000.00, 'COD', 'completed', '2025-10-10 04:30:00', '2025-10-10 04:30:00'),
+(48, 108, 11, 112000.00, 'Momo', 'completed', '2025-10-18 02:50:00', '2025-10-18 02:50:00');
+>>>>>>> 289cdd01080e6a66bbfd6a4570d2b4e21edf2fcb
 
 -- --------------------------------------------------------
 
@@ -679,6 +719,7 @@ CREATE TABLE `shipments` (
 -- Dumping data for table `shipments`
 --
 
+<<<<<<< HEAD
 INSERT INTO `shipments` (`id`, `tracking_code`, `customer_id`, `sender_name`, `sender_phone`, `receiver_name`, `receiver_phone`, `item_name`, `pickup_address`, `delivery_address`, `weight_kg`, `cod_amount`, `shipping_fee`, `payment_method`, `status`, `current_location`, `created_at`, `updated_at`, `pickup_lat`, `pickup_lng`, `delivery_lat`, `delivery_lng`) VALUES
 (2, 'SP1002', 5, 'Khách hàng B', '0909444444', 'Phạm Bình', '0909666666', NULL, '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', 3.20, 90000.00, 0.00, 'COD', 'pending', 'Đà Nẵng', '2025-10-20 08:43:49', '2025-11-05 15:59:06', 16.083400, 108.247000, 16.065000, 108.187000),
 (3, 'SP1003', 6, 'Lê Văn C', '0909777777', 'Ngô Bình', '0909888888', NULL, '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', '12 Lê Duẩn, Hải Châu, Đà Nẵng', 4.30, 150000.00, 0.00, 'COD', 'delivered', 'Đà Nẵng', '2025-10-20 13:09:32', '2025-11-05 15:59:06', 16.018000, 108.206000, 16.066800, 108.220800),
@@ -777,6 +818,50 @@ INSERT INTO `shipments` (`id`, `tracking_code`, `customer_id`, `sender_name`, `s
 (163, 'SP527216', 9, 'Nguyễn Thị Mai', '0905886442', 'Ngọc Trường', '0909555666', NULL, 'Thành phố Đà Nẵng', 'Tỉnh Vĩnh Phúc, Thành phố Phúc Yên, Phường Xuân Hoà', 2.30, 95000.00, 0.00, 'COD', 'pending', NULL, '2025-11-05 20:12:07', '2025-11-05 20:12:07', NULL, NULL, NULL, NULL),
 (164, 'SP587149', 9, 'Hoài Bảo', '0905886442', 'Viết Ngọc', '0909555999', NULL, 'Thành phố Đà Nẵng, Quận Hải Châu, Phường Thạch Thang', 'Thành phố Đà Nẵng, Quận Thanh Khê, Phường Thanh Khê Đông', 4.90, 80000.00, 0.00, 'COD', 'pending', NULL, '2025-11-05 20:13:07', '2025-11-05 20:13:07', NULL, NULL, NULL, NULL),
 (165, 'SP940462', 9, 'Phạm Huy 3', '0909123452', 'Phạm Thị Hoa', '0905050505', NULL, 'Tỉnh Bắc Kạn, Huyện Ngân Sơn, Xã Cốc Đán', 'Thành phố Đà Nẵng, Quận Liên Chiểu, Phường Hòa Hiệp Nam', 2.30, 95000.00, 0.00, 'COD', 'pending', NULL, '2025-11-05 20:19:00', '2025-11-05 20:19:00', NULL, NULL, NULL, NULL);
+=======
+INSERT INTO `shipments` (`id`, `tracking_code`, `customer_id`, `sender_name`, `sender_phone`, `receiver_name`, `receiver_phone`, `pickup_address`, `delivery_address`, `weight_kg`, `cod_amount`, `status`, `current_location`, `created_at`, `updated_at`, `pickup_lat`, `pickup_lng`, `delivery_lat`, `delivery_lng`) VALUES
+(2, 'SP1002', 5, 'Khách hàng B', '0909444444', 'Phạm Bình', '0909666666', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', 3.20, 90000.00, 'pending', 'Đà Nẵng', '2025-10-20 08:43:49', '2025-10-28 16:36:18', 16.065000, 108.187000, 16.083400, 108.247000),
+(3, 'SP1003', 6, 'Lê Văn C', '0909777777', 'Ngô Bình', '0909888888', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', 4.30, 150000.00, 'delivered', 'Đà Nẵng', '2025-10-20 13:09:32', '2025-10-28 16:36:18', 16.072400, 108.160000, 16.018000, 108.206000),
+(4, 'SP1004', 5, 'Phạm Huy 2', '0909333111', 'Bùi Trang', '0909555999', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', 2.20, 80000.00, 'delivered', 'Đà Nẵng', '2025-10-20 13:09:32', '2025-10-28 16:36:18', 16.083400, 108.247000, 16.065000, 108.187000),
+(5, 'SP1005', 4, 'Nguyễn Hà', '0909333222', 'Trần Bình', '0909444111', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', '12 Lê Duẩn, Hải Châu, Đà Nẵng', 6.00, 170000.00, 'delivered', 'Đà Nẵng', '2025-10-20 13:09:32', '2025-10-28 16:36:18', 16.018000, 108.206000, 16.066800, 108.220800),
+(6, 'SP1007', NULL, 'Phạm Huy 3', '0909333111', 'Diễm Trang', '0909555999', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', 4.60, 90000.00, 'delivered', 'Đà Nẵng', '2025-10-20 13:33:25', '2025-10-28 16:36:18', 16.008800, 108.263000, 16.072400, 108.160000),
+(17, 'SP2001', 4, 'Nguyễn Thị Mai', '0909123456', 'Trần Văn Cường', '0909555666', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', '12 Lê Duẩn, Hải Châu, Đà Nẵng', 5.20, 120000.00, 'delivered', 'Đà Nẵng', '2025-09-05 01:30:00', '2025-10-28 16:36:18', 16.018000, 108.206000, 16.066800, 108.220800),
+(18, 'SP2002', 5, 'Lê Văn Long', '0909234567', 'Phạm Thị Hoa', '0909666777', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', 2.30, 95000.00, 'delivered', 'Đà Nẵng', '2025-09-10 02:45:00', '2025-10-28 16:36:18', 16.008800, 108.263000, 16.072400, 108.160000),
+(19, 'SP2003', 6, 'Trần Thị Ngọc', '0909345678', 'Lê Văn Thành', '0909777888', '12 Lê Duẩn, Hải Châu, Đà Nẵng', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', 8.10, 175000.00, 'delivered', 'Đà Nẵng', '2025-10-01 03:10:00', '2025-10-28 16:36:18', 16.066800, 108.220800, 16.008800, 108.263000),
+(22, 'SP1009', NULL, 'Kim Loan', '012347594', 'Ngọc Trường', '033218412', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', 4.60, 200000.00, 'delivering', 'Đà Nẵng', '2025-10-21 14:28:49', '2025-10-28 16:36:18', 16.083400, 108.247000, 16.065000, 108.187000),
+(23, 'SP1010', NULL, 'Ngọc Trường', '0321393213', 'Kim Loan', '0234566783', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', '12 Lê Duẩn, Hải Châu, Đà Nẵng', 5.20, 900000.00, 'pending', 'Đà Nẵng', '2025-10-21 14:29:46', '2025-10-28 16:36:18', 16.018000, 108.206000, 16.066800, 108.220800),
+(24, 'SPA001', NULL, 'Kim Loan', '0123456779', 'Ngọc Trường', '098764221', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', 5.20, 90000.00, 'completed', 'Đà Nẵng', '2025-10-22 05:29:37', '2025-10-28 16:36:18', 16.008800, 108.263000, 16.072400, 108.160000),
+(25, 'SPA100', NULL, 'Nguyễn Thị Mai', '0909333111', 'Diễm Trang', '0909555666', '12 Lê Duẩn, Hải Châu, Đà Nẵng', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', 4.60, 120000.00, 'delivered', 'Đà Nẵng', '2025-10-22 05:53:21', '2025-10-28 16:36:18', 16.066800, 108.220800, 16.008800, 108.263000),
+(26, 'SPA200', NULL, 'Nguyễn Tấn Sang', '0132131323', 'Ngọc Trường', '0909555999', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', 5.20, 90000.00, 'delivered', 'Đà Nẵng', '2025-10-22 05:54:33', '2025-10-28 16:36:18', 16.065000, 108.187000, 16.083400, 108.247000),
+(27, 'SPA101', NULL, 'Bảo Minh', '0232039992', 'Quốc Khanh', '0231131312', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', 5.20, 120000.00, 'pending', 'Đà Nẵng', '2025-10-22 08:54:47', '2025-10-31 16:11:35', 16.072400, 108.160000, 16.018000, 108.206000),
+(28, 'SP396533', NULL, 'Phạm Huy 3', '0909123456', 'Diễm Trang 22', '0909555999', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', 4.60, 90000.00, 'pending', 'Đà Nẵng', '2025-10-25 06:06:36', '2025-10-31 16:11:35', 16.083400, 108.247000, 16.065000, 108.187000),
+(29, 'TEST001', 9, 'Truong KH', '0909123456', 'Ngọc Trường', '0909988776', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', '12 Lê Duẩn, Hải Châu, Đà Nẵng', 3.50, 80000.00, 'delivering', 'Đà Nẵng', '2025-10-25 06:15:57', '2025-10-31 16:13:07', 16.018000, 108.206000, 16.066800, 108.220800),
+(30, 'SP114618', 9, 'Viet Ngoc', '0909234567', 'Ngọc Trường', '0905050505', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', 4.60, 90000.00, 'delivered', 'Đà Nẵng', '2025-10-25 06:18:34', '2025-10-31 16:12:50', 16.008800, 108.263000, 16.072400, 108.160000),
+(31, 'SP386563', 9, 'Hoài Bảo', '0123456998', 'Viết Ngọc', '09050600060', '12 Lê Duẩn, Hải Châu, Đà Nẵng', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', 9.00, 4500000.00, 'delivered', 'Đà Nẵng', '2025-10-25 06:23:06', '2025-10-31 16:12:58', 16.066800, 108.220800, 16.008800, 108.263000),
+(32, 'SP950332', 9, 'Phạm Huy 5', '0909123452', 'Diễm Trang', '0125544886', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', 4.60, 190000.00, 'pending', 'Đà Nẵng', '2025-10-25 10:25:50', '2025-10-31 16:11:35', 16.065000, 108.187000, 16.083400, 108.247000),
+(33, 'SP766968', 9, 'Nguyễn Thị Mai 2', '012345989', 'Bảo Minh', '0363599987', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', 9.50, 1500000.00, 'pending', 'Đà Nẵng', '2025-10-25 10:39:26', '2025-10-31 16:10:19', 16.072400, 108.160000, 16.018000, 108.206000),
+(34, 'SP009005', 9, 'Lê Văn Long 22', '0909123456', 'Phạm Thị Hoa', '0905050505', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', 4.60, 900000.00, 'delivering', 'Đà Nẵng', '2025-10-25 10:43:29', '2025-10-31 16:07:01', 16.083400, 108.247000, 16.065000, 108.187000),
+(35, 'SP194149', 9, 'Phạm Huy 9', '0909234567', 'Diễm Trang 2', '0909666777', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', '12 Lê Duẩn, Hải Châu, Đà Nẵng', 4.60, 900000.00, 'delivered', 'Đà Nẵng', '2025-10-25 10:46:34', '2025-10-28 16:36:18', 16.018000, 108.206000, 16.066800, 108.220800),
+(36, 'SP965709', 9, 'Phạm Huy 3', '0909234567', 'test', '0123456799', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', 4.90, 90000.00, 'delivered', 'Đà Nẵng', '2025-10-25 10:59:25', '2025-10-28 16:36:18', 16.008800, 108.263000, 16.072400, 108.160000),
+(37, 'SP119665', 9, 'Test 2', '0123456998', 'Test Cuoi', '01545454558', '12 Lê Duẩn, Hải Châu, Đà Nẵng', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', 4.60, 800000.00, 'delivering', 'Đà Nẵng', '2025-10-25 11:18:39', '2025-10-28 16:36:18', 16.066800, 108.220800, 16.008800, 108.263000),
+(38, 'SP273096', 9, 'Sang Nguyễn', '0973673151', 'Ngọc Trường', '0998441166', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', 4.90, 440000.00, 'delivered', 'Đà Nẵng', '2025-10-25 11:21:13', '2025-10-28 16:36:18', 16.065000, 108.187000, 16.083400, 108.247000),
+(39, 'SP328431', 9, 'Trường ', '0988141667', 'Sang', '0919118886', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', 2.50, 15000.00, 'delivered', 'Đà Nẵng', '2025-10-25 11:22:08', '2025-10-28 16:36:18', 16.072400, 108.160000, 16.018000, 108.206000),
+(40, 'SP365416', 9, 'Trường', '0905886442', 'Ngọc', '0778449663', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', 4.80, 18000.00, 'delivered', 'Đà Nẵng', '2025-10-25 11:22:45', '2025-10-28 16:36:18', 16.083400, 108.247000, 16.065000, 108.187000),
+(41, 'SP545874', 9, 'Tesst 22', '0909234567', 'Test 99', '0909555999', '55 Nguyễn Hữu Thọ, Cẩm Lệ, Đà Nẵng', '12 Lê Duẩn, Hải Châu, Đà Nẵng', 4.50, 80000.00, 'delivered', 'Đà Nẵng', '2025-10-25 11:25:45', '2025-10-28 16:36:18', 16.018000, 108.206000, 16.066800, 108.220800),
+(42, 'SP748623', 9, 'Test 33', '0909234567', 'Diễm Trang', '0909555666', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', '88 Tôn Đức Thắng, Liên Chiểu, Đà Nẵng', 5.20, 90000.00, 'delivered', 'Đà Nẵng', '2025-10-25 11:29:08', '2025-10-28 16:36:18', 16.008800, 108.263000, 16.072400, 108.160000),
+(43, 'SP797768', 9, 'Sắp Push', '0123456998', 'Push Code', '0775992441', '12 Lê Duẩn, Hải Châu, Đà Nẵng', '23 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', 2.30, 80000.00, 'delivered', 'Đà Nẵng', '2025-10-25 13:26:37', '2025-10-28 16:36:18', 16.066800, 108.220800, 16.008800, 108.263000),
+(44, 'SP958580', 9, 'Trường 123', '0909123456', 'Trường 456', '0121212121', '45 Nguyễn Văn Linh, Thanh Khê, Đà Nẵng', '120 Võ Nguyên Giáp, Sơn Trà, Đà Nẵng', 4.90, 120000.00, 'pending', 'Đà Nẵng', '2025-10-28 14:32:38', '2025-10-28 16:36:18', 16.065000, 108.187000, 16.083400, 108.247000),
+(45, 'SP073308', 9, 'Phạm Huy 3', '0909234567', 'Phạm Thị Hoa', '0909555999', '123 Lê Lợi, TP.HCM', '789 Lê Văn Sỹ, Q11', 4.60, 12000.00, 'pending', NULL, '2025-10-28 17:37:53', '2025-10-28 17:37:53', NULL, NULL, NULL, NULL),
+(46, 'SP591838', 9, 'bảo minh', '0123456789', 'Ngọc Trường', '0987654321', 'Phạm Tứ', 'Nguyễn Huy Tưởng', 4.00, 150000.00, 'pending', NULL, '2025-10-29 05:09:51', '2025-10-29 05:09:51', NULL, NULL, NULL, NULL),
+(101, 'TRACK101', NULL, 'Nguyễn Văn A', NULL, 'Lê Thị B', NULL, 'Hải Châu, Đà Nẵng', 'Liên Chiểu, Đà Nẵng', NULL, 0.00, 'completed', NULL, '2025-07-12 03:00:00', '2025-10-31 10:31:11', NULL, NULL, NULL, NULL),
+(102, 'TRACK102', NULL, 'Trần Văn C', NULL, 'Phạm Thị D', NULL, 'Sơn Trà, Đà Nẵng', 'Cẩm Lệ, Đà Nẵng', NULL, 0.00, 'completed', NULL, '2025-07-25 07:00:00', '2025-10-31 10:31:11', NULL, NULL, NULL, NULL),
+(103, 'TRACK103', NULL, 'Lê Văn E', NULL, 'Võ Thị F', NULL, 'Thanh Khê, Đà Nẵng', 'Ngũ Hành Sơn, Đà Nẵng', NULL, 0.00, 'completed', NULL, '2025-08-08 02:00:00', '2025-10-31 10:31:11', NULL, NULL, NULL, NULL),
+(104, 'TRACK104', NULL, 'Ngô Văn G', NULL, 'Đoàn Thị H', NULL, 'Hòa Vang, Đà Nẵng', 'Hải Châu, Đà Nẵng', NULL, 0.00, 'completed', NULL, '2025-08-20 06:00:00', '2025-10-31 10:31:11', NULL, NULL, NULL, NULL),
+(105, 'TRACK105', NULL, 'Phan Văn I', NULL, 'Đặng Thị K', NULL, 'Liên Chiểu, Đà Nẵng', 'Sơn Trà, Đà Nẵng', NULL, 0.00, 'completed', NULL, '2025-09-05 01:30:00', '2025-10-31 10:31:11', NULL, NULL, NULL, NULL),
+(106, 'TRACK106', NULL, 'Võ Văn L', NULL, 'Trịnh Thị M', NULL, 'Ngũ Hành Sơn, Đà Nẵng', 'Thanh Khê, Đà Nẵng', NULL, 0.00, 'completed', NULL, '2025-09-22 10:00:00', '2025-10-31 10:31:11', NULL, NULL, NULL, NULL),
+(107, 'TRACK107', NULL, 'Lương Văn N', NULL, 'Nguyễn Thị O', NULL, 'Cẩm Lệ, Đà Nẵng', 'Hòa Vang, Đà Nẵng', NULL, 0.00, 'completed', NULL, '2025-10-10 04:00:00', '2025-10-31 10:31:11', NULL, NULL, NULL, NULL),
+(108, 'TRACK108', NULL, 'Đinh Văn P', NULL, 'Bùi Thị Q', NULL, 'Hải Châu, Đà Nẵng', 'Ngũ Hành Sơn, Đà Nẵng', NULL, 0.00, 'completed', NULL, '2025-10-18 02:30:00', '2025-10-31 15:59:31', NULL, NULL, NULL, NULL);
+>>>>>>> 289cdd01080e6a66bbfd6a4570d2b4e21edf2fcb
 
 -- --------------------------------------------------------
 
@@ -837,7 +922,11 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `role`, `status
 (14, 'baominh', 'baominh@speedyship.vn', '$2a$10$254H.EsGI7./ZvXznWagbeI8D9AktW4doQDw3ycArQGloRZFFwq16', '0987123456', 'driver', 'active', '2025-10-23 04:45:30', 3),
 (15, 'Nguyen Van A', 'a@example.com', '$2a$10$SSv0RwBdV.WPrCN2E27slejtxmyytOgdL732sFmjXej.WL9uM6CNS', '0363337081', 'customer', 'active', '2025-10-23 15:02:12', 4),
 (16, 'Ngoc Truong', 'truongdubaix107@gmail.com', '$2a$10$rg3ewnkUdBAqSkjnAfZtx.TMNEIf.sI42yEjutmnGrhWy.YrzWYF.', '0909999999', 'customer', 'active', '2025-10-29 06:42:20', 4),
+<<<<<<< HEAD
 (17, 'Truong TestOTP', 'truongdubai2704@gmail.com', '$2a$10$taXgEnmtvOwgfE71SD.REexELToftcqsvnbpEW941JR4qp.WdUBWW', '', 'driver', 'active', '2025-10-29 06:46:39', 4);
+=======
+(17, 'Truong TestOTP', 'truongdubai2704@gmail.com', '$2a$10$taXgEnmtvOwgfE71SD.REexELToftcqsvnbpEW941JR4qp.WdUBWW', '', 'customer', 'active', '2025-10-29 06:46:39', 4);
+>>>>>>> 289cdd01080e6a66bbfd6a4570d2b4e21edf2fcb
 
 -- --------------------------------------------------------
 
@@ -1016,13 +1105,21 @@ ALTER TABLE `vehicles`
 -- AUTO_INCREMENT for table `assignments`
 --
 ALTER TABLE `assignments`
+<<<<<<< HEAD
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+=======
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+>>>>>>> 289cdd01080e6a66bbfd6a4570d2b4e21edf2fcb
 
 --
 -- AUTO_INCREMENT for table `chats`
 --
 ALTER TABLE `chats`
+<<<<<<< HEAD
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+=======
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+>>>>>>> 289cdd01080e6a66bbfd6a4570d2b4e21edf2fcb
 
 --
 -- AUTO_INCREMENT for table `contacts`
@@ -1064,7 +1161,11 @@ ALTER TABLE `otp_codes`
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
+<<<<<<< HEAD
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+=======
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+>>>>>>> 289cdd01080e6a66bbfd6a4570d2b4e21edf2fcb
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -1076,7 +1177,11 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `shipments`
 --
 ALTER TABLE `shipments`
+<<<<<<< HEAD
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=166;
+=======
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+>>>>>>> 289cdd01080e6a66bbfd6a4570d2b4e21edf2fcb
 
 --
 -- AUTO_INCREMENT for table `system_configs`
