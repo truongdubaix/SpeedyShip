@@ -7,6 +7,7 @@ import {
   updateShipmentStatus,
   deleteShipment,
   assignShipment,
+  getShipmentByCode,
 } from "../controllers/shipmentController.js";
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.put("/:id", updateShipment);
 router.patch("/:id/status", updateShipmentStatus);
 router.delete("/:id", deleteShipment);
 router.post("/assign", assignShipment);
+router.get("/code/:code", getShipmentByCode);
 
 export default router;

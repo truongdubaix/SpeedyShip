@@ -23,6 +23,7 @@ import customerRoutes from "./routes/customerRoutes.js";
 import feedbackRoutes from "./routes/feedbackRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -87,7 +88,7 @@ app.use("/api/customers", customerRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/contact", contactRoutes);
-
+app.use("/api/ai", aiRoutes);
 // ✅ Kiểm tra API
 app.get("/", (_req, res) =>
   res.send("🚀 SpeedyShip API running with realtime chat & notifications")

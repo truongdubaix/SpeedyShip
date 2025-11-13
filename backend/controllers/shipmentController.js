@@ -84,13 +84,11 @@ export const createShipment = async (req, res) => {
       `🆕 Đơn hàng #${newShipmentId} vừa được khách hàng tạo mới.`
     );
 
-    res
-      .status(201)
-      .json({
-        message: "Tạo đơn hàng thành công!",
-        shipmentId: newShipmentId,
-        tracking_code,
-      });
+    res.status(201).json({
+      message: "Tạo đơn hàng thành công!",
+      shipmentId: newShipmentId,
+      tracking_code,
+    });
   } catch (err) {
     console.error("❌ Lỗi tạo đơn hàng:", err);
     res.status(500).json({ error: "Không thể tạo đơn hàng" });
@@ -216,5 +214,23 @@ export const assignShipment = async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi khi phân công tài xế:", err);
     res.status(500).json({ error: "Không thể phân công tài xế" });
+  }
+};
+export const getShipmentByCode = async (req, res) => {
+  try {
+    const { code } = req.params;
+
+    const [[shipment]] = await db.query(
+      "SELECT * FROM shipments WHERE tracking_code = ?",
+      [code]
+    );
+
+    if (!shipment)
+      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+
+    res.json(shipment);
+  } catch (err) {
+    console.error("❌ Lỗi lấy đơn theo mã:", err);
+    res.status(500).json({ message: "Không thể lấy đơn hàng" });
   }
 };
