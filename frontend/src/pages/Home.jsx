@@ -4,6 +4,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
+
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -14,13 +15,9 @@ import ChatBubble from "../components/ChatBubble.jsx";
 import ChatPopupTop from "../components/ChatPopupTop";
 import FloatingActions from "../components/FloatingActions";
 
-// Icons
-import { FiMessageSquare, FiSlack } from "react-icons/fi";
-
 export default function Home() {
   const [trackingCode, setTrackingCode] = useState("");
 
-  // Popup states
   const [showChatBubble, setShowChatBubble] = useState(false);
   const [showChatTop, setShowChatTop] = useState(false);
 
@@ -52,6 +49,7 @@ export default function Home() {
                 className="absolute inset-0 w-full h-full object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+
               <div className="relative z-10 text-center text-white px-6">
                 <h2 className="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-xl">
                   TĂNG TỐC VƯỢT GIỚI HẠN
@@ -72,6 +70,7 @@ export default function Home() {
                 className="absolute inset-0 w-full h-full object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+
               <div className="relative z-10 text-white text-center px-6">
                 <h2 className="text-5xl font-bold mb-2 drop-shadow-xl">
                   Nhanh hơn – An toàn hơn
@@ -122,10 +121,90 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ========== SERVICES ========= */}
-      {/* (Giữ nguyên phần dịch vụ của bạn) */}
+      {/* ========== SERVICES ========== */}
+      <section id="services" className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <h3
+            className="text-3xl font-bold text-center mb-12"
+            data-aos="fade-up"
+          >
+            🚀 Dịch vụ của chúng tôi
+          </h3>
 
-      {/* ========== QUẢN LÝ POPUP CHAT ========= */}
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: "https://cdn-icons-png.flaticon.com/512/1995/1995574.png",
+                title: "Giao hàng nội thành",
+                desc: "Nhanh trong 2–4 giờ, theo dõi GPS & hỗ trợ COD.",
+              },
+              {
+                icon: "https://cdn-icons-png.flaticon.com/512/2899/2899650.png",
+                title: "Liên tỉnh - Bắc Nam",
+                desc: "Xuyên Việt an toàn, đúng hẹn, chi phí tối ưu.",
+              },
+              {
+                icon: "https://cdn-icons-png.flaticon.com/512/1514/1514406.png",
+                title: "Giao hàng quốc tế",
+                desc: "Đối tác DHL/FedEx/UPS, có bảo hiểm hàng hóa.",
+              },
+            ].map((s, i) => (
+              <div
+                key={i}
+                className="bg-white p-8 rounded-lg shadow hover:shadow-xl transition"
+                data-aos="zoom-in"
+              >
+                <img src={s.icon} className="w-16 mb-4" />
+                <h4 className="text-xl font-semibold mb-2 text-blue-600">
+                  {s.title}
+                </h4>
+                <p className="text-gray-600">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========== PARTNERS ========== */}
+      <section className="bg-blue-50 py-20">
+        <div className="max-w-6xl mx-auto text-center px-6">
+          <h3 className="text-3xl font-bold mb-8" data-aos="fade-up">
+            💼 Đối tác & khách hàng
+          </h3>
+          <p
+            className="text-gray-600 mb-10"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            Hàng nghìn khách hàng tin tưởng SpeedyShip – từ cửa hàng nhỏ đến
+            doanh nghiệp lớn.
+          </p>
+
+          <div
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            data-aos="zoom-in"
+          >
+            {[
+              "applelogo.png",
+              "samsung.png",
+              "shopee.png",
+              "tiktok.png",
+              "lazada.png",
+              "vivo.png",
+              "oppo.png",
+              "lazada.png",
+            ].map((logo, i) => (
+              <img
+                key={i}
+                src={`/assets/logo/${logo}`}
+                className="w-28 mx-auto grayscale hover:grayscale-0 transition"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========== POPUP CHAT (REALTIME + AI) ========== */}
       {showChatBubble && (
         <ChatBubble onClose={() => setShowChatBubble(false)} />
       )}
@@ -137,7 +216,7 @@ export default function Home() {
         />
       )}
 
-      {/* ========== FLOATING BUTTONS ========= */}
+      {/* ========== FLOATING ACTION BUTTONS ========== */}
       <FloatingActions
         onOpenChatBubble={() => setShowChatBubble(true)}
         onOpenChatTop={() => setShowChatTop(true)}

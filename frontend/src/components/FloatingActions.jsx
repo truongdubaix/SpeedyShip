@@ -1,12 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiMessageSquare, FiSlack } from "react-icons/fi";
 
 export default function FloatingActions({ onOpenChatBubble, onOpenChatTop }) {
   const [open, setOpen] = useState(false);
 
+  // 🔔 Bubble chú ý
+  const [showNotice, setShowNotice] = useState(true);
+
+  // Auto ẩn sau 4 giây mỗi lần nó xuất hiện
+  useEffect(() => {
+    if (!showNotice) return;
+    const timer = setTimeout(() => setShowNotice(false), 4000);
+    return () => clearTimeout(timer);
+  }, [showNotice]);
+
+  // 🆕 Khi đóng menu → hiện bubble lại
+  useEffect(() => {
+    if (!open) {
+      // menu đóng → reset bubble
+      setShowNotice(true);
+    } else {
+      // menu mở → tắt bubble
+      setShowNotice(false);
+    }
+  }, [open]);
+
   return (
     <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-3">
-      {/* Nút ChatBot AI – mở cạnh bong bóng */}
+      {/* 🔔 Bubble thông báo chú ý */}
+      {!open && showNotice && (
+        <div
+          className="
+          bg-white shadow-xl border px-4 py-2 rounded-xl text-sm text-gray-800
+          max-w-[240px] mr-20 mb-2 animate-slide-up
+        "
+        >
+          💡 <b>Cần hỗ trợ?</b> Nhấn để chat với SpeedyShip!
+        </div>
+      )}
+
       {open && (
         <button
           onClick={onOpenChatTop}
@@ -17,7 +49,6 @@ export default function FloatingActions({ onOpenChatBubble, onOpenChatTop }) {
         </button>
       )}
 
-      {/* Nút Chat Realtime */}
       {open && (
         <button
           onClick={onOpenChatBubble}
@@ -28,7 +59,6 @@ export default function FloatingActions({ onOpenChatBubble, onOpenChatTop }) {
         </button>
       )}
 
-      {/* Nút menu chính */}
       <button
         onClick={() => setOpen(!open)}
         className="w-14 h-14 rounded-full bg-red-600 shadow-2xl flex items-center justify-center hover:bg-red-700 transition"
