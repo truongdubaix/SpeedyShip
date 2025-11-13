@@ -7,3 +7,97 @@ body,
 #root {
   height: 100%;
 }
+/* 🔥 Popup mở */
+@keyframes zoomPop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.animate-zoom-pop {
+  animation: zoomPop 0.28s ease-out;
+}
+
+/* 🔥 Thu gọn */
+@keyframes collapseChat {
+  0% {
+    opacity: 1;
+    height: var(--full-height);
+  }
+  100% {
+    opacity: 0;
+    height: 50px;
+  }
+}
+.animate-collapse {
+  animation: collapseChat 0.25s ease-out forwards;
+}
+
+/* 🔥 Tin nhắn mới */
+@keyframes msgIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.msg-anim {
+  animation: msgIn 0.23s ease-out;
+}
+
+/* 🔥 Bubble hiệu ứng Glow */
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 0px rgba(0, 0, 0, 0);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.18);
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(0, 0, 0, 0);
+  }
+}
+.glow {
+  animation: pulseGlow 2s infinite;
+}
+
+/* Bubble slide */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-slide-up {
+  animation: slideUp 0.35s ease-out;
+}
+
+/* Menu nút xoay */
+@keyframes spinBounce {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+.spin-bounce {
+  animation: spinBounce 0.45s ease-out;
+}

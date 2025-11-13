@@ -1,4 +1,3 @@
-// src/components/ChatBubble.jsx
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
 
@@ -14,15 +13,14 @@ export default function ChatBubble({ onClose }) {
   const userId = localStorage.getItem("userId");
   const role = localStorage.getItem("role");
 
-  // 🚀 Tự động start chat khi mở popup
+  // 🟢 Auto start chat khi mở component
   useEffect(() => {
     if (!userId || role !== "customer") {
-      alert("⚠️ Vui lòng đăng nhập bằng tài khoản khách hàng!");
+      alert("⚠ Vui lòng đăng nhập bằng tài khoản khách hàng!");
       onClose();
       return;
     }
 
-    // yêu cầu server tạo chat
     socket.emit("startChat", userId);
 
     socket.on("chatStarted", (id) => {
@@ -51,7 +49,6 @@ export default function ChatBubble({ onClose }) {
     };
   }, []);
 
-  // ✉ Gửi tin nhắn
   const sendMessage = () => {
     if (!ready || !chatId || !input.trim()) return;
 
@@ -65,28 +62,26 @@ export default function ChatBubble({ onClose }) {
     setInput("");
   };
 
-  // 🛑 Kết thúc chat
   const endChat = () => {
-    if (chatId) {
-      socket.emit("endChat", userId);
-    }
+    if (chatId) socket.emit("endChat", userId);
     onClose();
   };
 
-  // ============= AUTO RESIZE =============
+  // ========== EFFECT SIZE ==========
   const baseSize = "w-[420px] h-[520px]";
   const collapsedSize = "w-[420px] h-[50px]";
   const finalSize = collapsed ? collapsedSize : baseSize;
 
   return (
-    <div className={`fixed bottom-6 right-[110px] ${finalSize} z-[9997]`}>
-      <div className="w-full h-full bg-white shadow-2xl rounded-2xl flex flex-col overflow-hidden border">
+    <div
+      className={`fixed bottom-6 right-[110px] ${finalSize} z-[9998] animate-zoom-pop`}
+    >
+      <div className="w-full h-full bg-white shadow-2xl rounded-2xl border flex flex-col overflow-hidden">
         {/* HEADER */}
         <div className="bg-blue-600 text-white px-3 py-2 flex justify-between items-center rounded-t-2xl">
           <span className="font-semibold text-sm">💬 Hỗ trợ khách hàng</span>
-
           <div className="flex items-center gap-3">
-            {/* Thu gọn / mở rộng */}
+            {/* Thu gọn */}
             {collapsed ? (
               <svg
                 onClick={() => setCollapsed(false)}
@@ -95,7 +90,6 @@ export default function ChatBubble({ onClose }) {
                 height="16"
                 fill="currentColor"
               >
-                {/* icon mở rộng */}
                 <path d="M2 6h12v4H2z" />
               </svg>
             ) : (
@@ -106,7 +100,6 @@ export default function ChatBubble({ onClose }) {
                 height="16"
                 fill="currentColor"
               >
-                {/* icon thu gọn */}
                 <rect x="2" y="7" width="12" height="2" />
               </svg>
             )}
@@ -114,9 +107,9 @@ export default function ChatBubble({ onClose }) {
             {/* Đóng */}
             <svg
               onClick={endChat}
-              className="cursor-pointer hover:text-gray-200 text-lg"
-              width="16"
-              height="16"
+              className="cursor-pointer hover:text-gray-200"
+              width="18"
+              height="18"
               fill="currentColor"
             >
               <path d="M2 2l12 12M14 2L2 14" stroke="white" strokeWidth="2" />
@@ -124,17 +117,16 @@ export default function ChatBubble({ onClose }) {
           </div>
         </div>
 
-        {/* BODY (ẩn nếu collapsed) */}
+        {/* BODY */}
         {!collapsed && (
           <>
-            {/* Messages */}
             <div className="flex-1 p-3 overflow-y-auto bg-gray-50">
               {messages.map((m, i) => (
                 <div
                   key={i}
                   className={`mb-2 flex ${
                     m.role === "customer" ? "justify-end" : "justify-start"
-                  }`}
+                  } msg-anim`}
                 >
                   <div
                     className={`px-3 py-2 rounded-lg max-w-[70%] text-sm ${
@@ -149,7 +141,6 @@ export default function ChatBubble({ onClose }) {
               ))}
             </div>
 
-            {/* Input */}
             <div className="p-2 border-t flex">
               <input
                 value={input}
@@ -158,6 +149,7 @@ export default function ChatBubble({ onClose }) {
                 placeholder={ready ? "Nhập tin nhắn..." : "⏳ Đang kết nối..."}
                 className="flex-1 border rounded-lg p-2 text-sm outline-none"
               />
+
               <button
                 onClick={sendMessage}
                 disabled={!ready}
