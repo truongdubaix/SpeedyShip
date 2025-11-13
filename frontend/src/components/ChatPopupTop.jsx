@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { FaTimes, FaMinus, FaExpand } from "react-icons/fa";
 import API from "../services/api";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function ChatPopupTop({ onClose, bubbleOpen }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -70,7 +72,26 @@ export default function ChatPopupTop({ onClose, bubbleOpen }) {
                       : "mr-auto bg-white border msg-anim"
                   }`}
                 >
-                  {m.text}
+                  {/* ⭐ HIỂN THỊ MARKDOWN CHO BOT ⭐ */}
+                  {m.from === "bot" ? (
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        a: (props) => (
+                          <a
+                            {...props}
+                            className="text-blue-600 underline font-semibold"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          />
+                        ),
+                      }}
+                    >
+                      {m.text}
+                    </ReactMarkdown>
+                  ) : (
+                    m.text
+                  )}
                 </div>
               ))}
             </div>
