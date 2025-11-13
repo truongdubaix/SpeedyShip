@@ -29,15 +29,11 @@ export default function AdminContacts() {
       toast.error("❌ Lỗi khi tải danh sách liên hệ!");
     }
   };
-
   const fetchDispatchers = async () => {
     try {
-      const res = await API.get("/users");
-      const filteredDispatchers = res.data.filter(
-        (u) => u.role_name === "dispatcher"
-      );
-      setDispatchers(filteredDispatchers);
-    } catch {
+      const res = await API.get("/users?role=dispatcher");
+      setDispatchers(res.data);
+    } catch (err) {
       toast.error("❌ Lỗi khi tải danh sách điều phối viên!");
     }
   };
