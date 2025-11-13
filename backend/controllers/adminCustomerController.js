@@ -1,6 +1,6 @@
 import db from "../config/db.js";
 
-// 👥 Lấy danh sách khách hàng
+// Lấy danh sách khách hàng
 export const getAllCustomers = async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -19,7 +19,7 @@ export const getAllCustomers = async (req, res) => {
   }
 };
 
-// 🔄 Cập nhật trạng thái (Khóa / Hoạt động)
+//  Cập nhật trạng thái (Khóa / Hoạt động)
 export const updateCustomerStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -32,7 +32,7 @@ export const updateCustomerStatus = async (req, res) => {
   }
 };
 
-// 🗑️ Xóa khách hàng
+// Xóa khách hàng
 export const deleteCustomer = async (req, res) => {
   try {
     const { id } = req.params;

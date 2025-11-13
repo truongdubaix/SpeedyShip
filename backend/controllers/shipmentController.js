@@ -4,9 +4,8 @@ import {
   sendNotificationToDispatcher,
 } from "../server.js";
 
-/**
- * 🧾 Lấy danh sách tất cả đơn hàng
- */
+// Lấy danh sách tất cả đơn hàng
+
 export const getAllShipments = async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -19,9 +18,8 @@ export const getAllShipments = async (req, res) => {
   }
 };
 
-/**
- * 🧭 Lấy chi tiết 1 đơn hàng (kèm tọa độ)
- */
+// Lấy chi tiết 1 đơn hàng (kèm tọa độ)
+
 export const getShipmentById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -35,9 +33,7 @@ export const getShipmentById = async (req, res) => {
   }
 };
 
-/**
- * ➕ Tạo đơn hàng mới (mô phỏng vị trí quanh Đà Nẵng)
- */
+// Tạo đơn hàng mới (mô phỏng vị trí quanh Đà Nẵng)
 
 export const createShipment = async (req, res) => {
   try {
@@ -53,7 +49,7 @@ export const createShipment = async (req, res) => {
       customer_id,
     } = req.body;
 
-    // 🔹 Tạo tracking code ngẫu nhiên
+    //  Tạo tracking code ngẫu nhiên
     const tracking_code = "SP" + Date.now().toString().slice(-6);
 
     const [result] = await db.query(
@@ -94,10 +90,8 @@ export const createShipment = async (req, res) => {
     res.status(500).json({ error: "Không thể tạo đơn hàng" });
   }
 };
+//Cập nhật thông tin đơn hàng
 
-/**
- * ✏️ Cập nhật thông tin đơn hàng
- */
 export const updateShipment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -142,9 +136,8 @@ export const updateShipment = async (req, res) => {
   }
 };
 
-/**
- * 🔁 Cập nhật trạng thái đơn hàng riêng
- */
+//Cập nhật trạng thái đơn hàng riêng
+
 export const updateShipmentStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -160,9 +153,8 @@ export const updateShipmentStatus = async (req, res) => {
   }
 };
 
-/**
- * 🗑️ Xóa đơn hàng
- */
+// Xóa đơn hàng
+
 export const deleteShipment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -174,9 +166,8 @@ export const deleteShipment = async (req, res) => {
   }
 };
 
-/**
- * 🚚 Phân công tài xế (Dispatcher)
- */
+// Phân công tài xế (Dispatcher)
+
 export const assignShipment = async (req, res) => {
   try {
     const { driver_id, shipment_id } = req.body;
@@ -187,23 +178,23 @@ export const assignShipment = async (req, res) => {
         .json({ error: "Thiếu driver_id hoặc shipment_id" });
     }
 
-    // 1️⃣ Cập nhật shipment sang trạng thái 'assigned'
+    // 1️ Cập nhật shipment sang trạng thái 'assigned'
     await db.query(
       "UPDATE shipments SET status = 'assigned', updated_at = NOW() WHERE id = ?",
       [shipment_id]
     );
 
-    // 2️⃣ Ghi lịch sử phân công
+    // 2️ Ghi lịch sử phân công
     await db.query(
       "INSERT INTO assignments (shipment_id, driver_id, status) VALUES (?, ?, 'assigned')",
       [shipment_id, driver_id]
     );
 
-    // 3️⃣ Gửi thông báo realtime
+    // 3️ Gửi thông báo realtime
     const message = `Bạn vừa được phân công đơn hàng #${shipment_id}`;
     await sendNotificationToDriver(driver_id, shipment_id, message);
 
-    // 4️⃣ Cập nhật trạng thái tài xế
+    // 4️ Cập nhật trạng thái tài xế
     await db.query("UPDATE drivers SET status='delivering' WHERE id = ?", [
       driver_id,
     ]);

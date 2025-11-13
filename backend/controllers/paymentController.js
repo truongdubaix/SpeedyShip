@@ -2,7 +2,7 @@ import db from "../config/db.js";
 import crypto from "crypto";
 import axios from "axios";
 
-// 🧾 Lấy tất cả thanh toán
+//  Lấy tất cả thanh toán
 export const getAllPayments = async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -19,7 +19,7 @@ export const getAllPayments = async (req, res) => {
   }
 };
 
-// ➕ Tạo mới thanh toán (thường)
+// Tạo mới thanh toán (thường)
 export const createPayment = async (req, res) => {
   try {
     const { shipment_id, customer_id, amount, method } = req.body;
@@ -34,7 +34,7 @@ export const createPayment = async (req, res) => {
   }
 };
 
-// ✏️ Cập nhật trạng thái thanh toán
+// Cập nhật trạng thái thanh toán
 export const updatePaymentStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -47,7 +47,7 @@ export const updatePaymentStatus = async (req, res) => {
   }
 };
 
-// ✅ Thanh toán bằng MoMo (sandbox)
+// Thanh toán bằng MoMo (sandbox)
 export const createMomoPayment = async (req, res) => {
   try {
     const { shipment_id, customer_id, amount } = req.body;
@@ -86,7 +86,7 @@ export const createMomoPayment = async (req, res) => {
       extraData: "",
     };
 
-    // 🟢 Gọi tới MoMo sandbox
+    // Gọi tới MoMo sandbox
     const momoRes = await axios.post(
       "https://test-payment.momo.vn/v2/gateway/api/create",
       body
@@ -106,7 +106,7 @@ export const createMomoPayment = async (req, res) => {
       [orderId, shipment_id, customer_id, amount, "Momo"]
     );
 
-    // 🟢 Trả link về frontend
+    // Trả link về frontend
     res.json({
       ...momoRes.data,
       payUrl: momoRes.data.payUrl,
@@ -117,7 +117,7 @@ export const createMomoPayment = async (req, res) => {
   }
 };
 
-// 📥 IPN callback từ MoMo
+// IPN callback từ MoMo
 export const momoIPN = async (req, res) => {
   try {
     const { orderId, resultCode } = req.body;
@@ -133,7 +133,7 @@ export const momoIPN = async (req, res) => {
 
     // console.log("💰 Cập nhật thanh toán:", orderId, status);
 
-    // 🧠 Nếu là môi trường test, tự động redirect về frontend
+    // Nếu là môi trường test, tự động redirect về frontend
     if (process.env.NODE_ENV !== "production") {
       const redirectUrl = `http://localhost:5173/customer/payment-success?orderId=${orderId}&resultCode=${resultCode}`;
       // console.log("🧭 Auto redirect test:", redirectUrl);
@@ -144,7 +144,7 @@ export const momoIPN = async (req, res) => {
       return;
     }
 
-    // 🧾 Nếu là production → chỉ trả JSON để MoMo nhận
+    //  Nếu là production → chỉ trả JSON để MoMo nhận
     res.json({ message: "IPN received", orderId, status });
   } catch (err) {
     console.error("❌ Lỗi IPN:", err);
@@ -152,7 +152,7 @@ export const momoIPN = async (req, res) => {
   }
 };
 
-// 🗑️ Xóa thanh toán
+//  Xóa thanh toán
 export const deletePayment = async (req, res) => {
   try {
     const { id } = req.params;

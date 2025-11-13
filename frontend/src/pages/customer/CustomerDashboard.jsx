@@ -14,7 +14,10 @@ function getCurrentUserId() {
       try {
         const parsed = JSON.parse(value);
         if (parsed?.id) return parsed.id;
-      } catch {}
+      } catch (err) {
+        console.error(err);
+        toast.error("Không thể lấy danh sách người dùng!");
+      }
     } else return value;
   }
   return null;

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-// 🧩 Middleware xác thực JWT
+// Middleware xác thực JWT
 export const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -18,7 +18,7 @@ export const authMiddleware = (req, res, next) => {
   }
 };
 
-// 🧩 Middleware kiểm tra quyền truy cập theo vai trò
+//  Middleware kiểm tra quyền truy cập theo vai trò
 export const roleMiddleware = (roles) => (req, res, next) => {
   if (!req.user || !roles.includes(req.user.role)) {
     return res.status(403).json({ message: "Bạn không có quyền truy cập!" });

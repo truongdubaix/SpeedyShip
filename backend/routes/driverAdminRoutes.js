@@ -17,14 +17,11 @@ import {
 
 const router = express.Router();
 
-// ===========================
-// ✅ PUBLIC: Ứng viên tự nộp đơn
-// ===========================
+//  PUBLIC: Ứng viên tự nộp đơn
+
 router.post("/apply", applyDriver);
 
-// ===========================
-// ✅ ADMIN: Duyệt hồ sơ tài xế
-// ===========================
+//  ADMIN: Duyệt hồ sơ tài xế
 
 // Lấy danh sách ứng viên
 router.get("/applications", getApplications);
@@ -36,7 +33,7 @@ router.post("/applications/:id/approve", approveApplication);
 router.post("/applications/:id/reject", rejectApplication);
 
 // ===========================
-// ✅ ADMIN: Quản lý tài xế như cũ
+//  ADMIN: Quản lý tài xế như cũ
 // ===========================
 
 // Lấy danh sách tất cả tài xế

@@ -3,7 +3,7 @@ import db from "../config/db.js";
 
 const router = express.Router();
 
-// 🔹 Lấy thông báo cho DRIVER
+// Lấy thông báo cho DRIVER
 router.get("/driver/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -18,7 +18,7 @@ router.get("/driver/:id", async (req, res) => {
   }
 });
 
-// 🟣 Lấy thông báo cho DISPATCHER
+//  Lấy thông báo cho DISPATCHER
 router.get("/dispatcher/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -33,7 +33,7 @@ router.get("/dispatcher/:id", async (req, res) => {
   }
 });
 
-// 🔸 Đánh dấu đã đọc
+// Đánh dấu đã đọc
 router.put("/:id/read", async (req, res) => {
   try {
     const { id } = req.params;

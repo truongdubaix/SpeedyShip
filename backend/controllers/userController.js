@@ -1,6 +1,6 @@
 import pool from "../config/db.js";
 
-// 🧾 Lấy danh sách người dùng (hỗ trợ lọc role qua query ?role=)
+//  Lấy danh sách người dùng (hỗ trợ lọc role qua query ?role=)
 export const getAllUsers = async (req, res) => {
   try {
     const { role } = req.query; // 👉 nhận ?role=dispatcher hoặc ?role=driver
@@ -20,7 +20,7 @@ export const getAllUsers = async (req, res) => {
       LEFT JOIN roles r ON ur.role_id = r.id
     `;
 
-    // 👉 Nếu có ?role=... thì thêm điều kiện WHERE
+    //  Nếu có ?role=... thì thêm điều kiện WHERE
     const params = [];
     if (role) {
       sql += ` WHERE r.code = ? `;
@@ -40,25 +40,25 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// 🔄 Cập nhật người dùng (tự đồng bộ role + bảng liên quan)
+//  Cập nhật người dùng (tự đồng bộ role + bảng liên quan)
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, status, role_id } = req.body;
 
-    console.log("🟡 updateUser body:", req.body);
+    // console.log("🟡 updateUser body:", req.body);
 
     // Lấy thông tin user gốc
     const [[user]] = await pool.query("SELECT * FROM users WHERE id = ?", [id]);
     if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
 
-    // 🧩 1️⃣ Cập nhật thông tin cơ bản
+    // 1️ Cập nhật thông tin cơ bản
     await pool.query(
       "UPDATE users SET name = ?, email = ?, status = ? WHERE id = ?",
       [name || user.name, email || user.email, status || user.status, id]
     );
 
-    // 🧩 2️⃣ Cập nhật role trong user_roles
+    //  2️ Cập nhật role trong user_roles
     if (role_id) {
       const [[exist]] = await pool.query(
         "SELECT * FROM user_roles WHERE user_id = ?",
@@ -77,23 +77,21 @@ export const updateUser = async (req, res) => {
         );
       }
 
-      // 🧩 3️⃣ Xử lý tự động theo từng role
+      //  3 Xử lý tự động theo từng role
       switch (Number(role_id)) {
-        // 👑 Quản trị
+        //  Quản trị
         case 1:
           await pool.query("DELETE FROM drivers WHERE user_id = ?", [id]);
           console.log(`🧹 user_id=${id} đổi thành admin → xóa khỏi drivers`);
           break;
 
-        // 🧭 Điều phối viên
+        //  Điều phối viên
         case 2:
           await pool.query("DELETE FROM drivers WHERE user_id = ?", [id]);
-          console.log(
-            `🧹 user_id=${id} đổi thành dispatcher → xóa khỏi drivers`
-          );
+          console.log(` user_id=${id} đổi thành dispatcher → xóa khỏi drivers`);
           break;
 
-        // 🚚 Tài xế
+        // Tài xế
         case 3:
           const [[driverExist]] = await pool.query(
             "SELECT * FROM drivers WHERE user_id = ?",
@@ -105,18 +103,18 @@ export const updateUser = async (req, res) => {
                VALUES (?, ?, ?, 'available', ?)`,
               [name || user.name, email || user.email, user.phone || null, id]
             );
-            console.log(`🚚 user_id=${id} đổi thành driver → thêm vào drivers`);
+            console.log(` user_id=${id} đổi thành driver → thêm vào drivers`);
           }
           break;
 
-        // 🧍‍♂️ Khách hàng
+        //  Khách hàng
         case 4:
           await pool.query("DELETE FROM drivers WHERE user_id = ?", [id]);
-          console.log(`🧹 user_id=${id} đổi thành customer → xóa khỏi drivers`);
+          console.log(` user_id=${id} đổi thành customer → xóa khỏi drivers`);
           break;
 
         default:
-          console.log(`⚙️ Role khác (${role_id}) không cần xử lý đặc biệt.`);
+          console.log(` Role khác (${role_id}) không cần xử lý đặc biệt.`);
       }
     }
 
@@ -129,7 +127,7 @@ export const updateUser = async (req, res) => {
     });
   }
 };
-// 🗑️ Xóa người dùng
+// Xóa người dùng
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;

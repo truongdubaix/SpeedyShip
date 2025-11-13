@@ -1,6 +1,6 @@
 import db from "../config/db.js";
 
-// 📝 Gửi feedback
+// Gửi feedback
 export const createFeedback = async (req, res) => {
   try {
     const { customer_id, shipment_id, content, rating } = req.body;
@@ -21,7 +21,7 @@ export const createFeedback = async (req, res) => {
     res.status(500).json({ message: "Lỗi server khi gửi feedback" });
   }
 };
-// 📋 Lấy danh sách feedbacks
+// Lấy danh sách feedbacks
 export const getAllFeedbacks = async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -38,7 +38,7 @@ export const getAllFeedbacks = async (req, res) => {
   }
 };
 
-// 🗑️ Xóa feedback
+// Xóa feedback
 export const deleteFeedback = async (req, res) => {
   try {
     const { id } = req.params;

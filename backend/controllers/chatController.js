@@ -1,6 +1,6 @@
 import pool from "../config/db.js";
 
-// 🟢 Tạo hoặc lấy chat đang hoạt động
+// Tạo hoặc lấy chat đang hoạt động
 export const startChat = async (req, res) => {
   const { customer_id } = req.body;
   try {
@@ -27,7 +27,7 @@ export const startChat = async (req, res) => {
   }
 };
 
-// 💬 Lấy danh sách tin nhắn
+// Lấy danh sách tin nhắn
 export const getMessages = async (req, res) => {
   const { chatId } = req.params;
   try {
@@ -42,7 +42,7 @@ export const getMessages = async (req, res) => {
   }
 };
 
-// 🟠 Gửi tin nhắn
+// Gửi tin nhắn
 export const saveMessage = async (chatId, senderId, role, content) => {
   try {
     await pool.query(
@@ -54,7 +54,7 @@ export const saveMessage = async (chatId, senderId, role, content) => {
   }
 };
 
-// 🔴 Kết thúc chat
+// Kết thúc chat
 export const endChat = async (req, res) => {
   const { chatId } = req.params;
   try {

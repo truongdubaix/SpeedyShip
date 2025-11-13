@@ -1,6 +1,6 @@
 import db from "../config/db.js";
 
-// 📊 Tổng quan hệ thống
+//  Tổng quan hệ thống
 export const getAdminStats = async (req, res) => {
   try {
     // Tổng số liệu

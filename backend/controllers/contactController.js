@@ -1,7 +1,7 @@
 import db from "../config/db.js";
 import nodemailer from "nodemailer";
 
-// ⚙️ Tạo transporter gửi mail
+//  Tạo transporter gửi mail
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -10,21 +10,21 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// 📨 Gửi yêu cầu từ khách hàng
+// Gửi yêu cầu từ khách hàng
 export const createContact = async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
     if (!name || !email || !message)
       return res.status(400).json({ error: "Thiếu thông tin bắt buộc" });
 
-    // 1️⃣ Lưu vào DB
+    //  Lưu vào DB
     await db.query(
       `INSERT INTO contacts (name, email, phone, message, status)
        VALUES (?, ?, ?, ?, 'pending')`,
       [name, email, phone || null, message]
     );
 
-    // 2️⃣ Gửi email xác nhận cho khách hàng
+    // Gửi email xác nhận cho khách hàng
     await transporter.sendMail({
       from: `"SpeedyShip Hỗ trợ Khách hàng" <${process.env.EMAIL_USER}>`,
       to: email,
@@ -61,7 +61,7 @@ export const createContact = async (req, res) => {
   `,
     });
 
-    // 3️⃣ Gửi mail nội bộ đến nhóm hỗ trợ
+    // Gửi mail nội bộ đến nhóm hỗ trợ
     await transporter.sendMail({
       from: `"SpeedyShip BOT" <${process.env.EMAIL_USER}>`,
       to: "support@speedyship.com",
@@ -99,7 +99,7 @@ export const createContact = async (req, res) => {
     res.status(500).json({ error: "Không thể gửi yêu cầu hoặc email" });
   }
 };
-// 🧭 Admin duyệt & giao cho điều phối viên
+// Admin duyệt & giao cho điều phối viên
 export const assignDispatcher = async (req, res) => {
   try {
     const { id } = req.params; // contact id
@@ -123,7 +123,7 @@ export const assignDispatcher = async (req, res) => {
     res.status(500).json({ error: "Không thể giao yêu cầu" });
   }
 };
-// 🧾 Lấy danh sách tất cả liên hệ (dành cho admin hoặc dispatcher)
+// Lấy danh sách tất cả liên hệ (dành cho admin hoặc dispatcher)
 export const getAllContacts = async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -148,7 +148,7 @@ export const getAllContacts = async (req, res) => {
     res.status(500).json({ error: "Không thể lấy danh sách liên hệ" });
   }
 };
-// 🔄 Cập nhật trạng thái xử lý liên hệ (do điều phối viên thao tác)
+//Cập nhật trạng thái xử lý liên hệ (do điều phối viên thao tác)
 export const updateContactStatus = async (req, res) => {
   try {
     const { id } = req.params; // ID liên hệ
@@ -207,7 +207,7 @@ export const updateContactStatus = async (req, res) => {
     res.status(500).json({ error: "Không thể cập nhật trạng thái" });
   }
 };
-// 📞 Lấy danh sách yêu cầu liên hệ được giao cho điều phối viên
+//Lấy danh sách yêu cầu liên hệ được giao cho điều phối viên
 export const getContactsByDispatcher = async (req, res) => {
   try {
     const { dispatcher_id } = req.params;

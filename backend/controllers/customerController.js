@@ -1,6 +1,6 @@
 import pool from "../config/db.js";
 
-// 📄 Lấy thông tin hồ sơ khách hàng
+// Lấy thông tin hồ sơ khách hàng
 export const getCustomerProfile = async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -15,7 +15,7 @@ export const getCustomerProfile = async (req, res) => {
   }
 };
 
-// ✏️ Cập nhật hồ sơ khách hàng
+// Cập nhật hồ sơ khách hàng
 export const updateCustomerProfile = async (req, res) => {
   const { name, email, phone } = req.body;
   try {
@@ -29,7 +29,7 @@ export const updateCustomerProfile = async (req, res) => {
   }
 };
 
-// 🧾 3️⃣ Tạo đơn hàng mới (và tự động tạo thanh toán)
+//Tạo đơn hàng mới (và tự động tạo thanh toán)
 export const createShipment = async (req, res) => {
   const {
     customer_id,
@@ -68,7 +68,7 @@ export const createShipment = async (req, res) => {
 
     const shipment_id = result.insertId;
 
-    // ✅ Sau khi tạo shipment => tạo luôn payment
+    //  Sau khi tạo shipment => tạo luôn payment
     await pool.query(
       `INSERT INTO payments (shipment_id, customer_id, amount, method, status)
        VALUES (?, ?, ?, ?, 'pending')`,
@@ -86,7 +86,7 @@ export const createShipment = async (req, res) => {
   }
 };
 
-// 4️⃣ Lấy danh sách đơn hàng theo khách hàng
+// Lấy danh sách đơn hàng theo khách hàng
 export const getShipmentsByCustomer = async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -99,7 +99,7 @@ export const getShipmentsByCustomer = async (req, res) => {
   }
 };
 
-// 5️⃣ Gửi feedback
+//Gửi feedback
 export const createFeedback = async (req, res) => {
   const { customer_id, shipment_id, content, rating } = req.body;
   try {
@@ -113,7 +113,7 @@ export const createFeedback = async (req, res) => {
   }
 };
 
-// 6️⃣ Theo dõi đơn hàng theo mã (tracking_code) — chỉ cho khách hàng của chính mình
+// Theo dõi đơn hàng theo mã (tracking_code) — chỉ cho khách hàng của chính mình
 export const trackShipment = async (req, res) => {
   try {
     const { code } = req.params;
@@ -136,12 +136,12 @@ export const trackShipment = async (req, res) => {
     `;
     const params = [code];
 
-    // ✅ Nếu là khách hàng đã đăng nhập → chỉ xem đơn của mình
+    //  Nếu là khách hàng đã đăng nhập → chỉ xem đơn của mình
     if (customerId) {
       query += " AND s.customer_id = ?";
       params.push(customerId);
     }
-    // ✅ Nếu là khách vãng lai → yêu cầu nhập 4 số cuối SĐT
+    //  Nếu là khách vãng lai → yêu cầu nhập 4 số cuối SĐT
     else if (last4) {
       query +=
         " AND RIGHT(REGEXP_REPLACE(s.receiver_phone, '[^0-9]', ''), 4) = ?";
@@ -169,7 +169,7 @@ export const trackShipment = async (req, res) => {
   }
 };
 
-// 7️⃣ Xem chi tiết đơn hàng (hiển thị vị trí tài xế)
+//  Xem chi tiết đơn hàng (hiển thị vị trí tài xế)
 export const getShipmentDetail = async (req, res) => {
   try {
     const [rows] = await pool.query(

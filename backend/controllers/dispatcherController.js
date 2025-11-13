@@ -1,8 +1,7 @@
 import db from "../config/db.js";
 
-/** ------------------------------
- *  LẤY ĐƠN CHƯA PHÂN CÔNG
- * ------------------------------ */
+//  *  LẤY ĐƠN CHƯA PHÂN CÔNG
+
 export const getUnassignedShipments = async (_req, res) => {
   try {
     const [rows] = await db.query(`
@@ -22,9 +21,8 @@ export const getUnassignedShipments = async (_req, res) => {
   }
 };
 
-/** ------------------------------
- *  LẤY DANH SÁCH TÀI XẾ KHẢ DỤNG
- * ------------------------------ */
+//*  LẤY DANH SÁCH TÀI XẾ KHẢ DỤNG
+
 export const getAvailableDrivers = async (_req, res) => {
   try {
     const [rows] = await db.query(`
@@ -40,9 +38,7 @@ export const getAvailableDrivers = async (_req, res) => {
   }
 };
 
-/** ------------------------------
- *  PHÂN CÔNG TÀI XẾ CHO ĐƠN HÀNG
- * ------------------------------ */
+//*  PHÂN CÔNG TÀI XẾ CHO ĐƠN HÀNG
 export const assignShipment = async (req, res) => {
   try {
     const { shipment_id, driver_id } = req.body;
@@ -62,7 +58,7 @@ export const assignShipment = async (req, res) => {
       [shipment_id]
     );
 
-    // 🚀 Khi phân công, tài xế chuyển sang bận
+    //  Khi phân công, tài xế chuyển sang bận
     await db.query(`UPDATE drivers SET status='delivering' WHERE id=?`, [
       driver_id,
     ]);
@@ -74,9 +70,8 @@ export const assignShipment = async (req, res) => {
   }
 };
 
-/** ------------------------------
- *  LẤY DANH SÁCH PHÂN CÔNG
- * ------------------------------ */
+//*  LẤY DANH SÁCH PHÂN CÔNG
+
 export const getAssignments = async (req, res) => {
   try {
     const activeOnly = String(req.query.activeOnly || "false") === "true";
@@ -113,9 +108,8 @@ export const getAssignments = async (req, res) => {
   }
 };
 
-/** ------------------------------
- *  CẬP NHẬT TRẠNG THÁI PHÂN CÔNG
- * ------------------------------ */
+// *  CẬP NHẬT TRẠNG THÁI PHÂN CÔNG
+
 export const updateAssignmentStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -163,7 +157,7 @@ export const updateAssignmentStatus = async (req, res) => {
         : [shipmentStatus, row.shipment_id]
     );
 
-    // 🚀 Nếu hoàn tất hoặc thất bại → tài xế available lại
+    //  Nếu hoàn tất hoặc thất bại → tài xế available lại
     if (status === "completed" || status === "failed") {
       await db.query(`UPDATE drivers SET status='available' WHERE id=?`, [
         row.driver_id,
@@ -199,21 +193,21 @@ export const reassignDriver = async (req, res) => {
 };
 export const getDispatcherDashboard = async (_req, res) => {
   try {
-    // 1️⃣ Đơn hàng theo trạng thái
+    // 1️ Đơn hàng theo trạng thái
     const [shipmentStats] = await db.query(`
       SELECT LOWER(TRIM(status)) AS status, COUNT(*) AS count
       FROM shipments
       GROUP BY LOWER(TRIM(status))
     `);
 
-    // 2️⃣ Tài xế theo trạng thái
+    // 2️ Tài xế theo trạng thái
     const [driverStats] = await db.query(`
       SELECT LOWER(TRIM(status)) AS status, COUNT(*) AS count
       FROM drivers
       GROUP BY LOWER(TRIM(status))
     `);
 
-    // 3️⃣ Doanh thu theo tháng (đã fix lỗi only_full_group_by)
+    // 3️ Doanh thu theo tháng
     const [revenueStats] = await db.query(`
       SELECT 
         DATE_FORMAT(MIN(created_at), '%b %Y') AS month,
@@ -224,7 +218,7 @@ export const getDispatcherDashboard = async (_req, res) => {
       ORDER BY YEAR(created_at), MONTH(created_at)
     `);
 
-    // 4️⃣ Top tài xế giao nhiều đơn
+    // 4️ Top tài xế giao nhiều đơn
     const [topDrivers] = await db.query(`
       SELECT d.name, COUNT(a.id) AS deliveries
       FROM drivers d

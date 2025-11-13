@@ -1,8 +1,7 @@
 import db from "../config/db.js";
 import bcrypt from "bcryptjs";
 
-// =================== 📊 Dashboard ===================
-// =================== 📊 Dashboard ===================
+//  Dashboard
 export const getDriverDashboard = async (req, res) => {
   try {
     const { id } = req.params;
@@ -29,7 +28,7 @@ export const getDriverDashboard = async (req, res) => {
       assigned: 0,
     };
 
-    // 🔹 Lấy 5 đơn hàng gần đây của tài xế
+    //  Lấy 5 đơn hàng gần đây của tài xế
     const [recent] = await db.query(
       `
       SELECT 
@@ -47,7 +46,7 @@ export const getDriverDashboard = async (req, res) => {
       [id]
     );
 
-    // ✅ Trả về dữ liệu tổng hợp
+    //  Trả về dữ liệu tổng hợp
     res.json({
       completed: stats.completed,
       delivering: stats.delivering,
@@ -61,7 +60,7 @@ export const getDriverDashboard = async (req, res) => {
   }
 };
 
-// =================== 🚚 Danh sách đơn hàng đang giao ===================
+// Danh sách đơn hàng đang giao
 export const getDriverAssignments = async (req, res) => {
   try {
     const { id } = req.params;
@@ -88,7 +87,7 @@ export const getDriverAssignments = async (req, res) => {
   }
 };
 
-// =================== 🧾 Lịch sử giao hàng ===================
+// Lịch sử giao hàng
 export const getDriverHistory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -113,7 +112,7 @@ export const getDriverHistory = async (req, res) => {
   }
 };
 
-// =================== 🔄 Cập nhật trạng thái đơn ===================
+// Cập nhật trạng thái đơn
 export const updateDriverShipmentStatus = async (req, res) => {
   try {
     const { shipment_id } = req.params;
@@ -135,7 +134,7 @@ export const updateDriverShipmentStatus = async (req, res) => {
   }
 };
 
-// =================== 👤 Hồ sơ tài xế ===================
+//  Hồ sơ tài xế
 export const getDriverProfile = async (req, res) => {
   try {
     const { id } = req.params;
@@ -168,7 +167,7 @@ export const getDriverProfile = async (req, res) => {
   }
 };
 
-// =================== 🔐 Đổi mật khẩu ===================
+//  Đổi mật khẩu
 export const changeDriverPassword = async (req, res) => {
   try {
     const { id } = req.params;
@@ -195,7 +194,7 @@ export const changeDriverPassword = async (req, res) => {
   }
 };
 
-// =================== 🚚 Cập nhật xe cho tài xế ===================
+// Cập nhật xe cho tài xế
 export const updateDriverVehicle = async (req, res) => {
   try {
     const { id } = req.params; // id tài xế
@@ -219,7 +218,7 @@ export const updateDriverVehicle = async (req, res) => {
     res.status(500).json({ message: "Lỗi server khi cập nhật xe cho tài xế" });
   }
 };
-// ✅ Hồ sơ tài xế bằng userId
+// Hồ sơ tài xế bằng userId
 export const getDriverProfileByUser = async (req, res) => {
   try {
     const { userId } = req.params;

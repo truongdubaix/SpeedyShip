@@ -2,7 +2,7 @@ import pool from "../config/db.js";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 
-// ✅ Setup gửi email
+//  Setup gửi email
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// ✅ Ứng viên nộp đơn (PUBLIC)
+//  Ứng viên nộp đơn (PUBLIC)
 
 export const applyDriver = async (req, res) => {
   try {
@@ -26,7 +26,7 @@ export const applyDriver = async (req, res) => {
       [name, phone, email, license_plate, vehicle_type, experience]
     );
 
-    // ✅ Gửi mail thông báo đã nhận hồ sơ
+    //  Gửi mail thông báo đã nhận hồ sơ
     await transporter.sendMail({
       from: `"SpeedyShip" <${process.env.EMAIL_USER}>`,
       to: email,
@@ -46,9 +46,8 @@ export const applyDriver = async (req, res) => {
   }
 };
 
-// ================================
-// ✅ Lấy danh sách ứng viên (ADMIN)
-// ================================
+//  Lấy danh sách ứng viên (ADMIN)
+
 export const getApplications = async (_req, res) => {
   try {
     const [rows] = await pool.query(
@@ -60,7 +59,7 @@ export const getApplications = async (_req, res) => {
     res.status(500).json({ error: "Lỗi server!" });
   }
 };
-// ✅ Admin duyệt hồ sơ + tạo xe + tạo driver
+//  Admin duyệt hồ sơ + tạo xe + tạo driver
 
 export const approveApplication = async (req, res) => {
   const { id } = req.params;
@@ -75,9 +74,8 @@ export const approveApplication = async (req, res) => {
       return res.status(404).json({ error: "Không tìm thấy hồ sơ!" });
     }
 
-    // ===========================================================
-    // ✅ 1. Kiểm tra email có tồn tại trong users chưa
-    // ===========================================================
+    //  1. Kiểm tra email có tồn tại trong users chưa
+
     const [[existingUser]] = await pool.query(
       "SELECT id FROM users WHERE email = ?",
       [app.email]
@@ -101,9 +99,8 @@ export const approveApplication = async (req, res) => {
       userId = userRes.insertId;
     }
 
-    // ===========================================================
-    // ✅ 2. Tạo driver
-    // ===========================================================
+    // 2. Tạo driver
+
     const [driverRes] = await pool.query(
       `INSERT INTO drivers (user_id, name, phone, email, license_no, vehicle_type, status)
        VALUES (?, ?, ?, ?, ?, ?, 'available')`,
@@ -119,9 +116,8 @@ export const approveApplication = async (req, res) => {
 
     const driverId = driverRes.insertId;
 
-    // ===========================================================
-    // ✅ 3. Thêm xe vào bảng vehicles (tự động tạo xe theo hồ sơ)
-    // ===========================================================
+    //  3. Thêm xe vào bảng vehicles (tự động tạo xe theo hồ sơ)
+
     const [vehicleRes] = await pool.query(
       `INSERT INTO vehicles (plate_no, type, capacity_kg, driver_id, status)
        VALUES (?, ?, ?, ?, 'available')`,
@@ -133,17 +129,15 @@ export const approveApplication = async (req, res) => {
       ]
     );
 
-    // ===========================================================
-    // ✅ 4. Update application status
-    // ===========================================================
+    //  4. Update application status
+
     await pool.query(
       "UPDATE driver_applications SET status='approved' WHERE id = ?",
       [id]
     );
 
-    // ===========================================================
-    // ✅ 5. Gửi email thông báo tài khoản login cho tài xế
-    // ===========================================================
+    // 5. Gửi email thông báo tài khoản login cho tài xế
+
     await transporter.sendMail({
       from: `"SpeedyShip" <${process.env.EMAIL_USER}>`,
       to: app.email,
@@ -162,9 +156,8 @@ export const approveApplication = async (req, res) => {
       `,
     });
 
-    // ===========================================================
-    // ✅ 6. Trả kết quả
-    // ===========================================================
+    //  6. Trả kết quả
+
     res.json({
       message: "✅ Duyệt thành công! Tài xế + Xe đã được tạo & email đã gửi.",
       driverId,
@@ -176,9 +169,8 @@ export const approveApplication = async (req, res) => {
   }
 };
 
-// ================================
-// ✅ Từ chối hồ sơ
-// ================================
+//  Từ chối hồ sơ
+
 export const rejectApplication = async (req, res) => {
   try {
     await pool.query(

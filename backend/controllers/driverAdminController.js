@@ -1,6 +1,6 @@
 import db from "../config/db.js";
 
-// 📋 Lấy tất cả tài xế
+//  Lấy tất cả tài xế
 export const getAllDrivers = async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -24,7 +24,7 @@ export const getAllDrivers = async (req, res) => {
   }
 };
 
-// 🔍 Lấy chi tiết tài xế theo id
+//  Lấy chi tiết tài xế theo id
 export const getDriverById = async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM drivers WHERE id=?", [
@@ -39,7 +39,7 @@ export const getDriverById = async (req, res) => {
   }
 };
 
-// ➕ Thêm tài xế mới
+//  Thêm tài xế mới
 export const createDriver = async (req, res) => {
   try {
     const { name, email, phone, vehicle_type, status } = req.body;
@@ -54,7 +54,7 @@ export const createDriver = async (req, res) => {
   }
 };
 
-// ✏️ Cập nhật thông tin tài xế
+//  Cập nhật thông tin tài xế
 export const updateDriver = async (req, res) => {
   try {
     const { name, email, phone, vehicle_type, status } = req.body;
@@ -69,7 +69,7 @@ export const updateDriver = async (req, res) => {
   }
 };
 
-// ❌ Xóa tài xế
+//  Xóa tài xế
 export const deleteDriver = async (req, res) => {
   try {
     await db.query("DELETE FROM drivers WHERE id=?", [req.params.id]);
@@ -80,7 +80,7 @@ export const deleteDriver = async (req, res) => {
   }
 };
 
-// 🔄 Cập nhật trạng thái tài xế
+//  Cập nhật trạng thái tài xế
 export const updateDriverStatus = async (req, res) => {
   try {
     const { status } = req.body;

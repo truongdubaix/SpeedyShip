@@ -6,10 +6,10 @@ import {
 
 const router = express.Router();
 
-// 🚗 Lấy tất cả xe
+// Lấy tất cả xe
 router.get("/", getAllVehicles);
 
-// 🚙 Lấy các xe còn trống (chưa gán cho tài xế)
+//  Lấy các xe còn trống (chưa gán cho tài xế)
 router.get("/available", getAvailableVehicles);
 
 export default router;

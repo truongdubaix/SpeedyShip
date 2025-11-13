@@ -90,7 +90,7 @@ export default function Navbar() {
             Liên hệ
           </Link>
 
-          {/* ✅ Thêm mục Tuyển dụng */}
+          {/* Tuyển dụng */}
           <Link to="/apply-driver" className="hover:text-yellow-300 transition">
             Tuyển dụng
           </Link>
@@ -98,6 +98,16 @@ export default function Navbar() {
           <Link to="/tracking" className="hover:text-yellow-300 transition">
             Tra cứu đơn
           </Link>
+
+          {/* ⭐ Tạo đơn – chỉ khách vãng lai hoặc customer */}
+          {(!role || role === "customer") && (
+            <Link
+              to="/customer/create"
+              className="hover:text-yellow-300 transition"
+            >
+              Tạo đơn
+            </Link>
+          )}
         </div>
 
         {/* Góc phải */}

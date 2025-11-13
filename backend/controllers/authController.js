@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import pool from "../config/db.js";
 import { sendMail } from "../utils/sendMail.js";
 
-// 🔹 Đăng ký
+// Đăng ký
 export const register = async (req, res) => {
   const { name, email, password, phone } = req.body;
   if (!name || !email || !password)
@@ -38,7 +38,7 @@ export const register = async (req, res) => {
   }
 };
 
-// 🔹 Đăng nhập
+// Đăng nhập
 export const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
@@ -54,7 +54,7 @@ export const login = async (req, res) => {
     const user = users[0];
     console.log("🟡 Trạng thái user:", user.status);
 
-    // ⚠️ Kiểm tra trạng thái
+    // Kiểm tra trạng thái
     if (user.status && user.status.toLowerCase() === "inactive") {
       console.log("🚫 User bị vô hiệu hóa:", user.email);
       return res.status(403).json({
@@ -63,7 +63,7 @@ export const login = async (req, res) => {
       });
     }
 
-    // ✅ Kiểm tra mật khẩu
+    // Kiểm tra mật khẩu
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       console.log("❌ Sai mật khẩu:", user.email);
@@ -98,7 +98,7 @@ export const login = async (req, res) => {
   }
 };
 
-// 🟦 Gửi OTP
+// Gửi OTP
 export const sendOtp = async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ message: "Thiếu email" });
@@ -133,7 +133,7 @@ export const sendOtp = async (req, res) => {
   }
 };
 
-// 🟩 Xác thực OTP
+// Xác thực OTP
 export const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
 

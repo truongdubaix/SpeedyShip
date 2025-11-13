@@ -3,7 +3,7 @@ import pool from "../config/db.js";
 
 const router = express.Router();
 
-// 🔹 Lấy tất cả vai trò
+//  Lấy tất cả vai trò
 router.get("/", async (req, res) => {
   try {
     const [rows] = await pool.query(

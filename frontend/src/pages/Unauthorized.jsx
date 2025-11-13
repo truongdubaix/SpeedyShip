@@ -1,4 +1,4 @@
-// src/pages/Unauthorized.jsx
+// src/pages/Unauthorized.jsx // file này chỉ là trang 404
 export default function Unauthorized() {
   return (
     <div className="flex items-center justify-center h-screen bg-red-50">
