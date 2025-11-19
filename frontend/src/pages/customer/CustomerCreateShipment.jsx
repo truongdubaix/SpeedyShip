@@ -29,12 +29,10 @@ export default function TaoDonHang() {
   const customerId =
     localStorage.getItem("customer_id") || localStorage.getItem("userId");
 
-  // 👇 Khởi tạo hiệu ứng
   useEffect(() => {
     AOS.init({ duration: 400, easing: "ease-in-out", once: true });
   }, []);
 
-  // 🧮 Tính phí vận chuyển ước tính
   useEffect(() => {
     if (!form.delivery_address) return;
     const randomDistance = Math.floor(Math.random() * 30) + 5;
@@ -49,9 +47,9 @@ export default function TaoDonHang() {
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  // 🚀 Gửi form
   const handleSubmit = (e) => {
     e.preventDefault();
+    // ✅ Form HTML5 sẽ tự chặn submit nếu có field required bị thiếu
     if (!customerId) {
       toast.error("⚠️ Bạn chưa đăng nhập!");
       return;
@@ -59,7 +57,6 @@ export default function TaoDonHang() {
     setShowPaymentChoice(true);
   };
 
-  // 🧾 Tạo đơn hàng và điều hướng thanh toán
   const createOrderWithMethod = async (method) => {
     setCreating(true);
     try {
@@ -77,18 +74,15 @@ export default function TaoDonHang() {
       const tracking = res.data.tracking_code;
 
       toast.success(`✅ Tạo đơn hàng thành công! Mã: ${tracking || "N/A"}`);
-      // 🟪 2️⃣ Nếu chọn thanh toán MoMo → chuyển sang trang thanh toán
+
       if (method === "MOMO" && shipmentId) {
-        // ✅ Tính tổng tiền phải thanh toán (COD + phí vận chuyển)
         const totalAmount =
           (parseFloat(form.cod_amount) || 0) + (parseFloat(estimatedFee) || 0);
 
-        // ✅ Điều hướng sang trang thanh toán kèm tổng tiền
         navigate(
           `/customer/payment?shipment_id=${shipmentId}&amount=${totalAmount}&shipping_fee=${estimatedFee}`
         );
-
-        return; // 🔥 Dừng tại đây, không chạy xuống navigate("/customer/history")
+        return;
       }
 
       navigate("/customer/history");
@@ -174,6 +168,9 @@ export default function TaoDonHang() {
           <div className="md:col-span-2">
             <DiaChiSelector
               label="🏠 Địa chỉ lấy hàng"
+              name="pickup_address"
+              value={form.pickup_address}
+              required
               onChange={(value) =>
                 setForm((prev) => ({ ...prev, pickup_address: value }))
               }
@@ -217,6 +214,9 @@ export default function TaoDonHang() {
         <div className="md:col-span-2">
           <DiaChiSelector
             label="📍 Địa chỉ giao hàng"
+            name="delivery_address"
+            value={form.delivery_address}
+            required
             onChange={(value) =>
               setForm((prev) => ({ ...prev, delivery_address: value }))
             }
@@ -230,6 +230,7 @@ export default function TaoDonHang() {
             type="number"
             name="weight_kg"
             step="0.1"
+            min="0.1"
             value={form.weight_kg}
             onChange={handleChange}
             placeholder="VD: 2.5"
@@ -243,6 +244,7 @@ export default function TaoDonHang() {
           <input
             type="number"
             name="cod_amount"
+            min="0"
             value={form.cod_amount}
             onChange={handleChange}
             placeholder="VD: 150000"

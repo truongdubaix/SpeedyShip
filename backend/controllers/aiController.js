@@ -36,19 +36,18 @@ export const askBot = async (req, res) => {
 
         return res.json({
           reply: `
-          📦 *Kết quả tra cứu đơn ${trackingCode}:*
+📦 *Kết quả tra cứu đơn ${trackingCode}:*
 
-          • Người gửi: ${data.sender_name}
-          • Người nhận: ${data.receiver_name}
-          • Trạng thái: *${data.status}*
-          • Lấy hàng: ${data.pickup_address}
-          • Giao đến: ${data.delivery_address}
+• Người gửi: ${data.sender_name}
+• Người nhận: ${data.receiver_name}
+• Trạng thái: *${data.status}*
+• Lấy hàng: ${data.pickup_address}
+• Giao đến: ${data.delivery_address}
+🔗 **Theo dõi chi tiết:**
+http://localhost:5173/tracking?code=${trackingCode}
 
-          🔗 **Theo dõi chi tiết:**
-          http://localhost:5173/tracking?code=${trackingCode}
-
-          👉 Cảm ơn bạn đã dùng SpeedyShip!
-          `,
+👉 Cảm ơn bạn đã dùng SpeedyShip!
+`,
         });
       } catch (err) {
         return res.json({
@@ -63,10 +62,10 @@ export const askBot = async (req, res) => {
     if (/website|web|trang web|link web|liên hệ website/.test(msg)) {
       return res.json({
         reply: `
-          🌐 *Website SpeedyShip:*  
-          https://speedyship.vn  
+🌐 *Website SpeedyShip:*  
+https://speedyship.vn  
 
-          👉 Bạn có thể truy cập để đặt đơn, tra cứu, và xem thông tin dịch vụ.
+👉 Bạn có thể truy cập để đặt đơn, tra cứu, và xem thông tin dịch vụ.
                   `,
       });
     }
@@ -75,9 +74,9 @@ export const askBot = async (req, res) => {
     if (/hotline|sdt|số điện thoại|gọi điện|tư vấn/.test(msg)) {
       return res.json({
         reply: `
-        📞 *Hotline SpeedyShip:* **0363 337 081**  
-        👉 Hỗ trợ từ 7:00 đến 22:00 mỗi ngày.
-                `,
+📞 *Hotline SpeedyShip:* **0363 337 081**  
+👉 Hỗ trợ từ 7:00 đến 22:00 mỗi ngày.
+`,
       });
     }
 
@@ -85,11 +84,11 @@ export const askBot = async (req, res) => {
     if (/email|mail|gửi mail|hỗ trợ mail|support/.test(msg)) {
       return res.json({
         reply: `
-          📩 *Email hỗ trợ:*  
-          support@speedyship.vn  
+📩 *Email hỗ trợ:*  
+support@speedyship.vn  
 
-      👉 Bạn có thể gửi khiếu nại, tư vấn kỹ thuật, đối tác.
-        `,
+👉 Bạn có thể gửi khiếu nại, tư vấn kỹ thuật, đối tác.
+ `,
       });
     }
 
@@ -97,11 +96,11 @@ export const askBot = async (req, res) => {
     if (/facebook|fanpage|page|fb/.test(msg)) {
       return res.json({
         reply: `
-        📘 *Fanpage SpeedyShip:*  
-        https://facebook.com/speedyship.vn  
+📘 *Fanpage SpeedyShip:*  
+https://facebook.com/speedyship.vn  
 
-        👉 Nhắn tin trực tiếp để được hỗ trợ.
-        `,
+👉 Nhắn tin trực tiếp để được hỗ trợ.
+`,
       });
     }
 
@@ -109,11 +108,10 @@ export const askBot = async (req, res) => {
     if (/địa chỉ|văn phòng|ở đâu|tới đâu/i.test(msg)) {
       return res.json({
         reply: `
-          🏢 *Văn phòng SpeedyShip:*  
-          **Số 123, Nguyễn Văn Linh, Thanh Khê, TP Đà Nẵng**  
-
-          ⏰ *Giờ làm việc:* 7:00 – 22:00  
-        `,
+🏢 *Văn phòng SpeedyShip:*  
+**Số 123, Nguyễn Văn Linh, Thanh Khê, TP Đà Nẵng**  
+⏰ *Giờ làm việc:* 7:00 – 22:00  
+`,
       });
     }
 
@@ -139,17 +137,17 @@ export const askBot = async (req, res) => {
           {
             role: "system",
             content: `
-            Bạn là chatbot hỗ trợ khách hàng SpeedyShip.
-            Trả lời ngắn gọn – chuyên nghiệp – thân thiện.
+Bạn là chatbot hỗ trợ khách hàng SpeedyShip.
+Trả lời ngắn gọn – chuyên nghiệp – thân thiện.
 
-            Thông tin mẫu:
-            - Ship nội thành: 15.000đ
-            - Liên tỉnh: 25.000–35.000đ
-            - Thời gian giao: nội thành 1–2h, liên tỉnh 1–2 ngày
-            - Hotline: 0363 337 081
-            - Website: https://speedyship.vn
-            - Email: truongcss1220@gmail.com
-            `,
+Thông tin mẫu:
+- Ship nội thành: 15.000đ
+- Liên tỉnh: 25.000–35.000đ
+- Thời gian giao: nội thành 1–2h, liên tỉnh 1–2 ngày
+- Hotline: 0363 337 081
+- Website: https://speedyship.vn
+- Email: truongcss1220@gmail.com
+`,
           },
           { role: "user", content: message },
         ],
