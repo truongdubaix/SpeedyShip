@@ -104,7 +104,7 @@ export const sendOtp = async (req, res) => {
   if (!email) return res.status(400).json({ message: "Thiếu email" });
 
   try {
-    // Kiểm tra email đã tồn tại chưa
+    // Kiểm tra email đã tồn tại
     const [exist] = await pool.query("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
@@ -112,18 +112,39 @@ export const sendOtp = async (req, res) => {
       return res.status(400).json({ message: "Email này đã được sử dụng!" });
     }
 
+    // OTP random 6 số
     const otp = Math.floor(100000 + Math.random() * 900000);
-    const expiresAt = Date.now() + 3 * 60 * 1000; // 3 phút
+    const expiresAt = Date.now() + 5 * 60 * 1000; // 5 phút
 
+    // Lưu DB
     await pool.query(
       "INSERT INTO otp_codes (email, code, expires_at) VALUES (?, ?, ?)",
       [email, otp, expiresAt]
     );
 
+    // Gửi email (theme xanh dương)
     await sendMail(
       email,
-      "SpeedyShip - Mã OTP xác thực",
-      `Mã OTP của bạn là ${otp}. Mã này sẽ hết hạn sau 3 phút.`
+      "SpeedyShip - Xác thực tài khoản",
+      `
+  <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;">
+    <div style="background:#1e90ff;padding:16px 24px;text-align:center;color:#fff;font-size:20px;font-weight:700;">
+      Xác thực tài khoản SpeedyShip
+    </div>
+    <div style="padding:24px 30px;color:#333;font-size:15px;line-height:1.6;">
+      <p>Xin chào,</p>
+      <p>Bạn đang yêu cầu kích hoạt tài khoản SpeedyShip. Mã OTP xác thực của bạn là:</p>
+      <div style="font-size:36px;font-weight:700;color:#1e90ff;text-align:center;margin:20px 0;">
+        ${otp}
+      </div>
+      <p>Mã OTP có hiệu lực <strong>5 phút</strong>. Vui lòng không chia sẻ mã với bất kỳ ai.</p>
+      <hr style="border:none;border-top:1px solid #ddd;margin:24px 0;">
+      <p style="font-size:12px;color:#777;text-align:center;">
+        Nếu bạn không yêu cầu OTP, hãy bỏ qua email này.
+      </p>
+    </div>
+  </div>
+  `
     );
 
     res.json({ message: "Đã gửi mã OTP đến email của bạn." });
