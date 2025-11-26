@@ -21,27 +21,39 @@ export default function Register() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  // 🕒 Tự giảm thời gian đếm ngược mỗi giây
+  // Validate
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidPhone = (phone) => /^0\d{9}$/.test(phone);
+  const isValidPassword = (pw) => pw.length >= 6;
+  const isValidName = (name) => /^[A-Za-zÀ-ỹ\s]+$/.test(name.trim());
+
+  // Countdown OTP
   useEffect(() => {
     if (countdown <= 0) return;
     const timer = setInterval(() => setCountdown((c) => c - 1), 1000);
     return () => clearInterval(timer);
   }, [countdown]);
 
-  // 🟦 Gửi OTP
+  // Gửi OTP
   const handleSendOtp = async () => {
     if (!form.email)
       return setMessage({ type: "error", text: "Vui lòng nhập email" });
+
+    if (!isValidEmail(form.email))
+      return setMessage({
+        type: "error",
+        text: "Vui lòng nhập email và gửi OTP trước!",
+      });
 
     try {
       setLoading(true);
       await API.post("/auth/send-otp", { email: form.email });
       setMessage({
         type: "success",
-        text: "✅ Mã OTP đã gửi đến email của bạn!",
+        text: "Mã OTP đã gửi đến email của bạn!",
       });
       setOtpSent(true);
-      setCountdown(60); // 60 giây đếm ngược
+      setCountdown(60);
     } catch (err) {
       setMessage({
         type: "error",
@@ -52,28 +64,53 @@ export default function Register() {
     }
   };
 
-  // 🟩 Xác thực OTP + Đăng ký
+  // Đăng ký
   const handleRegister = async (e) => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
 
-    if (!otpSent)
-      return setMessage({ type: "error", text: "Vui lòng gửi OTP trước!" });
+    if (!isValidEmail(form.email))
+      return setMessage({
+        type: "error",
+        text: "Vui lòng nhập email và gửi OTP trước!",
+      });
+
     if (!otp)
       return setMessage({ type: "error", text: "Vui lòng nhập mã OTP" });
+
+    if (!isValidName(form.name))
+      return setMessage({
+        type: "error",
+        text: "Tên không hợp lệ! Tên chỉ gồm chữ và khoảng trắng.",
+      });
+
+    if (!isValidPassword(form.password))
+      return setMessage({
+        type: "error",
+        text: "Mật khẩu phải ít nhất 6 ký tự!",
+      });
+
+    if (!isValidPhone(form.phone))
+      return setMessage({
+        type: "error",
+        text: "Số điện thoại phải gồm 10 số và bắt đầu bằng 0!",
+      });
+
+    if (!otpSent)
+      return setMessage({
+        type: "error",
+        text: "Vui lòng nhập email và gửi OTP trước!",
+      });
 
     try {
       setLoading(true);
 
-      // B1: kiểm tra OTP
       await API.post("/auth/verify-otp", { email: form.email, otp });
-
-      // B2: đăng ký người dùng
       await API.post("/auth/register", form);
 
       setMessage({
         type: "success",
-        text: "🎉 Đăng ký thành công! Đang chuyển hướng...",
+        text: "Đăng ký thành công! Đang chuyển hướng...",
       });
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
@@ -94,7 +131,7 @@ export default function Register() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="bg-white/95 backdrop-blur-md p-10 rounded-2xl shadow-2xl w-full max-w-md border border-blue-100"
       >
-        {/* Logo */}
+        {/* Logo giữ nguyên như cũ */}
         <div className="flex flex-col items-center mb-6">
           <motion.div
             initial={{ scale: 0.8, rotate: -15 }}
@@ -124,7 +161,7 @@ export default function Register() {
           )}
 
           <div className="space-y-4">
-            {/* Email + Gửi OTP */}
+            {/* Email + Gửi OTP giữ nguyên */}
             <div className="flex gap-2">
               <input
                 type="email"
@@ -148,6 +185,7 @@ export default function Register() {
               </button>
             </div>
 
+            {/* OTP giữ nguyên */}
             {otpSent && (
               <motion.input
                 type="text"
@@ -161,6 +199,7 @@ export default function Register() {
               />
             )}
 
+            {/* Tên giữ nguyên UI, chỉ thêm validate */}
             <input
               type="text"
               name="name"
@@ -169,6 +208,8 @@ export default function Register() {
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
             />
+
+            {/* Mật khẩu */}
             <input
               type="password"
               name="password"
@@ -177,12 +218,18 @@ export default function Register() {
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
             />
+
+            {/* Số điện thoại giữ UI cũ, thêm giới hạn 10 số */}
             <input
-              type="text"
+              type="tel"
               name="phone"
               placeholder="Số điện thoại (tuỳ chọn)"
               value={form.phone}
-              onChange={handleChange}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, "");
+                setForm({ ...form, phone: val.slice(0, 10) });
+              }}
+              maxLength={10}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
             />
 

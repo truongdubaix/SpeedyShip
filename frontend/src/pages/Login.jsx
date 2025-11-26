@@ -16,8 +16,19 @@ export default function Login() {
     e.preventDefault();
     setError("");
 
-    if (!form.email || !form.password) {
-      setError("Vui lòng nhập đầy đủ email và mật khẩu");
+    // ⭐ Validate rỗng từng trường
+    if (!form.email && !form.password) {
+      setError("Vui lòng nhập đầy đủ Email và mật khẩu");
+      return;
+    }
+
+    if (!form.email) {
+      setError("Vui lòng nhập Email");
+      return;
+    }
+
+    if (!form.password) {
+      setError("Vui lòng nhập mật khẩu");
       return;
     }
 
@@ -33,16 +44,17 @@ export default function Login() {
         return;
       }
 
-      // ✅ Lưu user vào localStorage
+      // Lưu thông tin user
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
       localStorage.setItem("username", user.name);
       localStorage.setItem("userId", user.id.toString());
-      // ✅ Nếu là khách hàng thì lưu thêm customer_id
+
       if (user.role === "customer") {
         localStorage.setItem("customer_id", user.id.toString());
       }
-      // ✅ Điều hướng đúng theo role
+
+      // Chuyển hướng theo role
       if (user.role === "admin") navigate("/admin");
       else if (user.role === "dispatcher") navigate("/dispatcher");
       else if (user.role === "driver") navigate(`/driver/${user.id}`);

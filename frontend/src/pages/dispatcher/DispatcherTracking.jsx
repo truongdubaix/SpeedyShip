@@ -8,6 +8,17 @@ export default function DispatcherTracking() {
   const [assignments, setAssignments] = useState([]);
   const [selected, setSelected] = useState({ shipment_id: "", driver_id: "" });
 
+  // ===== PAGINATION =====
+  const ITEMS_PER_PAGE = 10;
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.ceil(assignments.length / ITEMS_PER_PAGE);
+
+  const paginatedAssignments = assignments.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE
+  );
+
   // ================== LẤY DỮ LIỆU ==================
   const fetchData = async () => {
     try {
@@ -31,8 +42,12 @@ export default function DispatcherTracking() {
 
   // ================== PHÂN CÔNG ==================
   const handleAssign = async () => {
-    if (!selected.shipment_id || !selected.driver_id) {
-      toast.error("Vui lòng chọn đơn hàng và tài xế!");
+    if (!selected.shipment_id) {
+      toast.error("Vui lòng chọn đơn hàng!");
+      return;
+    }
+    if (!selected.driver_id) {
+      toast.error("Vui lòng tài xế!");
       return;
     }
     try {
@@ -50,7 +65,7 @@ export default function DispatcherTracking() {
   const handleStatusUpdate = async (id, status) => {
     try {
       await API.patch(`/dispatcher/assignments/${id}/status`, { status });
-      toast.success("🔄 Cập nhật trạng thái!");
+      toast.success("Cập nhật trạng thái thành công!");
       fetchData();
     } catch (err) {
       console.error("❌ updateStatus error:", err);
@@ -129,8 +144,8 @@ export default function DispatcherTracking() {
               </tr>
             </thead>
             <tbody>
-              {assignments.length ? (
-                assignments.map((a) => (
+              {paginatedAssignments.length ? (
+                paginatedAssignments.map((a) => (
                   <tr key={a.id} className="border-b hover:bg-blue-50">
                     <td className="p-2 font-semibold text-blue-600">
                       {a.tracking_code}
@@ -168,6 +183,29 @@ export default function DispatcherTracking() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* PHÂN TRANG */}
+        <div className="flex justify-center gap-4 mt-4">
+          <button
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-40"
+          >
+            ⬅ Trang trước
+          </button>
+
+          <span className="font-semibold text-gray-700">
+            Trang {page} / {totalPages || 1}
+          </span>
+
+          <button
+            onClick={() => setPage(page + 1)}
+            disabled={page === totalPages}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-40"
+          >
+            Trang sau ➡
+          </button>
         </div>
       </div>
     </div>

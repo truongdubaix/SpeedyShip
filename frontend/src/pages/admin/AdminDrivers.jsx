@@ -15,24 +15,20 @@ export default function AdminDrivers() {
   const [selectedVehicle, setSelectedVehicle] = useState("");
   const [editing, setEditing] = useState(null);
 
-  // ✅ Form thêm / sửa tài xế
+  // 👉 FORM CHỈ CHO SỬA name, email, phone, status
   const [form, setForm] = useState({
     name: "",
     email: "",
     phone: "",
-    license_no: "",
-    vehicle_type: "",
     status: "available",
   });
 
-  // ✅ State cho ứng viên tài xế
   const [applications, setApplications] = useState([]);
 
-  // ✅ Phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // ✅ Lấy danh sách tài xế
+  // ===== FETCH DRIVERS =====
   const fetchDrivers = async () => {
     try {
       const res = await API.get("/drivers");
@@ -43,7 +39,7 @@ export default function AdminDrivers() {
     }
   };
 
-  // ✅ Lấy danh sách xe
+  // ===== FETCH VEHICLES =====
   const fetchVehicles = async () => {
     try {
       const res = await API.get("/vehicles");
@@ -53,7 +49,6 @@ export default function AdminDrivers() {
     }
   };
 
-  // ✅ Lấy danh sách ứng viên tài xế
   const fetchApplications = async () => {
     try {
       const res = await API.get("/drivers/applications");
@@ -68,12 +63,11 @@ export default function AdminDrivers() {
     fetchVehicles();
   }, []);
 
-  // ✅ Load danh sách ứng viên khi tab đổi
   useEffect(() => {
     if (tab === "applications") fetchApplications();
   }, [tab]);
 
-  // ✅ Tìm kiếm
+  // ===== SEARCH =====
   useEffect(() => {
     const keyword = search.toLowerCase();
     const result = drivers.filter((d) => {
@@ -88,7 +82,7 @@ export default function AdminDrivers() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  // ✅ Thêm / sửa tài xế
+  // ===== CREATE / UPDATE DRIVER =====
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -99,6 +93,7 @@ export default function AdminDrivers() {
         await API.post("/drivers", form);
         toast.success("✅ Thêm tài xế thành công!");
       }
+
       setShowForm(false);
       setEditing(null);
       fetchDrivers();
@@ -107,7 +102,7 @@ export default function AdminDrivers() {
     }
   };
 
-  // ✅ Xóa tài xế
+  // ===== DELETE =====
   const handleDelete = async (id) => {
     if (confirm("Bạn có chắc muốn xóa tài xế này không?")) {
       try {
@@ -120,7 +115,7 @@ export default function AdminDrivers() {
     }
   };
 
-  // ✅ Đổi trạng thái tài xế
+  // ===== CHANGE STATUS =====
   const handleStatusChange = async (id, status) => {
     try {
       await API.patch(`/drivers/${id}/status`, { status });
@@ -131,7 +126,7 @@ export default function AdminDrivers() {
     }
   };
 
-  // ✅ Gán xe cho tài xế
+  // ===== ASSIGN VEHICLE =====
   const handleAssignVehicle = async () => {
     if (!selectedVehicle) return toast.error("Vui lòng chọn xe!");
 
@@ -149,7 +144,6 @@ export default function AdminDrivers() {
     }
   };
 
-  // ✅ Duyệt ứng viên → tạo tài xế
   const approveApplication = async (id) => {
     try {
       await API.post(`/drivers/applications/${id}/approve`);
@@ -161,7 +155,6 @@ export default function AdminDrivers() {
     }
   };
 
-  // ✅ Từ chối ứng viên
   const rejectApplication = async (id) => {
     try {
       await API.post(`/drivers/applications/${id}/reject`);
@@ -172,7 +165,6 @@ export default function AdminDrivers() {
     }
   };
 
-  // ✅ Logic phân trang
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   const currentDrivers = filtered.slice(
     (currentPage - 1) * itemsPerPage,
@@ -181,7 +173,7 @@ export default function AdminDrivers() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* ✅ Tabs */}
+      {/* TABS */}
       <div className="flex gap-4">
         <button
           onClick={() => setTab("drivers")}
@@ -206,7 +198,7 @@ export default function AdminDrivers() {
         </button>
       </div>
 
-      {/* ✅ TAB 1 – DANH SÁCH TÀI XẾ */}
+      {/* TAB 1 – DRIVER LIST */}
       {tab === "drivers" && (
         <>
           <div className="flex justify-between items-center">
@@ -227,8 +219,6 @@ export default function AdminDrivers() {
                     name: "",
                     email: "",
                     phone: "",
-                    license_no: "",
-                    vehicle_type: "",
                     status: "available",
                   });
                   setEditing(null);
@@ -241,7 +231,7 @@ export default function AdminDrivers() {
             </div>
           </div>
 
-          {/* ✅ Bảng tài xế */}
+          {/* DRIVER TABLE */}
           <div className="overflow-x-auto bg-white rounded-xl shadow mt-4">
             <table className="w-full border-collapse border border-gray-200 text-sm">
               <thead className="bg-blue-600 text-white">
@@ -296,6 +286,7 @@ export default function AdminDrivers() {
                       </select>
                     </td>
                     <td className="p-3 flex gap-2 justify-center">
+                      {/* GÁN XE */}
                       <button
                         onClick={() => {
                           setSelectedDriver(d.id);
@@ -305,9 +296,16 @@ export default function AdminDrivers() {
                       >
                         🚗 Gán xe
                       </button>
+
+                      {/* SỬA */}
                       <button
                         onClick={() => {
-                          setForm(d);
+                          setForm({
+                            name: d.name,
+                            email: d.email,
+                            phone: d.phone,
+                            status: d.status,
+                          });
                           setEditing(d.id);
                           setShowForm(true);
                         }}
@@ -315,6 +313,8 @@ export default function AdminDrivers() {
                       >
                         Sửa
                       </button>
+
+                      {/* XÓA */}
                       <button
                         onClick={() => handleDelete(d.id)}
                         className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
@@ -328,7 +328,7 @@ export default function AdminDrivers() {
             </table>
           </div>
 
-          {/* ✅ Phân trang */}
+          {/* PAGINATION */}
           {totalPages > 1 && (
             <div className="flex justify-center items-center gap-4 mt-4 text-sm">
               <button
@@ -363,7 +363,7 @@ export default function AdminDrivers() {
         </>
       )}
 
-      {/* ✅ TAB 2 – DUYỆT ỨNG VIÊN */}
+      {/* TAB 2 – APPLICATIONS */}
       {tab === "applications" && (
         <div className="bg-white p-6 rounded-xl shadow mt-4">
           <h2 className="text-xl font-bold mb-4 text-green-700">
@@ -436,7 +436,7 @@ export default function AdminDrivers() {
         </div>
       )}
 
-      {/* ✅ MODAL GÁN XE */}
+      {/* VEHICLE ASSIGN MODAL */}
       {showVehicleModal && (
         <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg w-[400px] space-y-3 shadow-lg">
@@ -476,7 +476,7 @@ export default function AdminDrivers() {
         </div>
       )}
 
-      {/* ✅ FORM THÊM/SỬA TÀI XẾ */}
+      {/* FORM THÊM / SỬA */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
           <form
@@ -487,30 +487,26 @@ export default function AdminDrivers() {
               {editing ? "✏️ Sửa tài xế" : "➕ Thêm tài xế"}
             </h2>
 
-            {["name", "email", "phone", "license_no", "vehicle_type"].map(
-              (field) => (
-                <input
-                  key={field}
-                  name={field}
-                  placeholder={
-                    field === "name"
-                      ? "Họ tên"
-                      : field === "email"
-                      ? "Email"
-                      : field === "phone"
-                      ? "Số điện thoại"
-                      : field === "license_no"
-                      ? "Biển số xe"
-                      : "Loại xe"
-                  }
-                  value={form[field]}
-                  onChange={handleChange}
-                  className="w-full border p-2 rounded"
-                  required={field !== "phone"}
-                />
-              )
-            )}
+            {/* CHỈ 3 INPUT: NAME, EMAIL, PHONE */}
+            {["name", "email", "phone"].map((field) => (
+              <input
+                key={field}
+                name={field}
+                placeholder={
+                  field === "name"
+                    ? "Họ tên"
+                    : field === "email"
+                    ? "Email"
+                    : "Số điện thoại"
+                }
+                value={form[field]}
+                onChange={handleChange}
+                className="w-full border p-2 rounded"
+                required
+              />
+            ))}
 
+            {/* SELECT STATUS */}
             <select
               name="status"
               value={form.status}

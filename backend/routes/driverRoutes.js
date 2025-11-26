@@ -6,7 +6,7 @@ import {
   updateDriverShipmentStatus,
   getDriverProfile,
   changeDriverPassword,
-  updateDriverVehicle, // 👈 thêm dòng này
+  updateDriverVehicle,
   getDriverProfileByUser,
 } from "../controllers/driverController.js";
 

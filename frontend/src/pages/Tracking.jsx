@@ -64,37 +64,59 @@ export default function Tracking() {
   }, [initialCode]);
 
   // 🔍 Tra cứu đơn hàng
+  // 🔍 Tra cứu đơn hàng
+  // Thêm state mới
+  const [success, setSuccess] = useState("");
+
   const handleSearch = async () => {
+    setSuccess(""); // reset thông báo thành công
+
+    // ❌ Không nhập mã vận đơn
     if (!code.trim()) {
-      setError("⚠️ Vui lòng nhập mã vận đơn hợp lệ!");
+      setError("⚠️ Vui lòng nhập mã vận đơn!");
       setShipment(null);
       return;
     }
 
+    const customerId = localStorage.getItem("customer_id");
+
+    // ❌ Khách vãng lai nhưng không nhập 4 số cuối
+    if (!customerId) {
+      if (!last4 || last4.length !== 4) {
+        setError("⚠️ Vui lòng nhập 4 số cuối SĐT người nhận!");
+        setShipment(null);
+        return;
+      }
+    }
+
     setLoading(true);
     setError("");
+    setSuccess("");
 
     try {
-      const customerId = localStorage.getItem("customer_id");
       let url = `/customers/track/${code.trim()}`;
 
-      // ✅ Nếu đã đăng nhập → chỉ gửi customer_id
       if (customerId) {
         url += `?customer_id=${customerId}`;
       } else {
-        // ✅ Khách vãng lai → yêu cầu nhập 4 số cuối SĐT
-        if (!last4 || last4.length !== 4) {
-          setError("⚠️ Vui lòng nhập 4 số cuối SĐT người nhận!");
-          setLoading(false);
-          return;
-        }
         url += `?last4=${last4}`;
       }
 
       const res = await API.get(url);
+
+      // ❌ Nếu BE trả về null hoặc rỗng → mã không hợp lệ
+      if (!res.data || Object.keys(res.data).length === 0) {
+        setError("❌ Mã vận đơn không hợp lệ!");
+        setShipment(null);
+        return;
+      }
+
+      // ⭐ Thành công
       setShipment(res.data);
-    } catch {
-      setError("❌ Không tìm thấy đơn hàng hoặc thông tin xác thực sai!");
+      setSuccess("✅ Tra cứu thành công!");
+    } catch (err) {
+      setError("❌ Mã vận đơn không hợp lệ!");
+      setShipment(null);
     } finally {
       setLoading(false);
     }

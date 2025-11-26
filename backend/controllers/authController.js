@@ -7,7 +7,7 @@ import { sendMail } from "../utils/sendMail.js";
 export const register = async (req, res) => {
   const { name, email, password, phone } = req.body;
   if (!name || !email || !password)
-    return res.status(400).json({ message: "Thiếu thông tin" });
+    return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin!" });
 
   try {
     const [exist] = await pool.query("SELECT * FROM users WHERE email = ?", [
@@ -42,7 +42,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
-    return res.status(400).json({ message: "Thiếu thông tin" });
+    return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin!" });
 
   try {
     const [users] = await pool.query("SELECT * FROM users WHERE email = ?", [
