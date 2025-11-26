@@ -61,7 +61,21 @@ export default function Login() {
       else navigate("/customer");
     } catch (err) {
       console.error("❌ Lỗi đăng nhập:", err);
-      setError("Sai tài khoản hoặc mật khẩu");
+
+      const status = err?.response?.status;
+      const msg = err?.response?.data?.message;
+
+      if (status === 403) {
+        setError(msg || "Tài khoản đã bị vô hiệu hóa");
+        return;
+      }
+
+      if (status === 401) {
+        setError("Sai tài khoản hoặc mật khẩu");
+        return;
+      }
+
+      setError(msg || "Có lỗi xảy ra, vui lòng thử lại.");
     } finally {
       setLoading(false);
     }

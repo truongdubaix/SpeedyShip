@@ -52,7 +52,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Sai tài khoản hoặc mật khẩu" });
 
     const user = users[0];
-    console.log("🟡 Trạng thái user:", user.status);
+    //console.log("🟡 Trạng thái user:", user.status);
 
     // Kiểm tra trạng thái
     if (user.status && user.status.toLowerCase() === "inactive") {
