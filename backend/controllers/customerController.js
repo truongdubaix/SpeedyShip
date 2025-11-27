@@ -37,21 +37,37 @@ export const createShipment = async (req, res) => {
     sender_phone,
     receiver_name,
     receiver_phone,
+    item_name,
     pickup_address,
     delivery_address,
     weight_kg,
     cod_amount,
-    method = "COD", // thêm lựa chọn thanh toán
+    shipping_fee, // FE gửi
+    service_type, // standard / express / fast
+    payment_method = "COD",
   } = req.body;
 
   try {
+    // Tạo mã vận đơn
     const tracking = `SP${Date.now().toString().slice(-6)}`;
+
     const [result] = await pool.query(
       `INSERT INTO shipments(
-        tracking_code, customer_id, sender_name, sender_phone,
-        receiver_name, receiver_phone, pickup_address, delivery_address,
-        weight_kg, cod_amount, status
-      ) VALUES (?,?,?,?,?,?,?,?,?,?, 'pending')`,
+    tracking_code,
+    customer_id,
+    sender_name, sender_phone,
+    receiver_name, receiver_phone,
+    item_name,
+    pickup_address, pickup_lat, pickup_lng,
+    delivery_address, delivery_lat, delivery_lng,
+    weight_kg,
+    cod_amount,
+    shipping_fee,
+    service_type,
+    payment_method,
+    status
+  )
+  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, 'pending')`,
       [
         tracking,
         customer_id,
@@ -59,24 +75,34 @@ export const createShipment = async (req, res) => {
         sender_phone,
         receiver_name,
         receiver_phone,
+        item_name,
         pickup_address,
+        pickup_lat,
+        pickup_lng,
         delivery_address,
+        delivery_lat,
+        delivery_lng,
         weight_kg,
         cod_amount,
+        shipping_fee,
+        service_type,
+        payment_method,
       ]
     );
 
     const shipment_id = result.insertId;
 
-    //  Sau khi tạo shipment => tạo luôn payment
-    await pool.query(
-      `INSERT INTO payments (shipment_id, customer_id, amount, method, status)
-       VALUES (?, ?, ?, ?, 'pending')`,
-      [shipment_id, customer_id, cod_amount, method]
-    );
+    // Nếu thanh toán Momo -> tạo payment chờ xử lý
+    if (payment_method === "MOMO") {
+      await pool.query(
+        `INSERT INTO payments (shipment_id, customer_id, amount, method, status)
+         VALUES (?, ?, ?, ?, 'pending')`,
+        [shipment_id, customer_id, cod_amount + shipping_fee, payment_method]
+      );
+    }
 
     res.json({
-      message: "✅ Tạo đơn hàng và thanh toán thành công",
+      message: "Tạo đơn hàng thành công",
       shipment_id,
       tracking_code: tracking,
     });
