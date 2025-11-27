@@ -130,6 +130,9 @@ export default function TaoDonHang() {
             placeholder="VD: 0901234567"
             className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-400"
             required
+            maxLength={10}
+            pattern="0[0-9]{9}"
+            title="Số điện thoại phải gồm 10 số và bắt đầu bằng 0"
           />
         </div>
 
@@ -207,6 +210,9 @@ export default function TaoDonHang() {
             placeholder="VD: 0912345678"
             className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-400"
             required
+            maxLength={10}
+            pattern="0[0-9]{9}"
+            title="Số điện thoại phải gồm 10 số và bắt đầu bằng 0"
           />
         </div>
 
@@ -231,6 +237,7 @@ export default function TaoDonHang() {
             name="weight_kg"
             step="0.1"
             min="0.1"
+            max="99.9"
             value={form.weight_kg}
             onChange={handleChange}
             placeholder="VD: 2.5"
