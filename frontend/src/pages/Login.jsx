@@ -16,7 +16,6 @@ export default function Login() {
     e.preventDefault();
     setError("");
 
-    // ⭐ Validate rỗng từng trường
     if (!form.email && !form.password) {
       setError("Vui lòng nhập đầy đủ Email và mật khẩu");
       return;
@@ -44,7 +43,6 @@ export default function Login() {
         return;
       }
 
-      // Lưu thông tin user
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
       localStorage.setItem("username", user.name);
@@ -54,27 +52,15 @@ export default function Login() {
         localStorage.setItem("customer_id", user.id.toString());
       }
 
-      // Chuyển hướng theo role
       if (user.role === "admin") navigate("/admin");
       else if (user.role === "dispatcher") navigate("/dispatcher");
       else if (user.role === "driver") navigate(`/driver/${user.id}`);
       else navigate("/customer");
     } catch (err) {
-      console.error("❌ Lỗi đăng nhập:", err);
-
       const status = err?.response?.status;
       const msg = err?.response?.data?.message;
-
-      if (status === 403) {
-        setError(msg || "Tài khoản đã bị vô hiệu hóa");
-        return;
-      }
-
-      if (status === 401) {
-        setError("Sai tài khoản hoặc mật khẩu");
-        return;
-      }
-
+      if (status === 403) return setError(msg || "Tài khoản đã bị vô hiệu hóa");
+      if (status === 401) return setError("Sai tài khoản hoặc mật khẩu");
       setError(msg || "Có lỗi xảy ra, vui lòng thử lại.");
     } finally {
       setLoading(false);
@@ -124,6 +110,16 @@ export default function Login() {
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             />
+
+            {/* ⭐ Nút quên mật khẩu */}
+            <div className="flex justify-end">
+              <span
+                onClick={() => navigate("/forgot-password")}
+                className="text-sm text-blue-600 font-semibold hover:underline cursor-pointer"
+              >
+                Quên mật khẩu?
+              </span>
+            </div>
 
             <button
               type="submit"

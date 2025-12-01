@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 import {
   getAllPayments,
   createPayment,
@@ -8,7 +8,7 @@ import {
   deletePayment,
 } from "../controllers/paymentController.js";
 
-const router = express.Router();
+const router = Router();
 
 // Lấy danh sách thanh toán
 router.get("/", getAllPayments);
@@ -16,13 +16,13 @@ router.get("/", getAllPayments);
 // Tạo thanh toán thường
 router.post("/", createPayment);
 
-// Cập nhật trạng thái
+// Cập nhật trạng thái thanh toán
 router.put("/:id", updatePaymentStatus);
 
-// Thanh toán bằng MoMo
+// Thanh toán MoMo
 router.post("/momo", createMomoPayment);
 
-// Nhận callback từ MoMo
+// Callback IPN từ MoMo
 router.post("/momo/callback", momoIPN);
 
 // Xóa thanh toán

@@ -9,6 +9,7 @@ import initSocket from "./socket/initSocket.js";
 
 // Import routes
 import authRoutes from "./routes/authRoutes.js";
+import passRoutes from "./routes/passRoutes.js";
 import driverRoutes from "./routes/driverRoutes.js";
 import shipmentRoutes from "./routes/shipmentRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -24,6 +25,7 @@ import feedbackRoutes from "./routes/feedbackRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
+//import bankRoutes from "./routes/bankRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -44,10 +46,10 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Kiểm tra kết nối MySQL
+//  Kiểm tra kết nối MySQL
 pool
   .query("SELECT 1")
-  .then(() => console.log("✅ MySQL connected"))
+  .then(() => console.log("MySQL đã kết nối CSDL thành công!"))
   .catch(console.error);
 
 // Socket.io setup
@@ -65,15 +67,16 @@ const io = new Server(server, {
   },
 });
 
-// ✅ Khởi tạo socket và nhận các hàm gửi thông báo
+//  Khởi tạo socket và nhận các hàm gửi thông báo
 const socketService = initSocket(io, pool);
 
-// ✅ Export các hàm thông báo để controller khác gọi được
+//  Export các hàm thông báo để controller khác gọi được
 export const { sendNotificationToDriver, sendNotificationToDispatcher } =
   socketService;
 
-// ✅ Đăng ký các route API
+// ROUTES
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", passRoutes);
 app.use("/api/drivers", driverRoutes);
 app.use("/api/drivers", driverAdminRoutes);
 app.use("/api/drivers", driverLocationRoutes);
@@ -89,12 +92,14 @@ app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/ai", aiRoutes);
-// ✅ Kiểm tra API
+//app.use("/api/payment/bank", bankRoutes);
+
+//  Kiểm tra API
 app.get("/", (_req, res) =>
   res.send("🚀 SpeedyShip API running with realtime chat & notifications")
 );
 
-// ✅ Khởi động server
+//  Khởi động server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () =>
   console.log(`Server đang chạy tại: http://localhost:${PORT}`)

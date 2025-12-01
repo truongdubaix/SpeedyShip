@@ -11,6 +11,7 @@ import Services from "./pages/Services.jsx";
 import Contact from "./pages/Contact.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
+import ForgotPassword from "./pages/ForgotPassword";
 import Logout from "./pages/Logout.jsx";
 import Unauthorized from "./pages/Unauthorized.jsx";
 import ApplyDriver from "./pages/ApplyDriver.jsx";
@@ -92,7 +93,7 @@ export default function App() {
         {/* 🚪 Logout + Unauthorized */}
         <Route path="/logout" element={<Logout />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         {/* 🧭 Admin */}
         <Route
           path="/admin"
@@ -142,7 +143,6 @@ export default function App() {
           <Route path="assignments" element={<DriverAssignments />} />
           <Route path="history" element={<DriverHistory />} />
           <Route path="profile" element={<DriverProfile />} />
-          {/* ✅ Sửa lỗi — route con phải tương đối */}
           <Route
             path="shipments/:shipmentId"
             element={<DriverShipmentDetail />}
