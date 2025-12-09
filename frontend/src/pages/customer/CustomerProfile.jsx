@@ -13,13 +13,14 @@ function getCurrentUserId() {
       if (parsed?.id) return String(parsed.id);
     }
   } catch (_) {
-    /* empty */
+    // ignore error
   }
 
   const directId =
     localStorage.getItem("userId") ||
     localStorage.getItem("userid") ||
     localStorage.getItem("user_id");
+
   if (directId) return String(directId);
 
   const token = localStorage.getItem("token");
@@ -28,9 +29,10 @@ function getCurrentUserId() {
       const payload = JSON.parse(atob(token.split(".")[1]));
       const fromJwt =
         payload?.id || payload?.userId || payload?.sub || payload?.uid;
+
       if (fromJwt) return String(fromJwt);
     } catch (_) {
-      /* empty */
+      // ignore
     }
   }
 
@@ -38,12 +40,17 @@ function getCurrentUserId() {
 }
 
 export default function CustomerProfile() {
-  const [profile, setProfile] = useState({ name: "", email: "", phone: "" });
+  const [profile, setProfile] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "", // 👈 thêm vào
+  });
+
   const [loading, setLoading] = useState(true);
   const userId = getCurrentUserId();
 
   useEffect(() => {
-    // 👇 Hiệu ứng nhẹ, không delay, chỉ fade mượt
     AOS.init({
       duration: 400,
       easing: "ease-in-out",
@@ -63,6 +70,7 @@ export default function CustomerProfile() {
           name: res.data?.name || "",
           email: res.data?.email || "",
           phone: res.data?.phone || "",
+          password: "", // luôn để trống khi load hồ sơ
         });
       } catch (err) {
         console.error(err);
@@ -77,13 +85,52 @@ export default function CustomerProfile() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+
     if (!userId) {
       toast.error("Bạn chưa đăng nhập!");
       return;
     }
+
+    // ⚠ Validate tên
+    if (!profile.name.trim()) {
+      toast.error("❌ Họ tên không được để trống!");
+      return;
+    }
+
+    // ⚠ Validate email đúng format
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profile.email)) {
+      toast.error("❌ Email không hợp lệ!");
+      return;
+    }
+
+    // ⚠ Validate số điện thoại
+    if (!/^[0-9]{9,11}$/.test(profile.phone)) {
+      toast.error("❌ Số điện thoại phải là 9–11 chữ số!");
+      return;
+    }
+
+    // ⚠ Validate mật khẩu nếu có nhập
+    if (profile.password && profile.password.length < 6) {
+      toast.error("❌ Mật khẩu phải ít nhất 6 ký tự!");
+      return;
+    }
+
     try {
-      await API.put(`/customers/profile/${userId}`, profile);
+      const payload = {
+        name: profile.name,
+        email: profile.email,
+        phone: profile.phone,
+      };
+
+      if (profile.password.trim() !== "") {
+        payload.password = profile.password;
+      }
+
+      await API.put(`/customers/profile/${userId}`, payload);
+
       toast.success("✅ Cập nhật hồ sơ thành công!");
+
+      setProfile((prev) => ({ ...prev, password: "" }));
     } catch (err) {
       console.error(err);
       toast.error("❌ Lỗi khi cập nhật hồ sơ!");
@@ -114,6 +161,7 @@ export default function CustomerProfile() {
       </p>
 
       <form onSubmit={handleUpdate} className="space-y-5" data-aos="fade-up">
+        {/* Họ tên */}
         <div>
           <label className="block font-semibold mb-2 text-gray-700">
             Họ và tên:
@@ -127,6 +175,7 @@ export default function CustomerProfile() {
           />
         </div>
 
+        {/* Email */}
         <div>
           <label className="block font-semibold mb-2 text-gray-700">
             Email:
@@ -140,6 +189,7 @@ export default function CustomerProfile() {
           />
         </div>
 
+        {/* Phone */}
         <div>
           <label className="block font-semibold mb-2 text-gray-700">
             Số điện thoại:
@@ -153,6 +203,27 @@ export default function CustomerProfile() {
           />
         </div>
 
+        {/* Mật khẩu mới */}
+        <div>
+          <label className="block font-semibold mb-2 text-gray-700">
+            Mật khẩu mới (không bắt buộc):
+          </label>
+          <input
+            type="password"
+            value={profile.password}
+            onChange={(e) =>
+              setProfile({ ...profile, password: e.target.value })
+            }
+            placeholder="Nhập mật khẩu mới nếu muốn đổi"
+            className="w-full border border-gray-300 p-3 rounded-lg 
+                       focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+          />
+          <p className="text-xs text-gray-400 mt-1">
+            Để trống nếu bạn không muốn thay đổi mật khẩu
+          </p>
+        </div>
+
+        {/* Button */}
         <div className="pt-4 flex justify-center">
           <button
             type="submit"

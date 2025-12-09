@@ -11,17 +11,31 @@ import {
 
 const router = express.Router();
 
-// Hồ sơ khách hàng
+// ===============================
+//  HỒ SƠ KHÁCH HÀNG
+// ===============================
 router.get("/profile/:id", getCustomerProfile);
 router.put("/profile/:id", updateCustomerProfile);
 
-// Đơn hàng
+// ===============================
+//  ĐƠN HÀNG
+// ===============================
+
+// Tạo đơn hàng
 router.post("/shipments", createShipment);
-router.get("/shipments/:customer_id", getShipmentsByCustomer);
-router.get("/shipment/:id", getShipmentDetail); // ✅ chi tiết đơn hàng
+
+// Lấy danh sách đơn theo customer
+router.get("/shipments/customer/:customer_id", getShipmentsByCustomer);
+
+// Lấy chi tiết một đơn
+router.get("/shipment/:id", getShipmentDetail);
+
+// Tra cứu theo tracking code
 router.get("/track/:code", trackShipment);
-router.get("/:customer_id/shipments", getShipmentsByCustomer);
-// Feedback
+
+// ===============================
+//  FEEDBACK
+// ===============================
 router.post("/feedback", createFeedback);
 
 export default router;

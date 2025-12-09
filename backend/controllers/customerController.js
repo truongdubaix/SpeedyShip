@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import bcrypt from "bcrypt";
 
 // Lấy thông tin hồ sơ khách hàng
 export const getCustomerProfile = async (req, res) => {
@@ -17,14 +18,28 @@ export const getCustomerProfile = async (req, res) => {
 
 // Cập nhật hồ sơ khách hàng
 export const updateCustomerProfile = async (req, res) => {
-  const { name, email, phone } = req.body;
+  const { name, email, phone, password } = req.body;
+
   try {
-    await pool.query(
-      "UPDATE users SET name = ?, email = ?, phone = ? WHERE id = ? AND role = 'customer'",
-      [name, email, phone, req.params.id]
-    );
+    // Nếu có password mới -> hash
+    if (password && password.trim() !== "") {
+      const hashed = await bcrypt.hash(password, 10);
+
+      await pool.query(
+        "UPDATE users SET name = ?, email = ?, phone = ?, password = ? WHERE id = ? AND role = 'customer'",
+        [name, email, phone, hashed, req.params.id]
+      );
+    } else {
+      // Không đổi mật khẩu
+      await pool.query(
+        "UPDATE users SET name = ?, email = ?, phone = ? WHERE id = ? AND role = 'customer'",
+        [name, email, phone, req.params.id]
+      );
+    }
+
     res.json({ message: "Cập nhật hồ sơ thành công!" });
   } catch (err) {
+    console.error("❌ Lỗi updateCustomerProfile:", err);
     res.status(500).json({ message: err.message });
   }
 };

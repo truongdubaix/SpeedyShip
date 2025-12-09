@@ -39,7 +39,7 @@ export default function CustomerDashboard() {
 
     const fetchShipments = async () => {
       try {
-        const res = await API.get(`/customers/${userId}/shipments`);
+        const res = await API.get(`/customers/shipments/customer/${userId}`);
         const data = res.data || [];
         setShipments(data);
 

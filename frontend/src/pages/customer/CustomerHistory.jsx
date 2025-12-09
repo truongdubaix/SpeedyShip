@@ -16,7 +16,7 @@ export default function CustomerHistory() {
 
   useEffect(() => {
     if (!customerId) return;
-    API.get(`/customers/shipments/${customerId}`)
+    API.get(`/customers/shipments/customer/${customerId}`)
       .then((res) => setShipments(res.data))
       .catch(() => toast.error("Không thể tải lịch sử đơn hàng!"));
   }, [customerId]);
